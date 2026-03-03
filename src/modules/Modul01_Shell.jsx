@@ -43,22 +43,13 @@ const DASHBOARD_STATS = {
 };
 
 const KAS_BULAN = {
-  masuk: 21968860,
-  keluar: 19721393,
+  masuk: 0,
+  keluar: 0,
 };
 
-const JADWAL_SERVICE_HARI_INI = [
-  { kamar: 3, penghuni: "Dian Pratiwi", jam: "09:00" },
-  { kamar: 6, penghuni: "Siti Rahayu", jam: "10:00" },
-  { kamar: 9, penghuni: "Dewi Lestari", jam: "11:00" },
-];
+const JADWAL_SERVICE_HARI_INI = [];
 
-const INSIGHTS = [
-  { icon: "⚠️", text: "Kontrak Kamar 9 habis 1 April 2026 — 32 hari lagi", type: "warning" },
-  { icon: "🔴", text: "Tiket T001 (AC Bocor Kamar 9) URGENT — belum ditangani", type: "urgent" },
-  { icon: "✅", text: "Kamar 8 selesai deep clean, siap disewakan kembali", type: "success" },
-  { icon: "💰", text: "Omzet bulan ini naik 10.9% vs bulan lalu", type: "info" },
-];
+const INSIGHTS = [];
 
 // ============================================================
 // HELPERS

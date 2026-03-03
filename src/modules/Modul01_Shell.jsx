@@ -21,9 +21,7 @@ import Pettycash from "./Modul18_Pettycash";
 // ============================================================
 // MOCK DATA
 // ============================================================
-const USERS = [
-  { id: 1, username: "admin", password: "admin123", role: "admin", name: "Yusuf Vindra Asmara", jabatan: "Owner", avatar: "YV" },
-];
+const USERS = [];
 
 const KAMAR_DATA = [];
 

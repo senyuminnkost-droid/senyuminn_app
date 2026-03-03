@@ -3,7 +3,10 @@ import { useState, useEffect } from "react";
 // ============================================================
 // MOCK DATA
 // ============================================================
-const STAFF_LIST = [];
+const STAFF_LIST = [
+  { id: 3, name: "Muh. Krisna Mukti", jabatan: "Clean & Service", shift: "Pagi", avatar: "MK", phone: "081234567890", agama: "Islam", statusKerja: "aktif" },
+  { id: 4, name: "Gurit Yudho Anggoro", jabatan: "Staf Penjaga Malam", shift: "Sore/Malam", avatar: "GY", phone: "081298765432", agama: "Islam", statusKerja: "aktif" },
+];
 
 // Kode absensi lengkap
 const KODE_ABSENSI = {
@@ -51,7 +54,12 @@ const generateAbsensi = () => {
 const ABSENSI_DATA = generateAbsensi();
 
 // Clock-in log
-const CLOCKIN_LOG = [];
+const CLOCKIN_LOG = [
+  { staffId: 3, tanggal: "2026-02-26", jam: "07:58", lat: -6.2089, lng: 106.8456, status: "valid", foto: true },
+  { staffId: 4, tanggal: "2026-02-25", jam: "15:55", lat: -6.2091, lng: 106.8455, status: "valid", foto: true },
+  { staffId: 3, tanggal: "2026-02-25", jam: "08:02", lat: -6.2090, lng: 106.8457, status: "valid", foto: true },
+  { staffId: 3, tanggal: "2026-02-19", jam: null,    lat: null,    lng: null,    status: "absen", foto: false },
+];
 
 // Rekap bulanan
 const REKAP = {

@@ -4,23 +4,22 @@ import { useState, useEffect, useRef } from "react";
 // MOCK DATA
 // ============================================================
 const KAMAR_LIST = [
-  { id: 1, tipe: "Premium", penghuni: "Budi Santoso" },
+  { id: 1, tipe: "Premium", penghuni: null },
   { id: 2, tipe: "Reguler", penghuni: null },
-  { id: 3, tipe: "Reguler", penghuni: "Dian Pratiwi" },
-  { id: 4, tipe: "Premium", penghuni: "Ahmad Fauzi" },
+  { id: 3, tipe: "Reguler", penghuni: null },
+  { id: 4, tipe: "Premium", penghuni: null },
   { id: 5, tipe: "Reguler", penghuni: null },
-  { id: 6, tipe: "Reguler", penghuni: "Siti Rahayu" },
-  { id: 7, tipe: "Premium", penghuni: "Rudi Hartono" },
+  { id: 6, tipe: "Reguler", penghuni: null },
+  { id: 7, tipe: "Premium", penghuni: null },
   { id: 8, tipe: "Reguler", penghuni: null },
-  { id: 9, tipe: "Reguler", penghuni: "Dewi Lestari" },
-  { id: 10, tipe: "Premium", penghuni: "Prisca Aprilia" },
+  { id: 9, tipe: "Reguler", penghuni: null },
+  { id: 10, tipe: "Premium", penghuni: null },
   { id: 11, tipe: "Reguler", penghuni: null },
-  { id: 12, tipe: "Premium", penghuni: "Amalia Wulan" },
+  { id: 12, tipe: "Premium", penghuni: null },
 ];
 
 const KATEGORI_LIST = [
-  "AC Bermasalah", "Air", "Listrik", "Bangunan",
-  "Elektronik", "Aksesoris Kamar Mandi", "Lemari / Kabinet", "Lainnya",
+  
 ];
 
 const STAFF_LIST = [

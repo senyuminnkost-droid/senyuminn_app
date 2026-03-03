@@ -3,7 +3,10 @@ import { useState, useEffect } from "react";
 // ============================================================
 // MOCK DATA
 // ============================================================
-const STAFF_LIST = [];
+const STAFF_LIST = [
+  { id: "EMP001", nama: "Krisna Mukti", jabatan: "Clean & Service", shift: "Pagi", avatar: "KM", color: "#f97316" },
+  { id: "EMP002", nama: "Gurit Yudho", jabatan: "Staf Penjaga Malam", shift: "Sore/Malam", avatar: "GY", color: "#1d4ed8" },
+];
 
 // Kode absensi lengkap
 const KODE_ABSENSI = {

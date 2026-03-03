@@ -925,13 +925,14 @@ function DashboardAdmin() {
             <div style={{ marginTop: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#94a3b8", marginBottom: 6 }}>
                 <span>Realisasi vs Budget</span>
-                <span style={{ fontWeight: 700, color: "#16a34a" }}>+8.4%</span>
+                <span style={{ fontWeight: 700, color: "#94a3b8" }}>0%</span>
               </div>
               <div className="progress-bar">
-                <div className="progress-fill" style={{ width: "78%", background: "linear-gradient(90deg, #f97316, #ea580c)" }} />
+                <div className="progress-fill" style={{ width: "0%", background: "linear-gradient(90deg, #f97316, #ea580c)" }} />
               </div>
-              <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 4 }}>78% dari target bulan ini</div>
+              <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 4 }}>0% dari target bulan ini</div>
             </div>
+
           </div>
         </div>
       </div>

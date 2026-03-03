@@ -5,49 +5,7 @@ import { useState, useEffect } from "react";
 // ============================================================
 const PERIODE_LIST = ["Feb 2026", "Jan 2026", "Des 2025", "Nov 2025"];
 
-const DATA_KEUANGAN = {
-  "Feb 2026": {
-    pendapatan: {
-      sewaKamar: 21950000,
-      lainLain:  18860,
-    },
-    beban: {
-      gaji:        3900000,
-      mgmtFee:     4829000,
-      utilitas:     890000,
-      internet:     400000,
-      maintenance: 1950000,
-      perlengkapan:  312000,
-      akomodasi:     150000,
-      thr:           390857,
-      tax:           109844,
-      depresiasi:    987500,
-    },
-    kasAwal:    17250000,
-    kasAkhir:   28547393,
-    piutang:     3600000,
-    modalAwal: 850000000,
-    prive:             0,
-    aset: {
-      kasBank:    28547393,
-      piutang:     3600000,
-      perlengkapan:4500000,
-      peralatan:  85000000,
-      depAkum:   -12450000,
-      tanahBangunan: 750000000,
-    },
-    liabilitas: {
-      hutangUsaha: 1200000,
-    },
-  },
-  "Jan 2026": {
-    pendapatan: { sewaKamar: 19800000, lainLain: 0 },
-    beban: { gaji: 3900000, mgmtFee: 4356000, utilitas: 780000, internet: 400000, maintenance: 650000, perlengkapan: 240000, akomodasi: 120000, thr: 390857, tax: 99000, depresiasi: 987500 },
-    kasAwal:    10000000, kasAkhir: 17250000, piutang: 0, modalAwal: 849000000, prive: 0,
-    aset: { kasBank: 17250000, piutang: 0, perlengkapan: 4200000, peralatan: 85000000, depAkum: -11462500, tanahBangunan: 750000000 },
-    liabilitas: { hutangUsaha: 900000 },
-  },
-};
+const DATA_KEUANGAN = {};
 
 const BLN_LIST = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Ags","Sep","Okt","Nov","Des"];
 const fmtRp    = (n) => n != null ? "Rp " + Math.abs(Number(n)).toLocaleString("id-ID") : "-";

@@ -15,38 +15,31 @@ const SAKU_CFG = [
 ];
 
 // Saldo saku (mock)
-const SAKU_SALDO = {
-  A: 1098443,
-  B: 5045820,
-  C: 800000,
-  D: 109844,
-  E: 8764832,
-  F: 1650000,
-};
+const SAKU_SALDO = { A:0, B:0, C:0, D:0, E:0, F:0 };
 
 // Transaksi Feb 2026
 const TRANSAKSI_DATA = [];
 
 // Chart of Accounts
 const COA = [
-  { kode: "1-101", nama: "Kas Tunai",             tipe: "aset",    saldo: 3820000 },
-  { kode: "1-102", nama: "Bank BCA",               tipe: "aset",    saldo: 12450000 },
-  { kode: "1-103", nama: "Bank Mandiri",            tipe: "aset",    saldo: 5230000 },
-  { kode: "1-201", nama: "Piutang Usaha",           tipe: "aset",    saldo: 3600000 },
-  { kode: "1-301", nama: "Perlengkapan",            tipe: "aset",    saldo: 4500000 },
-  { kode: "1-401", nama: "Peralatan",               tipe: "aset",    saldo: 85000000 },
-  { kode: "1-501", nama: "Tanah & Bangunan",        tipe: "aset",    saldo: 750000000 },
-  { kode: "2-101", nama: "Hutang Usaha",            tipe: "liabilitas", saldo: 1200000 },
-  { kode: "3-101", nama: "Modal",                   tipe: "ekuitas", saldo: 850000000 },
+  { kode: "1-101", nama: "Kas Tunai",             tipe: "aset",    saldo: 0 },
+  { kode: "1-102", nama: "Bank BCA",               tipe: "aset",    saldo: 0 },
+  { kode: "1-103", nama: "Bank Mandiri",            tipe: "aset",    saldo: 0 },
+  { kode: "1-201", nama: "Piutang Usaha",           tipe: "aset",    saldo: 0 },
+  { kode: "1-301", nama: "Perlengkapan",            tipe: "aset",    saldo: 0 },
+  { kode: "1-401", nama: "Peralatan",               tipe: "aset",    saldo: 0 },
+  { kode: "1-501", nama: "Tanah & Bangunan",        tipe: "aset",    saldo: 0 },
+  { kode: "2-101", nama: "Hutang Usaha",            tipe: "liabilitas", saldo: 0 },
+  { kode: "3-101", nama: "Modal",                   tipe: "ekuitas", saldo: 0 },
   { kode: "3-201", nama: "Prive/Dividen",           tipe: "ekuitas", saldo: 0 },
-  { kode: "4-101", nama: "Pendapatan Sewa",         tipe: "pendapatan", saldo: 21950000 },
-  { kode: "5-101", nama: "Beban Gaji",              tipe: "beban",   saldo: 3900000 },
-  { kode: "5-102", nama: "Beban Manajemen",         tipe: "beban",   saldo: 4829000 },
-  { kode: "5-103", nama: "Beban Utilitas",          tipe: "beban",   saldo: 890000 },
-  { kode: "5-104", nama: "Beban Internet",          tipe: "beban",   saldo: 400000 },
-  { kode: "5-105", nama: "Beban Maintenance",       tipe: "beban",   saldo: 1950000 },
-  { kode: "5-106", nama: "Beban Perlengkapan",      tipe: "beban",   saldo: 312000 },
-  { kode: "5-107", nama: "Beban Akomodasi",         tipe: "beban",   saldo: 150000 },
+  { kode: "4-101", nama: "Pendapatan Sewa",         tipe: "pendapatan", saldo: 0 },
+  { kode: "5-101", nama: "Beban Gaji",              tipe: "beban",   saldo: 0 },
+  { kode: "5-102", nama: "Beban Manajemen",         tipe: "beban",   saldo: 0 },
+  { kode: "5-103", nama: "Beban Utilitas",          tipe: "beban",   saldo: 0 },
+  { kode: "5-104", nama: "Beban Internet",          tipe: "beban",   saldo: 0 },
+  { kode: "5-105", nama: "Beban Maintenance",       tipe: "beban",   saldo: 0 },
+  { kode: "5-106", nama: "Beban Perlengkapan",      tipe: "beban",   saldo: 0 },
+  { kode: "5-107", nama: "Beban Akomodasi",         tipe: "beban",   saldo: 0 },
 ];
 
 const KATEGORI_LIST = [

@@ -5,74 +5,7 @@ import { useState, useEffect } from "react";
 // ============================================================
 const PERIODE_LIST = ["Feb 2026", "Jan 2026", "Des 2025"];
 
-const STAFF_DATA = [
-  {
-    id: "EMP001",
-    nama: "Muh. Krisna Mukti",
-    jabatan: "Clean & Service",
-    shift: "Pagi",
-    agama: "Islam",
-    rekening: { bank: "BCA", no: "1234567801" },
-    gajiPokok: 1800000,
-    insentifKPI: 200000,
-    komponen: {
-      lembur: 150000,       // 3 shift × Rp 50.000
-      lemburTambahan: 0,
-      potonganIjin: 0,      // tidak ada ijin tidak sah
-      potonganPinjaman: 0,
-      bpjs: 54000,          // 3% dari gaji pokok
-      pajak: 0,             // belum kena pajak
-    },
-    kpiScore: 92,           // % dari absensi + jobdesk
-    absensi: { masuk: 22, lembur: 3, ijin: 0, sakit: 0, libur: 6 },
-    statusGaji: "belum",
-    tglBayar: null,
-  },
-  {
-    id: "EMP002",
-    nama: "Gurit Yudho Anggoro",
-    jabatan: "Staf Penjaga Malam",
-    shift: "Sore/Malam",
-    agama: "Islam",
-    rekening: { bank: "BNI", no: "9876543802" },
-    gajiPokok: 2100000,
-    insentifKPI: 200000,
-    komponen: {
-      lembur: 50000,        // 1 shift lembur
-      lemburTambahan: 100000,
-      potonganIjin: 50000,  // 1 hari ijin tidak sah
-      potonganPinjaman: 700000, // pinjaman koperasi
-      bpjs: 63000,
-      pajak: 0,
-    },
-    kpiScore: 78,
-    absensi: { masuk: 20, lembur: 1, ijin: 1, sakit: 1, libur: 6 },
-    statusGaji: "belum",
-    tglBayar: null,
-  },
-  {
-    id: "EMP003",
-    nama: "Rina Manajemen",
-    jabatan: "Super Admin / Manajemen",
-    shift: "Pagi",
-    agama: "Kristen",
-    rekening: { bank: "Mandiri", no: "1122334455" },
-    gajiPokok: 3500000,
-    insentifKPI: 300000,
-    komponen: {
-      lembur: 0,
-      lemburTambahan: 0,
-      potonganIjin: 0,
-      potonganPinjaman: 0,
-      bpjs: 105000,
-      pajak: 45000,
-    },
-    kpiScore: 98,
-    absensi: { masuk: 22, lembur: 0, ijin: 0, sakit: 0, libur: 6 },
-    statusGaji: "lunas",
-    tglBayar: "2026-02-25",
-  },
-];
+const STAFF_DATA = [];
 
 const KPI_THRESHOLD = {
   excellent: { min: 90, insentif: 200000, label: "Excellent", color: "#16a34a", bg: "#dcfce7" },

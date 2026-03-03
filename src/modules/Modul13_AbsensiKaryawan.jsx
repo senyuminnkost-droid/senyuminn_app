@@ -3,11 +3,7 @@ import { useState, useEffect } from "react";
 // ============================================================
 // MOCK DATA
 // ============================================================
-const STAFF_LIST = [
-  { id: "EMP001", nama: "Muh. Krisna Mukti",   jabatan: "Clean & Service",         shift: "Pagi",       gajiPokok: 1800000 },
-  { id: "EMP002", nama: "Gurit Yudho Anggoro", jabatan: "Staf Penjaga Malam",      shift: "Sore/Malam", gajiPokok: 2100000 },
-  { id: "EMP003", nama: "Rina Manajemen",      jabatan: "Super Admin / Manajemen", shift: "Pagi",       gajiPokok: 3500000 },
-];
+const STAFF_LIST = [];
 
 // ── KODE ABSENSI LENGKAP ─────────────────────────────────────
 const KODE_CFG = {
@@ -40,12 +36,7 @@ const ABSENSI_INIT = {
 
 // ── LEMBUR TAMBAHAN ──────────────────────────────────────────
 // Lembur fleksibel: perbaikan dadakan, weekly di luar jam, check-in darurat, dll
-const LEMBUR_TAMBAHAN_INIT = [
-  { id:"LT001", staffId:"EMP002", tanggal:"2026-02-08", jam:3,   nominal:75000,  kategori:"Perbaikan",       keterangan:"Benerin AC bocor Kamar 9 setelah shift SM selesai jam 07:00" },
-  { id:"LT002", staffId:"EMP001", tanggal:"2026-02-13", jam:2,   nominal:50000,  kategori:"Weekly Dadakan",  keterangan:"Weekly service Kamar 11 — penghuni baru minta service sore hari" },
-  { id:"LT003", staffId:"EMP002", tanggal:"2026-02-19", jam:2,   nominal:50000,  kategori:"Perbaikan",       keterangan:"Cek kebocoran pipa Lt 2 setelah laporan penghuni" },
-  { id:"LT004", staffId:"EMP001", tanggal:"2026-02-26", jam:1.5, nominal:37500,  kategori:"Check-in Darurat",keterangan:"Check-in Kamar 11 — penghuni datang di luar jam kerja" },
-];
+const LEMBUR_TAMBAHAN_INIT = [];
 
 const KATEGORI_LIST = ["Perbaikan", "Weekly Dadakan", "Check-in Darurat", "Jaga Darurat", "Lainnya"];
 // Periode dinamis — semua bulan di tahun berjalan s/d bulan ini

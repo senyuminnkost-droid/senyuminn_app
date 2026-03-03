@@ -25,27 +25,7 @@ const SAKU_SALDO = {
 };
 
 // Transaksi Feb 2026
-const TRANSAKSI_DATA = [
-  // PEMASUKAN
-  { id: "TR001", tgl: "2026-02-01", uraian: "Sewa Kamar 1 — Budi Santoso (Feb)", akun: "Kas", lawan: "Pendapatan Sewa", debit: 2500000, kredit: 0, saku: "E", kategori: "sewa", by: "Admin" },
-  { id: "TR002", tgl: "2026-02-01", uraian: "Sewa Kamar 4 — Ahmad Fauzi (Feb)", akun: "Kas", lawan: "Pendapatan Sewa", debit: 2500000, kredit: 0, saku: "E", kategori: "sewa", by: "Admin" },
-  { id: "TR003", tgl: "2026-02-01", uraian: "Sewa Kamar 6 — Siti Rahayu (Feb)", akun: "Kas", lawan: "Pendapatan Sewa", debit: 1800000, kredit: 0, saku: "E", kategori: "sewa", by: "Admin" },
-  { id: "TR004", tgl: "2026-02-12", uraian: "Sewa Kamar 7 — Rudi Hartono (Feb)", akun: "Kas", lawan: "Pendapatan Sewa", debit: 2650000, kredit: 0, saku: "E", kategori: "sewa", by: "Admin" },
-  { id: "TR005", tgl: "2026-02-12", uraian: "Sewa Kamar 10 — Prisca Aprilia (Feb)", akun: "Kas", lawan: "Pendapatan Sewa", debit: 2500000, kredit: 0, saku: "E", kategori: "sewa", by: "Admin" },
-  { id: "TR006", tgl: "2026-02-02", uraian: "Sewa Kamar 12 — Amalia Wulan (Feb)", akun: "Kas", lawan: "Pendapatan Sewa", debit: 2500000, kredit: 0, saku: "E", kategori: "sewa", by: "Admin" },
-
-  // PENGELUARAN
-  { id: "TR007", tgl: "2026-02-05", uraian: "Management Fee Feb — 22% dari omzet", akun: "Beban Manajemen", lawan: "Kas", debit: 0, kredit: 4829000, saku: "E", kategori: "mgmt-fee", by: "Sistem" },
-  { id: "TR008", tgl: "2026-02-10", uraian: "Gaji Krisna Mukti — Feb 2026", akun: "Beban Gaji", lawan: "Kas", debit: 0, kredit: 1800000, saku: "E", kategori: "gaji", by: "Admin" },
-  { id: "TR009", tgl: "2026-02-10", uraian: "Gaji Gurit Yudho — Feb 2026", akun: "Beban Gaji", lawan: "Kas", debit: 0, kredit: 2100000, saku: "E", kategori: "gaji", by: "Admin" },
-  { id: "TR010", tgl: "2026-02-15", uraian: "Tagihan Listrik & Air Feb", akun: "Beban Utilitas", lawan: "Kas", debit: 0, kredit: 890000, saku: "A", kategori: "utilitas", by: "Admin" },
-  { id: "TR011", tgl: "2026-02-15", uraian: "Internet IndiHome Feb", akun: "Beban Internet", lawan: "Kas", debit: 0, kredit: 400000, saku: "C", kategori: "utilitas", by: "Admin" },
-  { id: "TR012", tgl: "2026-02-18", uraian: "Beli peralatan cleaning — mop, sapu dll", akun: "Beban Perlengkapan", lawan: "Kas", debit: 0, kredit: 312000, saku: "A", kategori: "peralatan", by: "Krisna" },
-  { id: "TR013", tgl: "2026-02-20", uraian: "Servis AC 13 unit — vendor", akun: "Beban Maintenance", lawan: "Kas", debit: 0, kredit: 1950000, saku: "A", kategori: "maintenance", by: "Admin" },
-  { id: "TR014", tgl: "2026-02-22", uraian: "Biaya bensin & transport ops", akun: "Beban Akomodasi", lawan: "Kas", debit: 0, kredit: 150000, saku: "A", kategori: "ops", by: "Admin" },
-  { id: "TR015", tgl: "2026-02-25", uraian: "THR Saving Feb — alokasi bulanan", akun: "THR Saving", lawan: "Kas", debit: 0, kredit: 390857, saku: "F", kategori: "saving", by: "Sistem" },
-  { id: "TR016", tgl: "2026-02-25", uraian: "Tax Saving Feb — 0.5% dari omzet", akun: "Tax Saving", lawan: "Kas", debit: 0, kredit: 109844, saku: "D", kategori: "saving", by: "Sistem" },
-];
+const TRANSAKSI_DATA = [];
 
 // Chart of Accounts
 const COA = [
@@ -761,14 +741,7 @@ function TabCOA() {
 // ============================================================
 // TAB: DEPRESIASI ASET
 // ============================================================
-const ASET_DATA = [
-  { nama: "Gedung & Bangunan", nilai: 750000000, umur: 240, tglBeli: "2020-01-01" },
-  { nama: "AC LG 1 PK (x13)",  nilai: 32500000,  umur: 60,  tglBeli: "2022-06-01" },
-  { nama: "Meja & Kursi Kantor",nilai: 3500000,  umur: 60,  tglBeli: "2022-01-01" },
-  { nama: "CCTV System",        nilai: 8500000,  umur: 60,  tglBeli: "2023-03-01" },
-  { nama: "Water Heater (x4)",  nilai: 6000000,  umur: 84,  tglBeli: "2022-06-01" },
-  { nama: "Perabot Kamar (x12)",nilai: 24000000, umur: 120, tglBeli: "2020-01-01" },
-];
+const ASET_DATA = [];
 
 function TabDepresiasi() {
   const [newAset, setNewAset] = useState({ nama: "", nilai: "", umur: 60 });

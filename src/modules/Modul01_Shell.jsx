@@ -592,14 +592,7 @@ const CSS = `
   .login-btn:hover { filter: brightness(1.05); box-shadow: 0 8px 24px rgba(249,115,22,0.5); }
   .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-  .login-demo {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 8px; padding: 10px 12px;
-    font-size: 11px; color: rgba(255,255,255,0.35);
-  }
-  .login-demo b { color: rgba(255,255,255,0.6); }
-  .login-demo-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; color: rgba(255,255,255,0.3); }
+
 
   /* ── STAFF DASHBOARD ─────────────────────── */
   .staff-stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 20px; }
@@ -679,7 +672,7 @@ function LoginPage({ onLogin }) {
         <button className="login-btn" onClick={handleLogin} disabled={loading}>
           {loading ? "Memverifikasi..." : "Masuk →"}
         </button>
-        </div>
+
       </div>
     </div>
   );

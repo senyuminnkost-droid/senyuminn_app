@@ -5,8 +5,15 @@ import { useState, useEffect } from "react";
 // ============================================================
 const PERIODE_LIST = ["Feb 2026", "Jan 2026", "Des 2025", "Nov 2025"];
 
-const data = DATA_KEUANGAN[periode] || DATA_KEUANGAN["Feb 2026"] || { pendapatan: { sewaKamar: 0, lainLain: 0 }, beban: { gaji:0, mgmtFee:0, utilitas:0, internet:0, maintenance:0, perlengkapan:0, akomodasi:0, thr:0, tax:0, depresiasi:0 }, kasAwal:0, kasAkhir:0, piutang:0, modalAwal:0, prive:0, aset:{kasBank:0,piutang:0,perlengkapan:0,peralatan:0,depAkum:0,tanahBangunan:0}, liabilitas:{hutangUsaha:0} };
-
+const DATA_KEUANGAN = {
+  "Feb 2026": {
+    pendapatan: { sewaKamar: 0, lainLain: 0 },
+    beban: { gaji:0, mgmtFee:0, utilitas:0, internet:0, maintenance:0, perlengkapan:0, akomodasi:0, thr:0, tax:0, depresiasi:0 },
+    kasAwal:0, kasAkhir:0, piutang:0, modalAwal:0, prive:0,
+    aset: { kasBank:0, piutang:0, perlengkapan:0, peralatan:0, depAkum:0, tanahBangunan:0 },
+    liabilitas: { hutangUsaha:0 },
+  },
+};
 const BLN_LIST = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Ags","Sep","Okt","Nov","Des"];
 const fmtRp    = (n) => n != null ? "Rp " + Math.abs(Number(n)).toLocaleString("id-ID") : "-";
 const fmtRpFull= (n) => { if (n == null) return "-"; return (n < 0 ? "(Rp " : "Rp ") + Math.abs(n).toLocaleString("id-ID") + (n < 0 ? ")" : ""); };

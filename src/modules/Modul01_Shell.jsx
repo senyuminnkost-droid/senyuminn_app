@@ -1109,8 +1109,39 @@ function ComingSoon({ menuId }) {
 }
 
 // ============================================================
-// APP
+// APP — lazy load semua modul
 // ============================================================
+import { lazy, Suspense } from "react";
+
+const ModulMonitor    = lazy(() => import("./Modul03_Monitor"));
+const ModulKeluhan    = lazy(() => import("./Modul02_Keluhan"));
+const ModulWeekly     = lazy(() => import("./Modul04_Weekly"));
+const ModulAbsensi    = lazy(() => import("./Modul05_Absensi"));
+const ModulPenyewa    = lazy(() => import("./Modul06_Penyewa"));
+const ModulCheckin    = lazy(() => import("./Modul07_Checkin"));
+const ModulTagihan    = lazy(() => import("./Modul08_Tagihan"));
+const ModulKas        = lazy(() => import("./Modul09_Kas"));
+const ModulLaporan    = lazy(() => import("./Modul10_Laporan"));
+const ModulKaryawan   = lazy(() => import("./Modul11_Karyawan"));
+const ModulPenggajian = lazy(() => import("./Modul12_Penggajian"));
+const ModulLapAbsensi = lazy(() => import("./Modul13_AbsensiKaryawan"));
+const ModulPengaturan = lazy(() => import("./Modul14_Pengaturan"));
+const ModulRiwayat    = lazy(() => import("./Modul15_Riwayat"));
+const ModulKalender   = lazy(() => import("./Modul16_Kalender"));
+const ModulJobdesk    = lazy(() => import("./Modul17_Jobdesk"));
+const ModulPettyCash  = lazy(() => import("./Modul18_Pettycash"));
+
+function LoadingPage() {
+  return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 400 }}>
+      <div style={{ textAlign: "center" }}>
+        <div style={{ fontSize: 32, marginBottom: 12 }}>⏳</div>
+        <div style={{ fontSize: 13, color: "#94a3b8", fontWeight: 600 }}>Memuat modul...</div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [user, setUser] = useState(null);
   const [activeMenu, setActiveMenu] = useState("dashboard");
@@ -1121,7 +1152,30 @@ export default function App() {
     if (activeMenu === "dashboard") {
       return user.role === "admin" ? <DashboardAdmin /> : <DashboardStaff user={user} />;
     }
-    return <ComingSoon menuId={activeMenu} />;
+    const moduleMap = {
+      monitor:        <ModulMonitor />,
+      keluhan:        <ModulKeluhan />,
+      weekly:         <ModulWeekly />,
+      absensi:        <ModulAbsensi />,
+      penyewa:        <ModulPenyewa />,
+      checkin:        <ModulCheckin />,
+      tagihan:        <ModulTagihan />,
+      kas:            <ModulKas />,
+      laporan:        <ModulLaporan />,
+      karyawan:       <ModulKaryawan />,
+      penggajian:     <ModulPenggajian />,
+      laporanabsensi: <ModulLapAbsensi />,
+      profil:         <ModulPengaturan />,
+      riwayat:        <ModulRiwayat />,
+      kalender:       <ModulKalender />,
+      jobdesk:        <ModulJobdesk />,
+      pettycash:      <ModulPettyCash />,
+    };
+    return (
+      <Suspense fallback={<LoadingPage />}>
+        {moduleMap[activeMenu] || <ComingSoon menuId={activeMenu} />}
+      </Suspense>
+    );
   };
 
   return (

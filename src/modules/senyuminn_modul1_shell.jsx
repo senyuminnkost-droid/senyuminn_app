@@ -4,10 +4,7 @@ import { useState, useEffect } from "react";
 // MOCK DATA
 // ============================================================
 const USERS = [
-  { id: 1, username: "owner", password: "owner123", role: "admin", name: "Yusuf Vindra Asmara", jabatan: "Owner", avatar: "YV" },
-  { id: 2, username: "admin", password: "admin123", role: "admin", name: "Rina Manajemen", jabatan: "Super Admin", avatar: "RM" },
-  { id: 3, username: "staff1", password: "staff123", role: "staff", name: "Muh. Krisna Mukti", jabatan: "Clean & Service", avatar: "MK" },
-  { id: 4, username: "staff2", password: "staff123", role: "staff", name: "Gurit Yudho Anggoro", jabatan: "Staf Penjaga Malam", avatar: "GY" },
+  { id: 1, username: "admin", password: "admin123", role: "admin", name: "Administrator", jabatan: "Admin", avatar: "AD" },
 ];
 
 const KAMAR_DATA = [

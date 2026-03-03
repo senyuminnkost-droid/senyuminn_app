@@ -782,7 +782,7 @@ function OccupancyRing({ pct }) {
 // DASHBOARD — ADMIN
 // ============================================================
 function DashboardAdmin() {
-  const growth = ((DASHBOARD_STATS.omzetBulanIni - DASHBOARD_STATS.omzetBulanLalu) / DASHBOARD_STATS.omzetBulanLalu * 100).toFixed(1);
+  const growth = DASHBOARD_STATS.omzetBulanLalu === 0 ? null : ((DASHBOARD_STATS.omzetBulanIni - DASHBOARD_STATS.omzetBulanLalu) / DASHBOARD_STATS.omzetBulanLalu * 100).toFixed(1);
   const totalKamar = 12;
   const okupansi = Math.round((DASHBOARD_STATS.kamarTerisi / totalKamar) * 100);
   const netKas = KAS_BULAN.masuk - KAS_BULAN.keluar;
@@ -797,7 +797,7 @@ function DashboardAdmin() {
           <div className="stat-icon" style={{ background: "#fff7ed" }}>💰</div>
           <div className="stat-label">Omzet Bulan Ini</div>
           <div className="stat-value-sm" style={{ color: "#ea580c" }}>{formatRupiah(DASHBOARD_STATS.omzetBulanIni)}</div>
-          <div className="stat-growth" style={{ color: "#16a34a" }}>▲ +{growth}% vs bulan lalu</div>
+          <div className="stat-growth" style={{ color: "#94a3b8" }}>{growth === null ? "Belum ada data bulan lalu" : `▲ +${growth}% vs bulan lalu`}</div>
         </div>
 
         {/* Piutang */}
@@ -987,7 +987,7 @@ function DashboardAdmin() {
                 { label: "Terisi", count: DASHBOARD_STATS.kamarTerisi, color: "#dc2626" },
                 { label: "Tersedia", count: DASHBOARD_STATS.kamarKosong, color: "#16a34a" },
                 { label: "Booked", count: DASHBOARD_STATS.kamarBooked, color: "#b45309" },
-                { label: "Non-aktif", count: DASHBOARD_STATS.kamarMaintenance + 1, color: "#6b7280" },
+                { label: "Non-aktif", count: DASHBOARD_STATS.kamarMaintenance, color: "#6b7280" },
               ].map(s => (
                 <div key={s.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>

@@ -21,40 +21,13 @@ import Pettycash from "./Modul18_Pettycash";
 // ============================================================
 // MOCK DATA
 // ============================================================
-const USERS = [
-  { id: 1, username: "owner", password: "owner123", role: "admin", name: "Yusuf Vindra Asmara", jabatan: "Owner", avatar: "YV" },
-  { id: 2, username: "admin", password: "admin123", role: "admin", name: "Rina Manajemen", jabatan: "Super Admin", avatar: "RM" },
-  { id: 3, username: "staff1", password: "staff123", role: "staff", name: "Muh. Krisna Mukti", jabatan: "Clean & Service", avatar: "MK" },
-  { id: 4, username: "staff2", password: "staff123", role: "staff", name: "Gurit Yudho Anggoro", jabatan: "Staf Penjaga Malam", avatar: "GY" },
-];
+const USERS = [];
 
-const KAMAR_DATA = [
-  { id: 1, tipe: "Premium", status: "terisi", harga: 2500000, penghuni: "Budi Santoso", partner: ["Sari"], kontrakMulai: "2026-01-01", kontrakSelesai: "2026-07-01", tiketAktif: 1 },
-  { id: 2, tipe: "Reguler", status: "tersedia", harga: 1800000, penghuni: null, partner: [], kontrakMulai: null, kontrakSelesai: null, tiketAktif: 0 },
-  { id: 3, tipe: "Reguler", status: "booked", harga: 1800000, penghuni: "Dian Pratiwi", partner: [], kontrakMulai: "2026-03-01", kontrakSelesai: null, tiketAktif: 0 },
-  { id: 4, tipe: "Premium", status: "terisi", harga: 2500000, penghuni: "Ahmad Fauzi", partner: ["Budi", "Tono"], kontrakMulai: "2025-12-01", kontrakSelesai: "2026-06-01", tiketAktif: 0 },
-  { id: 5, tipe: "Reguler", status: "maintenance", harga: 1800000, penghuni: null, partner: [], kontrakMulai: null, kontrakSelesai: null, tiketAktif: 2 },
-  { id: 6, tipe: "Reguler", status: "terisi", harga: 1800000, penghuni: "Siti Rahayu", partner: [], kontrakMulai: "2026-02-01", kontrakSelesai: "2026-08-01", tiketAktif: 0 },
-  { id: 7, tipe: "Premium", status: "terisi", harga: 2650000, penghuni: "Rudi Hartono", partner: ["Lia"], kontrakMulai: "2026-01-15", kontrakSelesai: "2027-01-15", tiketAktif: 0 },
-  { id: 8, tipe: "Reguler", status: "deep-clean", harga: 1800000, penghuni: null, partner: [], kontrakMulai: null, kontrakSelesai: null, tiketAktif: 0 },
-  { id: 9, tipe: "Reguler", status: "terisi", harga: 1800000, penghuni: "Dewi Lestari", partner: [], kontrakMulai: "2026-01-01", kontrakSelesai: "2026-04-01", tiketAktif: 1 },
-  { id: 10, tipe: "Premium", status: "terisi", harga: 2500000, penghuni: "Prisca Aprilia", partner: [], kontrakMulai: "2026-01-12", kontrakSelesai: "2026-07-12", tiketAktif: 0 },
-  { id: 11, tipe: "Reguler", status: "tersedia", harga: 1800000, penghuni: null, partner: [], kontrakMulai: null, kontrakSelesai: null, tiketAktif: 0 },
-  { id: 12, tipe: "Premium", status: "terisi", harga: 2500000, penghuni: "Amalia Wulan", partner: ["Tari"], kontrakMulai: "2026-01-01", kontrakSelesai: "2026-06-30", tiketAktif: 0 },
-];
+const KAMAR_DATA = [];
 
-const TIKET_DATA = [
-  { id: "T001", kamar: 9, kategori: "AC Bermasalah", prioritas: "urgent", status: "open", tanggal: "2026-02-25", deskripsi: "AC bocor, air menetes ke lantai" },
-  { id: "T002", kamar: 1, kategori: "Listrik", prioritas: "normal", status: "in-progress", tanggal: "2026-02-24", deskripsi: "Lampu kamar mandi redup" },
-  { id: "T003", kamar: 5, kategori: "Air", prioritas: "normal", status: "open", tanggal: "2026-02-23", deskripsi: "Keran air tidak mau mati" },
-  { id: "T004", kamar: 5, kategori: "Bangunan", prioritas: "normal", status: "ditunda", tanggal: "2026-02-20", deskripsi: "Pintu susah dikunci" },
-];
+const TIKET_DATA = [];
 
-const AGENDA_TAGIHAN = [
-  { kamar: 9, penghuni: "Dewi Lestari", jatuhTempo: "2026-03-01", jumlah: 1800000, status: "belum" },
-  { kamar: 12, penghuni: "Amalia Wulan", jatuhTempo: "2026-03-30", jumlah: 2500000, status: "belum" },
-  { kamar: 4, penghuni: "Ahmad Fauzi", jatuhTempo: "2026-04-01", jumlah: 2500000, status: "belum" },
-];
+const AGENDA_TAGIHAN = [];
 
 const DASHBOARD_STATS = {
   omzetBulanIni: 21950000,
@@ -74,18 +47,9 @@ const KAS_BULAN = {
   keluar: 19721393,
 };
 
-const JADWAL_SERVICE_HARI_INI = [
-  { kamar: 3, penghuni: "Dian Pratiwi", jam: "09:00" },
-  { kamar: 6, penghuni: "Siti Rahayu", jam: "10:00" },
-  { kamar: 9, penghuni: "Dewi Lestari", jam: "11:00" },
-];
+const JADWAL_SERVICE_HARI_INI = [];
 
-const INSIGHTS = [
-  { icon: "⚠️", text: "Kontrak Kamar 9 habis 1 April 2026 — 32 hari lagi", type: "warning" },
-  { icon: "🔴", text: "Tiket T001 (AC Bocor Kamar 9) URGENT — belum ditangani", type: "urgent" },
-  { icon: "✅", text: "Kamar 8 selesai deep clean, siap disewakan kembali", type: "success" },
-  { icon: "💰", text: "Omzet bulan ini naik 10.9% vs bulan lalu", type: "info" },
-];
+const INSIGHTS = [];
 
 // ============================================================
 // HELPERS

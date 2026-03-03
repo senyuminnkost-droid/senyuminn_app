@@ -1,47 +1,45 @@
 import { useState, useEffect } from "react";
-import Monitor from "./Modul03_Monitor";
-import Keluhan from "./Modul02_Keluhan";
-import Weekly from "./Modul04_Weekly";
-import Absensi from "./Modul05_Absensi";
-import Penyewa from "./Modul06_Penyewa";
-import Checkin from "./Modul07_Checkin";
-import Tagihan from "./Modul08_Tagihan";
-import Kas from "./Modul09_Kas";
-import Laporan from "./Modul10_Laporan";
-import Karyawan from "./Modul11_Karyawan";
-import Penggajian from "./Modul12_Penggajian";
-import AbsensiKaryawan from "./Modul13_AbsensiKaryawan";
-import Pengaturan from "./Modul14_Pengaturan";
-import Riwayat from "./Modul15_Riwayat";
-import Kalender from "./Modul16_Kalender";
-import Jobdesk from "./Modul17_Jobdesk";
-import Pettycash from "./Modul18_Pettycash";
-
 
 // ============================================================
 // MOCK DATA
 // ============================================================
 const USERS = [
-  { id: 1, username: "admin", password: "admin123", role: "admin", name: "Yusuf Vindra Asmara", jabatan: "Owner", avatar: "YV" },
+  { id: 1, username: "owner", password: "owner123", role: "admin", name: "Yusuf Vindra Asmara", jabatan: "Owner", avatar: "YV" },
+  { id: 2, username: "admin", password: "admin123", role: "admin", name: "Rina Manajemen", jabatan: "Super Admin", avatar: "RM" },
+  { id: 3, username: "staff1", password: "staff123", role: "staff", name: "Muh. Krisna Mukti", jabatan: "Clean & Service", avatar: "MK" },
+  { id: 4, username: "staff2", password: "staff123", role: "staff", name: "Gurit Yudho Anggoro", jabatan: "Staf Penjaga Malam", avatar: "GY" },
 ];
 
-const KAMAR_DATA = [];
+const KAMAR_DATA = [
+  { id:1,  tipe:"Premium", status:"tersedia", harga:2500000, penghuni:null, partner:[], kontrakMulai:null, kontrakSelesai:null, tiketAktif:0, fasilitas:[] },
+  { id:2,  tipe:"Reguler", status:"tersedia", harga:1800000, penghuni:null, partner:[], kontrakMulai:null, kontrakSelesai:null, tiketAktif:0, fasilitas:[] },
+  { id:3,  tipe:"Reguler", status:"tersedia", harga:1800000, penghuni:null, partner:[], kontrakMulai:null, kontrakSelesai:null, tiketAktif:0, fasilitas:[] },
+  { id:4,  tipe:"Premium", status:"tersedia", harga:2500000, penghuni:null, partner:[], kontrakMulai:null, kontrakSelesai:null, tiketAktif:0, fasilitas:[] },
+  { id:5,  tipe:"Reguler", status:"tersedia", harga:1800000, penghuni:null, partner:[], kontrakMulai:null, kontrakSelesai:null, tiketAktif:0, fasilitas:[] },
+  { id:6,  tipe:"Reguler", status:"tersedia", harga:1800000, penghuni:null, partner:[], kontrakMulai:null, kontrakSelesai:null, tiketAktif:0, fasilitas:[] },
+  { id:7,  tipe:"Premium", status:"tersedia", harga:2650000, penghuni:null, partner:[], kontrakMulai:null, kontrakSelesai:null, tiketAktif:0, fasilitas:["Kulkas"] },
+  { id:8,  tipe:"Reguler", status:"tersedia", harga:1800000, penghuni:null, partner:[], kontrakMulai:null, kontrakSelesai:null, tiketAktif:0, fasilitas:[] },
+  { id:9,  tipe:"Reguler", status:"tersedia", harga:1800000, penghuni:null, partner:[], kontrakMulai:null, kontrakSelesai:null, tiketAktif:0, fasilitas:[] },
+  { id:10, tipe:"Premium", status:"tersedia", harga:2500000, penghuni:null, partner:[], kontrakMulai:null, kontrakSelesai:null, tiketAktif:0, fasilitas:[] },
+  { id:11, tipe:"Reguler", status:"tersedia", harga:1800000, penghuni:null, partner:[], kontrakMulai:null, kontrakSelesai:null, tiketAktif:0, fasilitas:[] },
+  { id:12, tipe:"Premium", status:"tersedia", harga:2500000, penghuni:null, partner:[], kontrakMulai:null, kontrakSelesai:null, tiketAktif:0, fasilitas:[] },
+];
 
 const TIKET_DATA = [];
 
 const AGENDA_TAGIHAN = [];
 
 const DASHBOARD_STATS = {
-  omzetBulanIni: 21950000,
-  omzetBulanLalu: 19800000,
-  kamarTerisi: 8,
-  kamarKosong: 2,
-  kamarBooked: 1,
-  kamarMaintenance: 1,
-  piutang: 3600000,
-  tiketOpen: 3,
-  tiketUrgent: 1,
-  kontrakHabis: 2,
+  omzetBulanIni: 0,
+  omzetBulanLalu: 0,
+  kamarTerisi: 0,
+  kamarKosong: 12,
+  kamarBooked: 0,
+  kamarMaintenance: 0,
+  piutang: 0,
+  tiketOpen: 0,
+  tiketUrgent: 0,
+  kontrakHabis: 0,
 };
 
 const KAS_BULAN = {
@@ -49,9 +47,18 @@ const KAS_BULAN = {
   keluar: 19721393,
 };
 
-const JADWAL_SERVICE_HARI_INI = [];
+const JADWAL_SERVICE_HARI_INI = [
+  { kamar: 3, penghuni: "Dian Pratiwi", jam: "09:00" },
+  { kamar: 6, penghuni: "Siti Rahayu", jam: "10:00" },
+  { kamar: 9, penghuni: "Dewi Lestari", jam: "11:00" },
+];
 
-const INSIGHTS = [];
+const INSIGHTS = [
+  { icon: "⚠️", text: "Kontrak Kamar 9 habis 1 April 2026 — 32 hari lagi", type: "warning" },
+  { icon: "🔴", text: "Tiket T001 (AC Bocor Kamar 9) URGENT — belum ditangani", type: "urgent" },
+  { icon: "✅", text: "Kamar 8 selesai deep clean, siap disewakan kembali", type: "success" },
+  { icon: "💰", text: "Omzet bulan ini naik 10.9% vs bulan lalu", type: "info" },
+];
 
 // ============================================================
 // HELPERS
@@ -120,7 +127,8 @@ const MENU_ADMIN = [
   {
     section: "PENGATURAN",
     items: [
-      { id: "profil", label: "Profil & user", icon: "⊕" },
+      { id: "profil", label: "Profil Kost", icon: "⊕" },
+      { id: "users", label: "Manajemen User", icon: "⊗" },
     ],
   },
 ];
@@ -671,11 +679,6 @@ function LoginPage({ onLogin }) {
         <button className="login-btn" onClick={handleLogin} disabled={loading}>
           {loading ? "Memverifikasi..." : "Masuk →"}
         </button>
-
-        <div className="login-demo">
-          <div className="login-demo-title">Demo Login</div>
-          <div>Admin: <b>owner</b> / <b>owner123</b></div>
-          <div style={{ marginTop: 3 }}>Staff: <b>staff1</b> / <b>staff123</b></div>
         </div>
       </div>
     </div>
@@ -1130,25 +1133,9 @@ export default function App() {
   if (!user) return <LoginPage onLogin={setUser} />;
 
   const renderContent = () => {
-    const role = user.role;
-    if (activeMenu === "dashboard") return role === "admin" ? <DashboardAdmin /> : <DashboardStaff user={user} />;
-    if (activeMenu === "monitor") return <Monitor user={user} />;
-    if (activeMenu === "keluhan") return <Keluhan userRole={role} />;
-    if (activeMenu === "weekly") return <Weekly userRole={role} />;
-    if (activeMenu === "absensi") return <Absensi userRole={role} user={user} />;
-    if (activeMenu === "penyewa") return <Penyewa userRole={role} />;
-    if (activeMenu === "checkin") return <Checkin userRole={role} />;
-    if (activeMenu === "tagihan") return <Tagihan userRole={role} />;
-    if (activeMenu === "kas") return <Kas userRole={role} />;
-    if (activeMenu === "laporan") return <Laporan userRole={role} />;
-    if (activeMenu === "karyawan") return <Karyawan userRole={role} />;
-    if (activeMenu === "penggajian") return <Penggajian userRole={role} />;
-    if (activeMenu === "laporanabsensi") return <AbsensiKaryawan userRole={role} />;
-    if (activeMenu === "profil" || activeMenu === "users") return <Pengaturan userRole={role} activeMod={activeMenu} />;
-    if (activeMenu === "riwayat") return <Riwayat userRole={role} />;
-    if (activeMenu === "kalender") return <Kalender userRole={role} />;
-    if (activeMenu === "jobdesk") return <Jobdesk userRole={role} />;
-    if (activeMenu === "pettycash") return <Pettycash userRole={role} />;
+    if (activeMenu === "dashboard") {
+      return user.role === "admin" ? <DashboardAdmin /> : <DashboardStaff user={user} />;
+    }
     return <ComingSoon menuId={activeMenu} />;
   };
 

@@ -909,89 +909,11 @@ function MonitorKamar() {
   );
 }
 
-// ============================================================
-// MINI SIDEBAR (placeholder navigation)
-// ============================================================
-const DEMO_MENU = [
-  { id: "dashboard", label: "Dashboard", icon: "◧", section: "OPERASIONAL" },
-  { id: "monitor",   label: "Monitor Kamar", icon: "⬡", section: null },
-  { id: "absensi",   label: "Absensi & Jadwal", icon: "⏱", section: null },
-  { id: "keluhan",   label: "Keluhan & Tiket", icon: "⚑", section: null },
-  { id: "weekly",    label: "Weekly Service", icon: "✦", section: null },
-  { id: "penyewa",   label: "Data Penyewa", icon: "⊙", section: "TENANT" },
-  { id: "checkin",   label: "Check-in / Check-out", icon: "⤵", section: null },
-  { id: "tagihan",   label: "Tagihan & Penagihan", icon: "◈", section: "KEUANGAN" },
-];
-
-function MiniSidebar({ active, onSelect }) {
+export default function ModulMonitor() {
   return (
-    <div className="sidebar">
-      <div className="sidebar-logo">
-        <div className="logo-mark">S</div>
-        <div>
-          <div className="logo-name">SENYUM INN</div>
-          <div className="logo-sub">Exclusive Kost</div>
-        </div>
-      </div>
-      <nav className="sidebar-nav">
-        {DEMO_MENU.map((item, i) => (
-          <div key={item.id}>
-            {item.section && <div className="nav-sec-label">{item.section}</div>}
-            <div className={`nav-item ${active === item.id ? "active" : ""}`} onClick={() => onSelect(item.id)}>
-              <span className="nav-icon">{item.icon}</span>
-              <span>{item.label}</span>
-            </div>
-          </div>
-        ))}
-      </nav>
-      <div className="sidebar-user">
-        <div className="user-av">YV</div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="user-name">Yusuf Vindra</div>
-          <div className="user-role">Owner</div>
-        </div>
-        <button className="logout-btn">⏻</button>
-      </div>
-    </div>
-  );
-}
-
-// ============================================================
-// APP WRAPPER (Demo Shell)
-// ============================================================
-export default function App() {
-  const [activeMenu, setActiveMenu] = useState("monitor");
-
-  return (
-    <div className="app">
+    <>
       <StyleInjector />
-      <MiniSidebar active={activeMenu} onSelect={setActiveMenu} />
-      <div className="main">
-        {/* Header */}
-        <div className="header">
-          <div>
-            <div className="header-sub">Senyum Inn · Operasional</div>
-            <div className="header-title">Monitor Kamar</div>
-          </div>
-          <div className="header-actions">
-            <button className="btn-primary" style={{ padding: "7px 14px" }}>+ Kamar Baru</button>
-            <div style={{ width: 34, height: 34, background: "#f1f5f9", border: "1px solid #e2e8f0", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 15 }}>🔔</div>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="content">
-          {activeMenu === "monitor" ? (
-            <MonitorKamar />
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: 400, color: "#94a3b8" }}>
-              <div style={{ fontSize: 48, marginBottom: 12 }}>🚧</div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#1e293b" }}>{DEMO_MENU.find(m => m.id === activeMenu)?.label || activeMenu}</div>
-              <div style={{ fontSize: 13, marginTop: 4 }}>Modul dalam pengembangan</div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+      <MonitorKamar />
+    </>
   );
 }

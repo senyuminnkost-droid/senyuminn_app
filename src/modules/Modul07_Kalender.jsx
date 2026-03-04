@@ -77,7 +77,6 @@ const CSS = `
   /* ─── RIGHT PANEL ────────────────────────── */
   .kal-right { display: flex; flex-direction: column; gap: 12px; }
 
-  .kal-date-panel { }
   .kal-date-title { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 2px; }
   .kal-date-sub   { font-size: 10px; color: #9ca3af; margin-bottom: 12px; }
 
@@ -93,7 +92,6 @@ const CSS = `
   .kal-event-type  { font-size: 9px; font-weight: 500; opacity: 0.7; margin-top: 2px; }
 
   /* ─── LEGENDA ─────────────────────────────── */
-  .kal-legenda { }
   .kal-legenda-item {
     display: flex; align-items: center; gap: 8px; margin-bottom: 7px; font-size: 12px; color: #4b5563;
   }
@@ -111,7 +109,7 @@ const CSS = `
   /* ─── MODAL ──────────────────────────────── */
   .kal-overlay {
     position: fixed; inset: 0; background: rgba(17,24,39,0.45);
-    backdrop-filter: blur(3px); z-index: 200; display: flex;
+    backdrop-filter: blur(3px); z-index: 9999; display: flex;
     align-items: center; justify-content: center; padding: 16px;
     animation: kalFade 0.18s ease;
   }
@@ -222,8 +220,8 @@ const EVENT_CFG = {
 const BULAN = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
 const HARI  = ["MIN","SEN","SEL","RAB","KAM","JUM","SAB"];
 
-const padD   = (n) => String(n).padStart(2, "0");
-const today  = new Date();
+const padD     = (n) => String(n).padStart(2, "0");
+const today    = new Date();
 const todayStr = `${today.getFullYear()}-${padD(today.getMonth()+1)}-${padD(today.getDate())}`;
 
 // ============================================================
@@ -245,7 +243,7 @@ function ModalEventRutin({ onClose, onSave }) {
     nama: "", tipe: "servis_ac", interval: "2bln",
     terakhir: "", catatan: "",
   });
-  const set = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
+  const set   = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
   const valid = form.nama && form.interval && form.terakhir;
 
   return (
@@ -298,37 +296,27 @@ function ModalEventRutin({ onClose, onSave }) {
 // ============================================================
 export default function Kalender({ user }) {
   const isAdmin = user?.role === "superadmin" || user?.role === "admin";
-  const [year,  setYear]  = useState(today.getFullYear());
-  const [month, setMonth] = useState(today.getMonth());
+  const [year,         setYear]         = useState(today.getFullYear());
+  const [month,        setMonth]        = useState(today.getMonth());
   const [selectedDate, setSelectedDate] = useState(todayStr);
-  const [showModal, setShowModal] = useState(false);
-  const [rutinList, setRutinList] = useState([]); // [{id, nama, tipe, interval, terakhir, catatan}]
+  const [showModal,    setShowModal]    = useState(false);
+  const [rutinList,    setRutinList]    = useState([]);
 
-  // Semua events datang dari modul lain (Supabase) — kosong dulu
-  // Format: { [dateKey]: [ {type, label, ref?} ] }
+  // Event map kosong — akan diisi dari Supabase / props nanti
   const eventMap = {};
 
-  // ── Generate dari data modul lain (nanti dari Supabase) ──
-  // weekly service    → dari Modul06_Weekly (jadwalList)
-  // keluhan/tiket     → dari Modul05_Keluhan (tiketList)
-  // check-in/out      → dari Modul09_Checkin
-  // kontrak reminder  → dari Modul03_Monitor (kamarList kontrakSelesai H-30)
-  // penggajian        → dari Modul15_Penggajian
-  // tagihan jatuh tempo → dari Modul11_Tagihan
-
-  // ── Hitung tanggal berikutnya dari interval ──
+  // Inject rutin ke eventMap
   const hitungBerikutnya = (terakhir, interval) => {
     if (!terakhir) return null;
     const d = new Date(terakhir);
-    if (interval === "1bln")  d.setMonth(d.getMonth() + 1);
-    if (interval === "2bln")  d.setMonth(d.getMonth() + 2);
-    if (interval === "3bln")  d.setMonth(d.getMonth() + 3);
-    if (interval === "6bln")  d.setMonth(d.getMonth() + 6);
-    if (interval === "1thn")  d.setFullYear(d.getFullYear() + 1);
+    if (interval === "1bln") d.setMonth(d.getMonth() + 1);
+    if (interval === "2bln") d.setMonth(d.getMonth() + 2);
+    if (interval === "3bln") d.setMonth(d.getMonth() + 3);
+    if (interval === "6bln") d.setMonth(d.getMonth() + 6);
+    if (interval === "1thn") d.setFullYear(d.getFullYear() + 1);
     return `${d.getFullYear()}-${padD(d.getMonth()+1)}-${padD(d.getDate())}`;
   };
 
-  // ── Inject rutin ke eventMap ──
   rutinList.forEach(r => {
     const tgl = hitungBerikutnya(r.terakhir, r.interval);
     if (tgl) {
@@ -336,47 +324,47 @@ export default function Kalender({ user }) {
       eventMap[tgl].push({ type: "servis_ac", label: r.nama, detail: r.catatan });
     }
   });
+
+  // ── FIX: daysInMonth didefinisikan di sini ──
+  const daysInMonth    = new Date(year, month + 1, 0).getDate();
   const firstDayOfWeek = new Date(year, month, 1).getDay();
 
   const prevMonth = () => {
-    if (month === 0) { setYear(y => y-1); setMonth(11); }
-    else setMonth(m => m-1);
+    if (month === 0) { setYear(y => y - 1); setMonth(11); }
+    else setMonth(m => m - 1);
     setSelectedDate(null);
   };
   const nextMonth = () => {
-    if (month === 11) { setYear(y => y+1); setMonth(0); }
-    else setMonth(m => m+1);
+    if (month === 11) { setYear(y => y + 1); setMonth(0); }
+    else setMonth(m => m + 1);
     setSelectedDate(null);
   };
 
-  const getDateKey = (d) => `${year}-${padD(month+1)}-${padD(d)}`;
+  const getDateKey = (d) => `${year}-${padD(month + 1)}-${padD(d)}`;
   const getEvents  = (dateKey) => eventMap[dateKey] || [];
 
   const selectedEvents = selectedDate ? getEvents(selectedDate) : [];
 
   // Stats bulan ini
   const allEvents = Object.entries(eventMap)
-    .filter(([k]) => k.startsWith(`${year}-${padD(month+1)}`))
+    .filter(([k]) => k.startsWith(`${year}-${padD(month + 1)}`))
     .flatMap(([, evs]) => evs);
 
   const statsCount = {
-    weekly:   allEvents.filter(e => e.type === "weekly").length,
-    keluhan:  allEvents.filter(e => e.type === "keluhan").length,
-    checkin:  allEvents.filter(e => e.type === "checkin" || e.type === "checkout").length,
+    weekly:  allEvents.filter(e => e.type === "weekly").length,
+    keluhan: allEvents.filter(e => e.type === "keluhan").length,
+    checkin: allEvents.filter(e => e.type === "checkin" || e.type === "checkout").length,
   };
 
   // Build calendar cells
   const cells = [];
-  // Prev month trailing days
   const prevMonthDays = new Date(year, month, 0).getDate();
   for (let i = firstDayOfWeek - 1; i >= 0; i--) {
     cells.push({ day: prevMonthDays - i, current: false, dateKey: null });
   }
-  // Current month
   for (let d = 1; d <= daysInMonth; d++) {
     cells.push({ day: d, current: true, dateKey: getDateKey(d) });
   }
-  // Next month padding
   const remaining = 42 - cells.length;
   for (let d = 1; d <= remaining; d++) {
     cells.push({ day: d, current: false, dateKey: null });
@@ -389,9 +377,9 @@ export default function Kalender({ user }) {
       {/* Mini Stats */}
       <div className="kal-stats">
         {[
-          { val: statsCount.weekly  || "—", label: "Weekly Service",  color: "#1d4ed8" },
-          { val: statsCount.keluhan || "—", label: "Keluhan Masuk",   color: "#dc2626" },
-          { val: statsCount.checkin || "—", label: "Check-in/out",    color: "#ea580c" },
+          { val: statsCount.weekly  || "—", label: "Weekly Service", color: "#1d4ed8" },
+          { val: statsCount.keluhan || "—", label: "Keluhan Masuk",  color: "#dc2626" },
+          { val: statsCount.checkin || "—", label: "Check-in/out",   color: "#ea580c" },
         ].map((s, i) => (
           <div key={i} className="kal-stat">
             <div className="kal-stat-val" style={{ color: s.color }}>{s.val}</div>
@@ -427,32 +415,30 @@ export default function Kalender({ user }) {
             {/* Day headers */}
             <div className="kal-grid-head">
               {HARI.map((h, i) => (
-                <div key={h} className={`kal-day-label ${i===0?"sun":""} ${i===6?"sat":""}`}>{h}</div>
+                <div key={h} className={`kal-day-label ${i === 0 ? "sun" : ""} ${i === 6 ? "sat" : ""}`}>{h}</div>
               ))}
             </div>
 
             {/* Grid */}
             <div className="kal-grid">
               {cells.map((cell, idx) => {
-                const events    = cell.dateKey ? getEvents(cell.dateKey) : [];
-                const isToday   = cell.dateKey === todayStr;
-                const isSelected= cell.dateKey === selectedDate;
-                const dow       = idx % 7;
-
+                const events     = cell.dateKey ? getEvents(cell.dateKey) : [];
+                const isToday    = cell.dateKey === todayStr;
+                const isSelected = cell.dateKey === selectedDate;
+                const dow        = idx % 7;
                 return (
                   <div
                     key={idx}
-                    className={`kal-cell ${isToday?"today":""} ${isSelected?"selected":""} ${!cell.current?"other-month":""}`}
+                    className={`kal-cell ${isToday ? "today" : ""} ${isSelected ? "selected" : ""} ${!cell.current ? "other-month" : ""}`}
                     onClick={() => cell.current && setSelectedDate(cell.dateKey)}
                   >
-                    <div className={`kal-cell-num ${dow===0?"sun":""} ${dow===6?"sat":""}`}>
+                    <div className={`kal-cell-num ${dow === 0 ? "sun" : ""} ${dow === 6 ? "sat" : ""}`}>
                       {cell.day}
                     </div>
                     {events.slice(0, 2).map((ev, ei) => {
                       const cfg = EVENT_CFG[ev.type] || EVENT_CFG.keluhan;
                       return (
-                        <div key={ei} className="kal-event-pill"
-                          style={{ background: cfg.bg, color: cfg.color }}>
+                        <div key={ei} className="kal-event-pill" style={{ background: cfg.bg, color: cfg.color }}>
                           {cfg.icon} {ev.label}
                         </div>
                       );
@@ -490,21 +476,18 @@ export default function Kalender({ user }) {
                 <div className="kal-empty">
                   <div className="kal-empty-icon">✅</div>
                   <div className="kal-empty-text">Tidak ada jadwal</div>
-                  <div style={{ fontSize: 11, color: "#9ca3af" }}>
-                    Event akan muncul otomatis dari modul terkait
-                  </div>
+                  <div style={{ fontSize: 11, color: "#9ca3af" }}>Event akan muncul otomatis dari modul terkait</div>
                 </div>
               ) : (
                 selectedEvents.map((ev, i) => {
                   const cfg = EVENT_CFG[ev.type] || EVENT_CFG.keluhan;
                   return (
-                    <div key={i} className="kal-event-item"
-                      style={{ background: cfg.bg, borderColor: cfg.color + "33" }}>
+                    <div key={i} className="kal-event-item" style={{ background: cfg.bg, borderColor: cfg.color + "33" }}>
                       <div className="kal-event-item-top">
                         <div className="kal-event-icon">{cfg.icon}</div>
                         <div>
                           <div className="kal-event-label" style={{ color: cfg.color }}>{ev.label}</div>
-                          <div className="kal-event-type" style={{ color: cfg.color }}>{cfg.label}</div>
+                          <div className="kal-event-type"  style={{ color: cfg.color }}>{cfg.label}</div>
                         </div>
                       </div>
                       {ev.detail && (
@@ -536,12 +519,12 @@ export default function Kalender({ user }) {
             </div>
           </div>
 
-          {/* Daftar Perawatan Rutin */}
+          {/* Perawatan Rutin */}
           <div className="kal-widget">
             <div className="kal-widget-head">
               <div className="kal-widget-title">🔄 Perawatan Rutin</div>
               {isAdmin && (
-                <div className="kal-widget-action" style={{ fontSize: 10, fontWeight: 500, color: "#f97316", cursor: "pointer" }} onClick={() => setShowModal(true)}>+ Tambah</div>
+                <div style={{ fontSize: 10, fontWeight: 500, color: "#f97316", cursor: "pointer" }} onClick={() => setShowModal(true)}>+ Tambah</div>
               )}
             </div>
             <div className="kal-widget-body">
@@ -572,7 +555,7 @@ export default function Kalender({ user }) {
         </div>
       </div>
 
-      {/* Modal Form Event Rutin */}
+      {/* Modal */}
       {showModal && isAdmin && (
         <ModalEventRutin
           onClose={() => setShowModal(false)}

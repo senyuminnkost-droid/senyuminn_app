@@ -592,6 +592,7 @@ function LoginPage({ onLogin }) {
 // ============================================================
 function Sidebar({ user, active, onSelect, onLogout, minimized, isMobile, mobileOpen, onOverlayClick }) {
   const menus = user.role === "staff" ? MENU_STAFF : MENU_ADMIN;
+  // Owner & Direktur pakai menu admin tapi semua read-only
   const sidebarClass = [
     "s-sidebar",
     minimized && !isMobile ? "minimized" : "",
@@ -860,7 +861,23 @@ function RenderModule({ menuId, user, globalData }) {
 
   if (failed) return <div className="fade-in"><ComingSoon menuId={menuId} /></div>;
   if (!Comp)  return <LoadingFallback />;
-  return <div className="fade-in"><Comp user={user} globalData={globalData} /></div>;
+  return (
+    <div className="fade-in">
+      {isReadOnly(user) && (
+        <div style={{
+          background:"linear-gradient(135deg,#fff7ed,#ffedd5)",
+          border:"1px solid #fed7aa", borderRadius:10,
+          padding:"8px 14px", marginBottom:12,
+          display:"flex", alignItems:"center", gap:8,
+          fontSize:12, color:"#9a3412"
+        }}>
+          <span>👁️</span>
+          <span><b>{user.role === "owner" ? "Owner" : "Direktur"}</b> — Mode Read Only. Semua data hanya bisa dilihat, tidak bisa diedit.</span>
+        </div>
+      )}
+      <Comp user={user} globalData={globalData} />
+    </div>
+  );
 }
 
 // ============================================================
@@ -883,6 +900,8 @@ export default function App() {
   const [weeklyList,   setWeeklyList]   = useState([]);
   const [absensiList,  setAbsensiList]  = useState([]);
   const [asetList,     setAsetList]     = useState([]);
+  const [saldoAwal,    setSaldoAwal]    = useState({}); // { "2026-03": 15000000, ... } per bulan
+  const [carryOver,    setCarryOver]    = useState({}); // { "2026-03": { A:200000, B:500000 }, ... }
   const [sakuConfig,   setSakuConfig]   = useState([
     { kode:"A", nama:"Petty Cash",     tipe:"pct",  nilai:5,      color:"#f97316" },
     { kode:"B", nama:"General Saving", tipe:"pct",  nilai:23,     color:"#3b82f6" },
@@ -905,6 +924,9 @@ export default function App() {
     absensiList,  setAbsensiList,
     asetList,     setAsetList,
     sakuConfig,   setSakuConfig,
+    saldoAwal,    setSaldoAwal,
+    carryOver,    setCarryOver,
+    isReadOnly:   isReadOnly(user),
   };
 
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;

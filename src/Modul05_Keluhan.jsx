@@ -450,7 +450,25 @@ function DetailPanel({ tiket, onStatusChange, onClose }) {
               style={{ flex: 1 }}
             />
             <button className="kl-btn primary" style={{ padding: "8px 14px", width: "auto" }}
-              onClick={() => alert("Biaya disimpan → masuk ke Kas")}>
+              onClick={() => {
+                const nom = parseInt(String(biaya).replace(/[^0-9]/g,"")) || 0;
+                if (!nom) return;
+                // Update tiket dengan biaya
+                setTiketList(prev => prev.map(t =>
+                  t.id === tiket.id ? { ...t, biaya: nom, biayaAt: new Date().toISOString().slice(0,10) } : t
+                ));
+                // Catat ke kas sebagai pengeluaran maintenance
+                setKasJurnal(prev => [...prev, {
+                  id: "KJ-TKT-"+Date.now(),
+                  tanggal: new Date().toISOString().slice(0,10),
+                  tipe: "pengeluaran",
+                  kategori: "Maintenance",
+                  nominal: nom,
+                  keterangan: "Biaya tiket "+tiket.id+" — "+tiket.kategori+" Kamar "+(tiket.kamar||"-"),
+                  ref: tiket.id,
+                }]);
+                setBiaya("");
+              }}>
               Simpan
             </button>
           </div>
@@ -489,16 +507,20 @@ function DetailPanel({ tiket, onStatusChange, onClose }) {
 // ============================================================
 // MAIN
 // ============================================================
-export default function Keluhan({ user }) {
-  const [tiketList,   setTiketList]  = useState([]);  // dari Supabase nanti
-  const [kamarList]                  = useState([]);  // dari Supabase nanti
+export default function Keluhan({ user, globalData = {} }) {
+  const {
+    tiketList    = [], setTiketList  = ()=>{},
+    kamarList    = [],
+    kasJurnal    = [], setKasJurnal  = ()=>{},
+    isReadOnly   = false,
+  } = globalData;
   const [selected,    setSelected]   = useState(null);
   const [showForm,    setShowForm]   = useState(false);
   const [filterStatus, setFS]        = useState("all");
   const [filterPrioritas, setFP]     = useState("all");
   const [search,      setSearch]     = useState("");
 
-  const isAdmin = user?.role === "superadmin" || user?.role === "admin";
+  const isAdmin = user?.role === "manajemen";
 
   const filtered = tiketList.filter(t => {
     if (filterStatus !== "all" && t.status !== filterStatus) return false;

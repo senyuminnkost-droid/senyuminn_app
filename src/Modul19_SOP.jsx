@@ -130,34 +130,35 @@ const DEFAULT_SOP_KELUHAN = [
   {title:"Tutup tiket dan konfirmasi ke penyewa",desc:"Tanyakan apakah masalah sudah terselesaikan"},
 ];
 
-const DEFAULT_INVENTARIS = [
-  {id:1,nama:"Kunci kamar",qty:2,satuan:"buah"},
-  {id:2,nama:"Tempat tidur",qty:1,satuan:"set"},
-  {id:3,nama:"Lemari pakaian",qty:1,satuan:"buah"},
-  {id:4,nama:"Meja dan kursi",qty:1,satuan:"set"},
-  {id:5,nama:"AC",qty:1,satuan:"unit"},
-  {id:6,nama:"Lampu kamar",qty:2,satuan:"buah"},
-  {id:7,nama:"Stop kontak",qty:3,satuan:"buah"},
-  {id:8,nama:"Gantungan baju",qty:1,satuan:"set"},
-  {id:9,nama:"Cermin",qty:1,satuan:"buah"},
-  {id:10,nama:"Keset",qty:1,satuan:"buah"},
-];
+// Inventaris default kosong — diisi oleh admin sesuai kondisi riil
+const DEFAULT_INVENTARIS = [];
 
 export default function SOPStandar({ user, globalData={} }) {
-  const { pengaturanConfig={}, isReadOnly=false } = globalData;
+  const {
+    pengaturanConfig={}, setPengaturanConfig=()=>{},
+    isReadOnly=false,
+  } = globalData;
 
   const [tab, setTab] = useState("weekly");
-  const [weeklyList,  setWeeklyList]  = useState([...DEFAULT_WEEKLY]);
-  const [deepcleanList, setDCList]    = useState([...DEFAULT_DEEPCLEAN]);
-  const [inventaris,  setInventaris]  = useState([...DEFAULT_INVENTARIS]);
-  const [dirty, setDirty]             = useState(false);
+  const [weeklyList,    setWeeklyList]  = useState([...DEFAULT_WEEKLY]);
+  const [deepcleanList, setDCList]      = useState([...DEFAULT_DEEPCLEAN]);
+  const [inventaris,    setInventaris]  = useState(pengaturanConfig.inventarisKamar || [...DEFAULT_INVENTARIS]);
+  const [dirty,         setDirty]       = useState(false);
 
-  // form state untuk tambah item checklist
-  const [newItemText, setNewItemText] = useState("");
-  const [newItemCat,  setNewItemCat]  = useState("Kebersihan");
-  const [newInvNama,  setNewInvNama]  = useState("");
-  const [newInvQty,   setNewInvQty]   = useState(1);
-  const [newInvSat,   setNewInvSat]   = useState("buah");
+  // Modal states
+  const [showChecklistModal, setShowChecklistModal] = useState(null); // "weekly" | "deepclean" | null
+  const [showInvModal,       setShowInvModal]        = useState(false);
+  const [editInvItem,        setEditInvItem]          = useState(null); // item obj | null
+
+  // KPI edit state
+  const [kpiEdit, setKpiEdit] = useState({
+    kpiThresholdPct:      pengaturanConfig.kpiThresholdPct      || 90,
+    nominalInsentif:       pengaturanConfig.nominalInsentif       || 500000,
+    dendaIjinTidakSah:     pengaturanConfig.dendaIjinTidakSah     || 50000,
+    lemburPerShift:        pengaturanConfig.lemburPerShift        || 50000,
+    maxPinjamanKoperasi:   pengaturanConfig.maxPinjamanKoperasi   || 700000,
+  });
+  const [kpiDirty, setKpiDirty] = useState(false);
 
   const cats = ["Kebersihan","Kamar Mandi","AC & Elektronik","Elektronik","Listrik","Furniture","Tekstil","Struktur","AC","Inventaris","Dokumentasi","Pelaporan","Dasar"];
 
@@ -188,25 +189,105 @@ export default function SOPStandar({ user, globalData={} }) {
     setDirty(true);
   };
 
-  const ChecklistEditor = ({ list, setList, title, subtitle }) => (
+  // ─── Modal Tambah Checklist ─────────────────────────────
+  const ModalChecklist = ({ which, onClose }) => {
+    const [text, setText] = useState("");
+    const [cat,  setCat]  = useState("Kebersihan");
+    const doSave = () => {
+      if (!text.trim()) return;
+      if (which === "weekly") addChecklist(weeklyList, setWeeklyList, text, cat);
+      else                    addChecklist(deepcleanList, setDCList, text, cat);
+      onClose();
+    };
+    return (
+      <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000}} onClick={onClose}>
+        <div style={{background:"#fff",borderRadius:16,padding:28,width:420,boxShadow:"0 20px 60px rgba(0,0,0,.18)"}} onClick={e=>e.stopPropagation()}>
+          <div style={{fontSize:16,fontWeight:800,color:"#111827",marginBottom:20}}>➕ Tambah Item Checklist</div>
+          <div style={{marginBottom:14}}>
+            <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase",letterSpacing:".4px"}}>Deskripsi Item</label>
+            <input className="sp-input" placeholder="Contoh: Bersihkan ventilasi udara..." value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==="Enter"&&doSave()} autoFocus />
+          </div>
+          <div style={{marginBottom:14}}>
+            <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase",letterSpacing:".4px"}}>Kategori</label>
+            <select className="sp-select" style={{width:"100%"}} value={cat} onChange={e=>setCat(e.target.value)}>
+              {cats.map(c=><option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+          <div style={{display:"flex",gap:10,justifyContent:"flex-end",marginTop:20}}>
+            <button className="sp-btn ghost" onClick={onClose}>Batal</button>
+            <button className="sp-btn primary" disabled={!text.trim()} onClick={doSave}>Simpan</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ─── Modal Tambah / Edit Inventaris ────────────────────
+  const ModalInventaris = ({ item, onClose }) => {
+    const [nama, setNama] = useState(item?.nama   || "");
+    const [qty,  setQty]  = useState(item?.qty    || 1);
+    const [sat,  setSat]  = useState(item?.satuan || "buah");
+    const doSave = () => {
+      if (!nama.trim()) return;
+      if (item) {
+        setInventaris(prev=>prev.map(i=>i.id===item.id ? {...i,nama:nama.trim(),qty,satuan:sat} : i));
+      } else {
+        setInventaris(prev=>[...prev,{id:Date.now(),nama:nama.trim(),qty,satuan:sat}]);
+      }
+      setDirty(true);
+      onClose();
+    };
+    return (
+      <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000}} onClick={onClose}>
+        <div style={{background:"#fff",borderRadius:16,padding:28,width:400,boxShadow:"0 20px 60px rgba(0,0,0,.18)"}} onClick={e=>e.stopPropagation()}>
+          <div style={{fontSize:16,fontWeight:800,color:"#111827",marginBottom:20}}>{item?"✏️ Edit Item":"➕ Tambah Item Inventaris"}</div>
+          <div style={{marginBottom:14}}>
+            <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase",letterSpacing:".4px"}}>Nama Fasilitas</label>
+            <input className="sp-input" placeholder="Contoh: Cermin, Kulkas, Dispenser..." value={nama} onChange={e=>setNama(e.target.value)} autoFocus />
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}}>
+            <div>
+              <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase",letterSpacing:".4px"}}>Jumlah</label>
+              <input className="sp-input" type="number" min={1} value={qty} onChange={e=>setQty(Math.max(1,parseInt(e.target.value)||1))} />
+            </div>
+            <div>
+              <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase",letterSpacing:".4px"}}>Satuan</label>
+              <select className="sp-select" style={{width:"100%"}} value={sat} onChange={e=>setSat(e.target.value)}>
+                {["buah","set","unit","lembar","pasang","botol","rol"].map(s=><option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:10,justifyContent:"flex-end"}}>
+            <button className="sp-btn ghost" onClick={onClose}>Batal</button>
+            <button className="sp-btn primary" disabled={!nama.trim()} onClick={doSave}>{item?"Simpan":"Tambah"}</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const ChecklistEditor = ({ list, setList, title, subtitle, which }) => (
     <div className="sp-widget">
       <div className="sp-widget-head">
         <div>
           <div className="sp-widget-title">{title}</div>
           <div style={{fontSize:11,color:"#9ca3af",marginTop:2}}>{subtitle}</div>
         </div>
-        <span style={{fontSize:11,color:"#9ca3af"}}>{list.length} item</span>
+        <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <span style={{fontSize:11,color:"#9ca3af"}}>{list.length} item</span>
+          {!isReadOnly && (
+            <button className="sp-btn primary" style={{padding:"6px 12px"}} onClick={()=>setShowChecklistModal(which)}>
+              ➕ Tambah Item
+            </button>
+          )}
+        </div>
       </div>
       <div className="sp-body">
-        {!isReadOnly && (
-          <div className="sp-input-row">
-            <input className="sp-input" value={newItemText} onChange={e=>setNewItemText(e.target.value)} placeholder="Tambah item checklist..." onKeyDown={e=>{ if(e.key==="Enter"){ addChecklist(list,setList,newItemText,newItemCat); setNewItemText(""); }}} />
-            <select className="sp-select" value={newItemCat} onChange={e=>setNewItemCat(e.target.value)}>
-              {cats.map(c=><option key={c} value={c}>{c}</option>)}
-            </select>
-            <button className="sp-btn primary" style={{whiteSpace:"nowrap"}} onClick={()=>{ addChecklist(list,setList,newItemText,newItemCat); setNewItemText(""); }}>
-              ➕ Tambah
-            </button>
+        {list.length === 0 && (
+          <div style={{textAlign:"center",padding:"24px 0",color:"#9ca3af"}}>
+            <div style={{fontSize:28,marginBottom:8}}>📋</div>
+            <div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Belum ada item checklist</div>
+            <div style={{fontSize:12,marginTop:4}}>Klik ➕ Tambah Item untuk mulai</div>
           </div>
         )}
         {list.map((item,i)=>(
@@ -215,7 +296,7 @@ export default function SOPStandar({ user, globalData={} }) {
             <div className="sp-cl-text">{item.text}</div>
             <span className="sp-cl-cat" style={{background:(CAT_COLORS[item.cat]||"#6b7280")+"22",color:CAT_COLORS[item.cat]||"#6b7280"}}>{item.cat}</span>
             {!isReadOnly && (
-              <button className="sp-btn danger" style={{padding:"3px 8px",fontSize:11,flexShrink:0}} onClick={()=>removeChecklist(list,setList,item.id)}>✕</button>
+              <button style={{background:"none",border:"none",cursor:"pointer",color:"#dc2626",fontSize:14,padding:"0 4px",flexShrink:0}} onClick={()=>removeChecklist(list,setList,item.id)}>✕</button>
             )}
           </div>
         ))}
@@ -267,20 +348,20 @@ export default function SOPStandar({ user, globalData={} }) {
       {/* Weekly Service checklist */}
       {tab==="weekly" && (
         <ChecklistEditor
-          list={weeklyList}
-          setList={setWeeklyList}
+          list={weeklyList} setList={setWeeklyList}
           title="🧹 Checklist Weekly Service"
           subtitle="Dilakukan 1x seminggu per kamar oleh staff pagi"
+          which="weekly"
         />
       )}
 
       {/* Deep Clean checklist */}
       {tab==="deepclean" && (
         <ChecklistEditor
-          list={deepcleanList}
-          setList={setDCList}
+          list={deepcleanList} setList={setDCList}
           title="✨ Checklist Deep Clean"
           subtitle="Dilakukan setelah check-out sebelum kamar disewakan kembali"
+          which="deepclean"
         />
       )}
 
@@ -293,49 +374,65 @@ export default function SOPStandar({ user, globalData={} }) {
         </div>
       )}
 
-      {/* KPI & Insentif */}
+      {/* KPI & Insentif — editable */}
       {tab==="kpi" && (
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
           <div className="sp-widget">
             <div className="sp-widget-head">
               <div className="sp-widget-title">🎯 Threshold KPI Insentif</div>
-            </div>
-            <div className="sp-body">
-              <div className="sp-kpi-card">
-                <div className="sp-kpi-label">Syarat Dapat Insentif Bulan Ini</div>
-                {[
-                  {k:"Kehadiran minimum",   v:`≥ ${pengaturanConfig.kpiThresholdPct||90}%`},
-                  {k:"Nominal insentif",    v:`Rp ${(pengaturanConfig.nominalInsentif||500000).toLocaleString("id-ID")}`},
-                  {k:"Denda ijin tidak sah",v:`Rp ${(pengaturanConfig.dendaIjinTidakSah||50000).toLocaleString("id-ID")}/hari`},
-                  {k:"Lembur per shift",    v:`Rp ${(pengaturanConfig.lemburPerShift||50000).toLocaleString("id-ID")}`},
-                  {k:"Maks pinjaman koperasi",v:`Rp ${(pengaturanConfig.maxPinjamanKoperasi||700000).toLocaleString("id-ID")}`},
-                ].map((r,i)=>(
-                  <div key={i} className="sp-kpi-row">
-                    <span className="sp-kpi-key">{r.k}</span>
-                    <span className="sp-kpi-val">{r.v}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="sp-info-box">
-                ⚙️ Ubah nominal di menu <b>Pengaturan → Profil Kost → HR & Gaji</b>
-              </div>
-            </div>
-          </div>
-
-          <div className="sp-widget">
-            <div className="sp-widget-head">
-              <div className="sp-widget-title">📊 Cara Hitung KPI</div>
+              {kpiDirty && <span style={{fontSize:11,color:"#f97316",fontWeight:600}}>● Belum disimpan</span>}
             </div>
             <div className="sp-body">
               {[
-                {step:"1",title:"Hitung hari kerja wajib",desc:"Total hari dalam bulan dikurangi hari libur resmi"},
-                {step:"2",title:"Hitung kehadiran aktual",desc:"Jumlah hari dengan kode: P, M, SM, IN, L, LL, PL, LS"},
-                {step:"3",title:"Hitung persentase",desc:"(Kehadiran aktual ÷ Hari kerja wajib) × 100%"},
-                {step:"4",title:"Bandingkan dengan threshold",desc:`Jika ≥ ${pengaturanConfig.kpiThresholdPct||90}% → dapat insentif Rp ${(pengaturanConfig.nominalInsentif||500000).toLocaleString("id-ID")}`},
-                {step:"5",title:"Hitung potongan",desc:"Ijin Tidak Sah (ITS) → potong Rp 50rb/hari dari gaji"},
-              ].map((s,i)=>(
-                <div key={i} className="sp-sop-step">
-                  <div className="sp-sop-num" style={{background:"linear-gradient(135deg,#3b82f6,#2563eb)"}}>{s.step}</div>
+                {key:"kpiThresholdPct",    label:"Kehadiran minimum",    suffix:"%"},
+                {key:"nominalInsentif",     label:"Nominal insentif",     prefix:"Rp"},
+                {key:"dendaIjinTidakSah",   label:"Denda ijin tidak sah/hari", prefix:"Rp"},
+                {key:"lemburPerShift",      label:"Lembur per shift",     prefix:"Rp"},
+                {key:"maxPinjamanKoperasi", label:"Maks pinjaman koperasi",prefix:"Rp"},
+              ].map(f=>(
+                <div key={f.key} className="sp-kpi-row">
+                  <span className="sp-kpi-key">{f.label}</span>
+                  {isReadOnly ? (
+                    <span className="sp-kpi-val">
+                      {f.prefix && "Rp "}{kpiEdit[f.key].toLocaleString("id-ID")}{f.suffix||""}
+                    </span>
+                  ) : (
+                    <div style={{display:"flex",alignItems:"center",gap:4}}>
+                      {f.prefix && <span style={{fontSize:11,color:"#9ca3af"}}>Rp</span>}
+                      <input
+                        style={{width:110,padding:"5px 8px",borderRadius:7,border:"1.5px solid #e5e7eb",fontSize:12,textAlign:"right",fontWeight:700,color:"#f97316",fontFamily:"inherit",outline:"none"}}
+                        value={kpiEdit[f.key].toLocaleString("id-ID")}
+                        onChange={e=>{
+                          const num = parseInt(e.target.value.replace(/\D/g,""))||0;
+                          setKpiEdit(p=>({...p,[f.key]:num}));
+                          setKpiDirty(true);
+                        }}
+                      />
+                      {f.suffix && <span style={{fontSize:11,color:"#9ca3af"}}>{f.suffix}</span>}
+                    </div>
+                  )}
+                </div>
+              ))}
+              {!isReadOnly && kpiDirty && (
+                <div style={{display:"flex",justifyContent:"flex-end",gap:8,marginTop:8}}>
+                  <button className="sp-btn ghost" onClick={()=>{ setKpiEdit({kpiThresholdPct:pengaturanConfig.kpiThresholdPct||90,nominalInsentif:pengaturanConfig.nominalInsentif||500000,dendaIjinTidakSah:pengaturanConfig.dendaIjinTidakSah||50000,lemburPerShift:pengaturanConfig.lemburPerShift||50000,maxPinjamanKoperasi:pengaturanConfig.maxPinjamanKoperasi||700000}); setKpiDirty(false); }}>Batalkan</button>
+                  <button className="sp-btn primary" onClick={()=>{ setPengaturanConfig(p=>({...p,...kpiEdit})); setKpiDirty(false); }}>✅ Simpan</button>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="sp-widget">
+            <div className="sp-widget-head"><div className="sp-widget-title">📊 Cara Hitung KPI</div></div>
+            <div className="sp-body">
+              {[
+                {n:"1",title:"Hitung hari kerja wajib",   desc:"Total hari dalam bulan dikurangi hari libur resmi"},
+                {n:"2",title:"Hitung kehadiran aktual",   desc:"Jumlah hari dengan kode: P, M, SM, IN, L, LL, PL, LS"},
+                {n:"3",title:"Hitung persentase",         desc:"(Kehadiran aktual ÷ Hari kerja wajib) × 100%"},
+                {n:"4",title:"Bandingkan threshold",      desc:`Jika ≥ ${kpiEdit.kpiThresholdPct}% → dapat insentif Rp ${kpiEdit.nominalInsentif.toLocaleString("id-ID")}`},
+                {n:"5",title:"Hitung potongan",           desc:`Ijin Tidak Sah → potong Rp ${kpiEdit.dendaIjinTidakSah.toLocaleString("id-ID")}/hari`},
+              ].map(s=>(
+                <div key={s.n} className="sp-sop-step">
+                  <div className="sp-sop-num" style={{background:"linear-gradient(135deg,#3b82f6,#2563eb)"}}>{s.n}</div>
                   <div className="sp-sop-content">
                     <div className="sp-sop-title">{s.title}</div>
                     <div className="sp-sop-desc">{s.desc}</div>
@@ -347,54 +444,70 @@ export default function SOPStandar({ user, globalData={} }) {
         </div>
       )}
 
-      {/* Inventaris Kamar */}
+      {/* Inventaris Kamar — modal */}
       {tab==="inventaris" && (
         <div className="sp-widget">
           <div className="sp-widget-head">
-            <div className="sp-widget-title">📦 Inventaris Fasilitas Standar per Kamar</div>
-            <span style={{fontSize:11,color:"#9ca3af"}}>{inventaris.length} item</span>
+            <div>
+              <div className="sp-widget-title">📦 Inventaris Fasilitas Standar per Kamar</div>
+              <div style={{fontSize:11,color:"#9ca3af",marginTop:2}}>Template referensi saat deep clean & check-out</div>
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:10}}>
+              <span style={{fontSize:11,color:"#9ca3af"}}>{inventaris.length} item</span>
+              {!isReadOnly && (
+                <button className="sp-btn primary" style={{padding:"6px 12px"}} onClick={()=>setShowInvModal(true)}>
+                  ➕ Tambah Item
+                </button>
+              )}
+            </div>
           </div>
           <div className="sp-body">
-            {!isReadOnly && (
-              <div className="sp-input-row">
-                <input className="sp-input" value={newInvNama} onChange={e=>setNewInvNama(e.target.value)} placeholder="Nama fasilitas..." onKeyDown={e=>{ if(e.key==="Enter"&&newInvNama){ setInventaris(p=>[...p,{id:Date.now(),nama:newInvNama,qty:newInvQty,satuan:newInvSat}]); setNewInvNama(""); setDirty(true); }}} />
-                <input type="number" className="sp-input" value={newInvQty} onChange={e=>setNewInvQty(Number(e.target.value))} style={{maxWidth:70}} min={1} />
-                <select className="sp-select" value={newInvSat} onChange={e=>setNewInvSat(e.target.value)}>
-                  {["buah","set","unit","lembar","pasang","botol"].map(s=><option key={s} value={s}>{s}</option>)}
-                </select>
-                <button className="sp-btn primary" onClick={()=>{ if(newInvNama){ setInventaris(p=>[...p,{id:Date.now(),nama:newInvNama,qty:newInvQty,satuan:newInvSat}]); setNewInvNama(""); setDirty(true); }}}>➕</button>
+            {inventaris.length === 0 ? (
+              <div style={{textAlign:"center",padding:"32px 0",color:"#9ca3af"}}>
+                <div style={{fontSize:32,marginBottom:8}}>📦</div>
+                <div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Belum ada item inventaris</div>
+                <div style={{fontSize:12,marginTop:4}}>Klik ➕ Tambah Item untuk mendefinisikan fasilitas standar kamar</div>
               </div>
-            )}
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-              {inventaris.map(item=>(
-                <div key={item.id} className="sp-inv-item">
-                  <div style={{display:"flex",alignItems:"center",gap:8}}>
-                    <span style={{fontSize:16}}>📦</span>
-                    <div>
-                      <div className="sp-inv-name">{item.nama}</div>
-                      <div style={{fontSize:10,color:"#9ca3af"}}>{item.satuan}</div>
+            ) : (
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                {inventaris.map(item=>(
+                  <div key={item.id} className="sp-inv-item">
+                    <div style={{display:"flex",alignItems:"center",gap:8}}>
+                      <span style={{fontSize:18}}>📦</span>
+                      <div>
+                        <div className="sp-inv-name">{item.nama}</div>
+                        <div style={{fontSize:10,color:"#9ca3af"}}>{item.satuan}</div>
+                      </div>
+                    </div>
+                    <div style={{display:"flex",alignItems:"center",gap:6}}>
+                      <span className="sp-inv-qty">{item.qty}x</span>
+                      {!isReadOnly && (
+                        <>
+                          <button style={{background:"none",border:"none",cursor:"pointer",fontSize:13,color:"#6b7280",padding:"2px 4px"}} onClick={()=>setEditInvItem(item)} title="Edit">✏️</button>
+                          <button style={{background:"none",border:"none",cursor:"pointer",fontSize:13,color:"#dc2626",padding:"2px 4px"}} onClick={()=>{ setInventaris(p=>p.filter(i=>i.id!==item.id)); setDirty(true); }} title="Hapus">✕</button>
+                        </>
+                      )}
                     </div>
                   </div>
-                  <div style={{display:"flex",alignItems:"center",gap:8}}>
-                    <div className="sp-inv-qty">{item.qty}x</div>
-                    {!isReadOnly && (
-                      <button className="sp-btn danger" style={{padding:"3px 7px",fontSize:10}} onClick={()=>{ setInventaris(p=>p.filter(i=>i.id!==item.id)); setDirty(true); }}>✕</button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
             <div className="sp-info-box">
               📋 Inventaris ini digunakan sebagai referensi saat deep clean dan check-out untuk verifikasi kelengkapan fasilitas kamar.
             </div>
           </div>
           {!isReadOnly && dirty && (
             <div className="sp-save-bar">
-              <button className="sp-btn primary" onClick={()=>{ setDirty(false); alert("✅ Inventaris tersimpan!"); }}>✅ Simpan</button>
+              <button className="sp-btn primary" onClick={()=>{ setPengaturanConfig(p=>({...p,inventarisKamar:inventaris})); setDirty(false); }}>✅ Simpan Perubahan</button>
             </div>
           )}
         </div>
       )}
+
+      {/* Modals */}
+      {showChecklistModal && <ModalChecklist which={showChecklistModal} onClose={()=>setShowChecklistModal(null)} />}
+      {showInvModal       && <ModalInventaris onClose={()=>setShowInvModal(false)} />}
+      {editInvItem        && <ModalInventaris item={editInvItem} onClose={()=>setEditInvItem(null)} />}
     </div>
   );
 }

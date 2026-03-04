@@ -461,7 +461,7 @@ function TabelJadwal({ staffList, jadwalData, periodeYear, periodeMonth, onKodeC
 // ============================================================
 // MAIN
 // ============================================================
-export default function Absensi({ user }) {
+export default function Absensi({ user, globalData = {} }) {
   const isAdmin = user?.role === "superadmin" || user?.role === "admin";
 
   const [periodeMonth, setPeriodeMonth] = useState(today.getMonth());
@@ -631,7 +631,23 @@ export default function Absensi({ user }) {
                     className="ab-lembur-btn"
                     style={{ width: "100%" }}
                     disabled={!lemburStaff || !lemburNom}
-                    onClick={() => { alert("Lembur disimpan!"); setLemburStaff(""); setLemburNom(""); }}
+                    onClick={() => {
+                      if (!lemburStaff || !lemburNom) return;
+                      const nom = parseInt(String(lemburNom).replace(/\D/g,"")) || 0;
+                      if (nom <= 0) return;
+                      const tgl = new Date().toISOString().slice(0,10);
+                      const staff = karyawanList.find(k=>String(k.id)===String(lemburStaff));
+                      // Catat ke kas jurnal
+                      setKasJurnal(prev=>[...prev,{
+                        id: "KJ-LBR-"+Date.now(),
+                        tanggal: tgl,
+                        tipe: "pengeluaran",
+                        kategori: "Gaji & Insentif",
+                        nominal: nom,
+                        keterangan: "Lembur "+(staff?.nama||lemburStaff)+" — "+tgl,
+                      }]);
+                      setLemburStaff(""); setLemburNom("");
+                    }}
                   >
                     Simpan Lembur
                   </button>

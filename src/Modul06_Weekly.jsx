@@ -399,17 +399,24 @@ function ChecklistPanel({ jadwal, onClose, onSelesai }) {
 // ============================================================
 // MAIN
 // ============================================================
-export default function Weekly({ user }) {
-  const isAdmin = user?.role === "superadmin" || user?.role === "admin";
+export default function Weekly({ user, globalData = {} }) {
+  const isAdmin = user?.role === "manajemen";
 
   const [periodeMonth, setPeriodeMonth] = useState(today.getMonth());
   const [periodeYear,  setPeriodeYear]  = useState(today.getFullYear());
-  const [jadwalList,   setJadwalList]   = useState([]); // dari Supabase nanti
+  const {
+    weeklyList   = [], setWeeklyList   = ()=>{},
+    kamarList    = [],
+    karyawanList = [],
+    isReadOnly   = false,
+  } = globalData;
+
+  // Alias weeklyList → jadwalList agar tidak ubah semua kode di bawah
+  const jadwalList    = weeklyList;
+  const setJadwalList = setWeeklyList;
+
   const [showModal,    setShowModal]    = useState(false);
   const [activeChecklist, setActiveChecklist] = useState(null);
-
-  // Data dari Supabase nanti
-  const kamarList = [];
 
   const prevMonth = () => {
     if (periodeMonth === 0) { setPeriodeYear(y => y-1); setPeriodeMonth(11); }

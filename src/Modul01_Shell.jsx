@@ -5,11 +5,11 @@ import { createPortal } from "react-dom";
 // USER CONFIG — ganti setelah connect Supabase
 // ============================================================
 const USERS = [
-  { id: 1, username: "owner",    password: "owner123",  role: "owner",     name: "Yusuf Vindra Asmara", jabatan: "Owner" },
+  { id: 1, username: "owner",    password: "owner123",  role: "owner",     name: "Owner", jabatan: "Owner" },
   { id: 2, username: "direktur", password: "dir123",    role: "direktur",  name: "Budi Santosa",        jabatan: "Direktur" },
-  { id: 3, username: "admin",    password: "admin123",  role: "manajemen", name: "Rina Manajemen",      jabatan: "Super Admin" },
-  { id: 4, username: "staff1",   password: "staff123",  role: "staff",     name: "Muh. Krisna Mukti",   jabatan: "Clean & Service" },
-  { id: 5, username: "staff2",   password: "staff123",  role: "staff",     name: "Gurit Yudho Anggoro", jabatan: "Staf Penjaga Malam" },
+  { id: 3, username: "admin",    password: "admin123",  role: "manajemen", name: "Admin",      jabatan: "Super Admin" },
+  { id: 4, username: "staff1",   password: "staff123",  role: "staff",     name: "Staff Pagi",   jabatan: "Clean & Service" },
+  { id: 5, username: "staff2",   password: "staff123",  role: "staff",     name: "Staff Malam", jabatan: "Staf Penjaga Malam" },
 ];
 
 // Cek apakah user read-only (owner & direktur)
@@ -931,7 +931,7 @@ export default function App() {
     namaKost:       "Senyum Inn Exclusive Kost",
     alamat:         "Jl. Punggawan, Solo",
     telepon:        "",
-    namaDirektur:   "Yusuf Vindra Asmara",
+    namaDirektur:   "",
     gpsLat:         -7.5755,
     gpsLng:         110.8243,
     gpsRadius:      500,

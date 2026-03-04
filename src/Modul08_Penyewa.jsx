@@ -255,7 +255,7 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
               Tagihan pertama telah dibuat.
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, width: "100%", maxWidth: 300, margin: "0 auto" }}>
-              <button className="py-btn primary" onClick={() => alert("Generate PDF Surat Perjanjian...")}>
+              <button className="py-btn primary" onClick={() => generateSuratPerjanjian(selected, pengaturanConfig)}>
                 📄 Download Surat Perjanjian
               </button>
               <button className="py-btn ghost" onClick={onClose}>Tutup</button>
@@ -571,6 +571,118 @@ function DetailPanel({ penyewa, onEdit, onClose }) {
 // ============================================================
 // MAIN
 // ============================================================
+// ============================================================
+// PDF SURAT PERJANJIAN
+// ============================================================
+const loadJsPDFPY = () => new Promise((res,rej) => {
+  if (window.jspdf) return res(window.jspdf.jsPDF);
+  const s = document.createElement("script");
+  s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+  s.onload = () => res(window.jspdf.jsPDF); s.onerror = rej;
+  document.head.appendChild(s);
+});
+
+const generateSuratPerjanjian = async (penyewa, pengaturanConfig={}) => {
+  const JsPDF = await loadJsPDFPY();
+  const doc   = new JsPDF({ orientation:"portrait", unit:"mm", format:"a4" });
+  const W = doc.internal.pageSize.getWidth();
+  const fmtR = n => "Rp "+(n||0).toLocaleString("id-ID");
+  const namaKost   = pengaturanConfig.namaKost   || "Senyum Inn Exclusive Kost";
+  const alamat     = pengaturanConfig.alamat     || "—";
+  const direktur   = pengaturanConfig.namaDirektur || "Pimpinan";
+
+  // Header
+  doc.setFillColor(30,41,59); doc.rect(0,0,W,32,"F");
+  doc.setFillColor(249,115,22); doc.circle(20,16,10,"F");
+  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont("helvetica","bold");
+  doc.text("S",20,19.5,{align:"center"});
+  doc.setTextColor(255,255,255); doc.setFontSize(14); doc.setFont("helvetica","bold");
+  doc.text(namaKost.toUpperCase(),35,13);
+  doc.setFontSize(8); doc.setFont("helvetica","normal"); doc.setTextColor(148,163,184);
+  doc.text(alamat,35,20);
+
+  // Judul
+  let y = 44;
+  doc.setTextColor(30,41,59); doc.setFontSize(14); doc.setFont("helvetica","bold");
+  doc.text("SURAT PERJANJIAN SEWA KAMAR",W/2,y,{align:"center"});
+  y += 6;
+  doc.setFontSize(9); doc.setFont("helvetica","normal"); doc.setTextColor(100,116,139);
+  doc.text("Nomor: SP/"+String(penyewa.kamarId||"?").padStart(2,"0")+"/"+new Date().getFullYear()+"/"+String(Date.now()).slice(-4),W/2,y,{align:"center"});
+  y += 10;
+
+  // Garis
+  doc.setDrawColor(249,115,22); doc.setLineWidth(0.8); doc.line(14,y,W-14,y); y+=8;
+
+  // Pembuka
+  doc.setFontSize(9); doc.setFont("helvetica","normal"); doc.setTextColor(30,41,59);
+  const intro = "Pada hari ini, "+new Date().toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+", telah disepakati perjanjian sewa-menyewa antara:";
+  const introLines = doc.splitTextToSize(intro,W-28);
+  doc.text(introLines,14,y); y += introLines.length*5+4;
+
+  // Pihak
+  const drawPihak = (no, label, rows) => {
+    doc.setFillColor(249,245,240); doc.rect(14,y,W-28,6+rows.length*6,"F");
+    doc.setTextColor(249,115,22); doc.setFontSize(8); doc.setFont("helvetica","bold");
+    doc.text("PIHAK "+no+" — "+label,17,y+5);
+    rows.forEach((r,i) => {
+      doc.setTextColor(30,41,59); doc.setFontSize(8); doc.setFont("helvetica","normal");
+      doc.text(r[0],22,y+11+i*6);
+      doc.text(": "+r[1],65,y+11+i*6);
+    });
+    return y+8+rows.length*6+4;
+  };
+
+  y = drawPihak("I","PIHAK YANG MENYEWAKAN (Pengelola)",[
+    ["Nama Pengelola", namaKost],
+    ["Alamat",         alamat],
+    ["Penanggung Jawab", direktur],
+  ]);
+
+  y = drawPihak("II","PIHAK PENYEWA",[
+    ["Nama Lengkap",   penyewa.nama||"—"],
+    ["No. KTP",        penyewa.nik||"—"],
+    ["No. HP",         penyewa.noHP||"—"],
+  ]);
+
+  // Pasal-pasal
+  const pasals = [
+    ["PASAL 1 — OBJEK SEWA",
+      `Pihak I menyewakan kepada Pihak II kamar nomor ${penyewa.kamarId||"?"} dengan tipe ${penyewa.tipeKamar||"Reguler"}.`],
+    ["PASAL 2 — JANGKA WAKTU",
+      `Masa sewa selama ${penyewa.durasi||1} bulan, terhitung mulai ${penyewa.kontrakMulai||"—"} sampai dengan ${penyewa.kontrakSelesai||"—"}.`],
+    ["PASAL 3 — HARGA SEWA",
+      `Harga sewa sebesar ${fmtR(penyewa.hargaKamar||0)} per bulan. Total dibayar di muka: ${fmtR(penyewa.totalBayar||0)}.`],
+    ["PASAL 4 — KEWAJIBAN PENYEWA",
+      "Penyewa wajib menjaga kebersihan dan ketertiban, tidak merusak fasilitas, tidak merokok di dalam kamar, dan melaporkan kerusakan kepada pengelola."],
+    ["PASAL 5 — KETENTUAN LAIN",
+      "Segala ketentuan yang belum diatur dalam surat perjanjian ini akan diselesaikan secara musyawarah."],
+  ];
+
+  pasals.forEach(([judul, isi]) => {
+    y = Math.min(y, 240);
+    if (y > 240) { doc.addPage(); y = 20; }
+    doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.setTextColor(30,41,59);
+    doc.text(judul,14,y); y+=5;
+    doc.setFontSize(8); doc.setFont("helvetica","normal");
+    const lines = doc.splitTextToSize(isi,W-28);
+    doc.text(lines,14,y); y+=lines.length*5+6;
+  });
+
+  // Tanda tangan
+  y += 6;
+  doc.setFontSize(8); doc.setFont("helvetica","normal"); doc.setTextColor(30,41,59);
+  doc.text("Pihak I — Pengelola",35,y,{align:"center"});
+  doc.text("Pihak II — Penyewa",W-35,y,{align:"center"});
+  y+=20;
+  doc.line(20,y,55,y); doc.line(W-55,y,W-20,y);
+  y+=5;
+  doc.setFontSize(7); doc.setTextColor(100,116,139);
+  doc.text("("+direktur+")",35,y,{align:"center"});
+  doc.text("("+( penyewa.nama||"Penyewa")+")",W-35,y,{align:"center"});
+
+  doc.save("surat-perjanjian-kamar"+(penyewa.kamarId||"")+"_"+(penyewa.nama||"penyewa").replace(/\s/g,"-")+".pdf");
+};
+
 export default function Penyewa({ user, globalData = {} }) {
   const {
     penyewaList      = [], setPenyewaList    = () => {},

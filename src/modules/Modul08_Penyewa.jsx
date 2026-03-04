@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 // ============================================================
 // CSS
@@ -69,7 +70,8 @@ const CSS = `
   .py-partner-name { font-size: 12px; font-weight: 500; color: #374151; }
 
   /* ─── MODAL ───────────────────────────────── */
-  .py-overlay { position: fixed; inset: 0; background: rgba(17,24,39,0.5); backdrop-filter: blur(3px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px; animation: pyFade 0.18s ease; }
+  .py-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(17,24,39,0.65); backdrop-filter: blur(4px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 16px; animation: pyFade 0.18s ease; box-sizing: border-box; }
+  .py-overlay-portal { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(17,24,39,0.65) !important; backdrop-filter: blur(4px) !important; z-index: 9999 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 16px !important; box-sizing: border-box !important; animation: pyFade 0.18s ease; }
   @keyframes pyFade { from { opacity: 0; } to { opacity: 1; } }
   .py-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 580px; max-height: 92vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.18); animation: pySlide 0.2s cubic-bezier(0.4,0,0.2,1); }
   @keyframes pySlide { from { transform: translateY(18px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -240,8 +242,8 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
     setDone(true);
   };
 
-  if (done) return (
-    <div className="py-overlay" onClick={onClose}>
+  if (done) return createPortal(
+    <div className="py-overlay-portal" onClick={onClose}>
       <div className="py-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 440 }}>
         <div className="py-modal-body">
           <div className="py-success">
@@ -262,10 +264,10 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
         </div>
       </div>
     </div>
-  );
+  , document.body);
 
-  return (
-    <div className="py-overlay" onClick={onClose}>
+  return createPortal(
+    <div className="py-overlay-portal" onClick={onClose}>
       <div className="py-modal" onClick={e => e.stopPropagation()}>
         <div className="py-modal-head">
           <div className="py-modal-title">🔑 Check-in Penyewa Baru</div>
@@ -472,7 +474,7 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
         </div>
       </div>
     </div>
-  );
+  , document.body);
 }
 
 // ============================================================

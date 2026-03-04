@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 
 // ============================================================
 // USER CONFIG — ganti setelah connect Supabase
@@ -154,6 +155,21 @@ const CSS = `
   }
 
   html, body, #root { height: 100%; }
+
+  /* ─── MODAL PORTAL FIX ───────────────────── */
+  .modal-portal-overlay {
+    position: fixed !important;
+    top: 0 !important; left: 0 !important;
+    width: 100vw !important; height: 100vh !important;
+    background: rgba(17,24,39,0.65) !important;
+    backdrop-filter: blur(4px) !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+  }
   body {
     font-family: 'Inter', -apple-system, sans-serif;
     font-size: 13px;
@@ -170,7 +186,7 @@ const CSS = `
   /* ─── APP SHELL ──────────────────────────── */
   .s-app   { display: flex; height: 100vh; overflow: hidden; background: var(--gray-50); }
   .s-main  { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
-  .s-content { flex: 1; overflow-y: auto; padding: 20px 24px; }
+  .s-content { flex: 1; overflow-y: auto; padding: 20px 24px; position: relative; }
 
   /* ─── SIDEBAR ────────────────────────────── */
   .s-sidebar {

@@ -179,13 +179,38 @@ const CSS = `
     border-right: 1px solid var(--gray-200);
     display: flex; flex-direction: column;
     flex-shrink: 0; overflow: hidden;
+    transition: width 0.2s ease;
+    z-index: 100;
+  }
+  .s-sidebar.minimized { width: 56px; }
+
+  /* Mobile overlay */
+  .s-sidebar.mobile-hidden {
+    position: fixed; top: 0; left: 0; height: 100%;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: none;
+  }
+  .s-sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.12);
   }
 
+  .s-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 99;
+    backdrop-filter: blur(2px);
+  }
+  .s-overlay.visible { display: block; }
+
   .s-logo {
-    padding: 16px 16px 14px;
+    padding: 14px 12px;
     display: flex; align-items: center; gap: 10px;
     border-bottom: 1px solid var(--gray-100);
-    flex-shrink: 0;
+    flex-shrink: 0; min-height: 52px;
+    overflow: hidden;
   }
   .s-logo-mark {
     width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
@@ -194,41 +219,56 @@ const CSS = `
     font-size: 15px; font-weight: 700; color: #fff;
     box-shadow: 0 2px 8px rgba(249,115,22,0.35);
   }
-  .s-logo-text {}
+  .s-logo-text { overflow: hidden; white-space: nowrap; transition: opacity 0.15s; }
+  .s-sidebar.minimized .s-logo-text { opacity: 0; width: 0; }
   .s-logo-name { font-size: 12px; font-weight: 600; color: var(--gray-900); letter-spacing: 0.2px; }
   .s-logo-sub  { font-size: 9px; font-weight: 500; color: var(--orange); letter-spacing: 1px; text-transform: uppercase; margin-top: 1px; }
 
-  .s-nav { flex: 1; overflow-y: auto; padding: 8px 0 4px; }
+  .s-nav { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 8px 0 4px; }
 
   .s-nav-section { margin-bottom: 2px; }
   .s-nav-label {
     padding: 8px 16px 3px;
     font-size: 9px; font-weight: 600; letter-spacing: 1.2px;
     color: var(--gray-400); text-transform: uppercase;
+    white-space: nowrap; overflow: hidden;
+    transition: opacity 0.15s;
   }
+  .s-sidebar.minimized .s-nav-label { opacity: 0; height: 0; padding: 0; }
 
   .s-nav-item {
     display: flex; align-items: center; gap: 8px;
-    padding: 7px 10px; margin: 1px 8px; border-radius: 7px;
+    padding: 8px 10px; margin: 1px 8px; border-radius: 7px;
     cursor: pointer; font-size: 12.5px; font-weight: 400;
     color: var(--gray-600); transition: all 0.12s;
-    user-select: none;
+    user-select: none; white-space: nowrap; overflow: hidden;
+    position: relative;
   }
   .s-nav-item:hover { background: var(--gray-100); color: var(--gray-900); }
-  .s-nav-item.active {
-    background: var(--gray-900); color: var(--white);
-    font-weight: 500;
+  .s-nav-item.active { background: var(--gray-900); color: var(--white); font-weight: 500; }
+  .s-nav-label-text { transition: opacity 0.15s; }
+  .s-sidebar.minimized .s-nav-label-text { opacity: 0; width: 0; overflow: hidden; }
+
+  /* Tooltip saat minimized */
+  .s-sidebar.minimized .s-nav-item::after {
+    content: attr(data-label);
+    position: absolute; left: 52px; top: 50%; transform: translateY(-50%);
+    background: var(--gray-900); color: #fff;
+    padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 500;
+    white-space: nowrap; pointer-events: none; opacity: 0;
+    transition: opacity 0.15s; z-index: 200;
   }
+  .s-sidebar.minimized .s-nav-item:hover::after { opacity: 1; }
+
   .s-nav-icon {
     width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
-    font-size: 13px; flex-shrink: 0; opacity: 0.7;
+    font-size: 13px; flex-shrink: 0;
   }
-  .s-nav-item.active .s-nav-icon { opacity: 1; }
-  .s-nav-item:hover .s-nav-icon { opacity: 1; }
 
   .s-user {
-    padding: 10px 14px; border-top: 1px solid var(--gray-100);
+    padding: 10px 12px; border-top: 1px solid var(--gray-100);
     display: flex; align-items: center; gap: 9px; flex-shrink: 0;
+    overflow: hidden;
   }
   .s-avatar {
     width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
@@ -236,23 +276,34 @@ const CSS = `
     display: flex; align-items: center; justify-content: center;
     font-size: 10px; font-weight: 700; color: #fff; letter-spacing: 0.5px;
   }
-  .s-user-name { font-size: 12px; font-weight: 500; color: var(--gray-900); }
+  .s-user-info { flex: 1; min-width: 0; transition: opacity 0.15s; white-space: nowrap; overflow: hidden; }
+  .s-sidebar.minimized .s-user-info { opacity: 0; width: 0; }
+  .s-user-name { font-size: 12px; font-weight: 500; color: var(--gray-900); overflow: hidden; text-overflow: ellipsis; }
   .s-user-role { font-size: 10px; color: var(--gray-400); margin-top: 1px; }
   .s-logout {
-    margin-left: auto; background: none; border: none; cursor: pointer;
+    margin-left: auto; background: none; border: none; cursor: pointer; flex-shrink: 0;
     color: var(--gray-400); font-size: 14px; padding: 4px; border-radius: 5px;
     transition: all 0.12s; display: flex; align-items: center; justify-content: center;
   }
+  .s-sidebar.minimized .s-logout { margin-left: 0; }
   .s-logout:hover { color: #ef4444; background: #fee2e2; }
 
   /* ─── HEADER ─────────────────────────────── */
   .s-header {
     height: var(--header-h); flex-shrink: 0;
     background: var(--white); border-bottom: 1px solid var(--gray-200);
-    padding: 0 24px;
+    padding: 0 16px 0 12px;
     display: flex; align-items: center; justify-content: space-between;
   }
-  .s-header-left {}
+  .s-header-left { display: flex; align-items: center; gap: 10px; }
+  .s-toggle-btn {
+    width: 32px; height: 32px; border-radius: 7px; flex-shrink: 0;
+    background: var(--gray-100); border: 1px solid var(--gray-200);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 14px; transition: all 0.12s; color: var(--gray-600);
+  }
+  .s-toggle-btn:hover { background: var(--gray-200); }
+  .s-header-titles {}
   .s-header-context { font-size: 10px; color: var(--gray-400); font-weight: 400; margin-bottom: 1px; }
   .s-header-title { font-size: 14px; font-weight: 600; color: var(--gray-900); }
   .s-header-right { display: flex; align-items: center; gap: 8px; }
@@ -265,8 +316,18 @@ const CSS = `
   .s-header-btn:hover { background: var(--gray-200); }
   .s-date {
     font-size: 11px; color: var(--gray-500);
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 400;
+    font-family: 'JetBrains Mono', monospace; font-weight: 400;
+  }
+
+  /* ─── RESPONSIVE ─────────────────────────── */
+  @media (max-width: 768px) {
+    .s-content { padding: 14px 14px; }
+    .s-date { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    .s-content { padding: 12px 12px; }
+    .s-header-title { font-size: 13px; }
   }
 
   /* ─── LOADING ────────────────────────────── */
@@ -440,78 +501,80 @@ function LoginPage({ onLogin }) {
 // ============================================================
 // SIDEBAR
 // ============================================================
-function Sidebar({ user, active, onSelect, onLogout }) {
+function Sidebar({ user, active, onSelect, onLogout, minimized, isMobile, mobileOpen, onOverlayClick }) {
   const menus = user.role === "staff" ? MENU_STAFF : MENU_ADMIN;
+  const sidebarClass = [
+    "s-sidebar",
+    minimized && !isMobile ? "minimized" : "",
+    isMobile ? "mobile-hidden" : "",
+    isMobile && mobileOpen ? "mobile-open" : "",
+  ].filter(Boolean).join(" ");
 
   return (
-    <aside className="s-sidebar">
-      {/* Logo */}
-      <div className="s-logo">
-        <div className="s-logo-mark">S</div>
-        <div className="s-logo-text">
-          <div className="s-logo-name">Senyum Inn</div>
-          <div className="s-logo-sub">Exclusive Kost</div>
-        </div>
-      </div>
-
-      {/* Nav */}
-      <nav className="s-nav">
-        {menus.map(section => (
-          <div key={section.section} className="s-nav-section">
-            <div className="s-nav-label">{section.section}</div>
-            {section.items.map(item => (
-              <div
-                key={item.id}
-                className={`s-nav-item ${active === item.id ? "active" : ""}`}
-                onClick={() => onSelect(item.id)}
-              >
-                <span className="s-nav-icon">{item.icon}</span>
-                <span>{item.label}</span>
-              </div>
-            ))}
+    <>
+      {isMobile && mobileOpen && <div className="s-overlay visible" onClick={onOverlayClick} />}
+      <aside className={sidebarClass}>
+        {/* Logo */}
+        <div className="s-logo">
+          <div className="s-logo-mark">S</div>
+          <div className="s-logo-text">
+            <div className="s-logo-name">Senyum Inn</div>
+            <div className="s-logo-sub">Exclusive Kost</div>
           </div>
-        ))}
-      </nav>
-
-      {/* User */}
-      <div className="s-user">
-        <div className="s-avatar">{user.avatar}</div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="s-user-name" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-            {user.name}
-          </div>
-          <div className="s-user-role">{user.jabatan}</div>
         </div>
-        <button className="s-logout" onClick={onLogout} title="Keluar">
-          ⏻
-        </button>
-      </div>
-    </aside>
+
+        {/* Nav */}
+        <nav className="s-nav">
+          {menus.map(section => (
+            <div key={section.section} className="s-nav-section">
+              <div className="s-nav-label">{section.section}</div>
+              {section.items.map(item => (
+                <div
+                  key={item.id}
+                  className={`s-nav-item ${active === item.id ? "active" : ""}`}
+                  data-label={item.label}
+                  onClick={() => { onSelect(item.id); if (isMobile) onOverlayClick(); }}
+                >
+                  <span className="s-nav-icon">{item.icon}</span>
+                  <span className="s-nav-label-text">{item.label}</span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </nav>
+
+        {/* User */}
+        <div className="s-user">
+          <div className="s-avatar">{user.avatar}</div>
+          <div className="s-user-info">
+            <div className="s-user-name">{user.name}</div>
+            <div className="s-user-role">{user.jabatan}</div>
+          </div>
+          <button className="s-logout" onClick={onLogout} title="Keluar">⏻</button>
+        </div>
+      </aside>
+    </>
   );
 }
 
 // ============================================================
 // HEADER
 // ============================================================
-function Header({ activeMenu }) {
-  const title   = MENU_TITLES[activeMenu] || activeMenu;
-  const section = Object.values(
-    Object.fromEntries(
-      [...MENU_ADMIN, ...MENU_STAFF].flatMap(s => s.items.map(i => [i.id, s.section]))
-    )
-  )[0];
-
-  // Cari section dari active menu
+function Header({ activeMenu, onToggle }) {
   let sectionName = "";
   for (const s of MENU_ADMIN) {
     if (s.items.find(i => i.id === activeMenu)) { sectionName = s.section; break; }
   }
+  const title = MENU_TITLES[activeMenu] || activeMenu;
 
   return (
     <header className="s-header">
       <div className="s-header-left">
-        <div className="s-header-context">Senyum Inn · {sectionName}</div>
-        <div className="s-header-title">{title}</div>
+        <div className="s-toggle-btn" onClick={onToggle} title="Toggle Sidebar">☰</div>
+        <div className="s-header-titles">
+          <div className="s-header-context">Senyum Inn · {sectionName}</div>
+          <div className="s-header-title">{title}</div>
+        </div>
       </div>
       <div className="s-header-right">
         <div className="s-date">{formatDate()}</div>
@@ -608,8 +671,17 @@ function RenderModule({ menuId, user }) {
 // APP ROOT
 // ============================================================
 export default function App() {
-  const [user,       setUser]       = useState(null);
-  const [activeMenu, setActiveMenu] = useState("dashboard");
+  const [user,        setUser]       = useState(null);
+  const [activeMenu,  setActiveMenu] = useState("dashboard");
+  const [minimized,   setMinimized]  = useState(false);
+  const [mobileOpen,  setMobileOpen] = useState(false);
+
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
+
+  const handleToggle = () => {
+    if (isMobile) setMobileOpen(o => !o);
+    else setMinimized(m => !m);
+  };
 
   if (!user) return (
     <>
@@ -626,9 +698,13 @@ export default function App() {
         active={activeMenu}
         onSelect={setActiveMenu}
         onLogout={() => { setUser(null); setActiveMenu("dashboard"); }}
+        minimized={minimized}
+        isMobile={isMobile}
+        mobileOpen={mobileOpen}
+        onOverlayClick={() => setMobileOpen(false)}
       />
       <div className="s-main">
-        <Header activeMenu={activeMenu} />
+        <Header activeMenu={activeMenu} onToggle={handleToggle} />
         <div className="s-content">
           <RenderModule menuId={activeMenu} user={user} />
         </div>

@@ -109,6 +109,11 @@ const CSS = `
   @media (max-width: 1024px) { .rw-layout { grid-template-columns: 1fr; } }
   @media (max-width: 768px)  { .rw-cards { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 480px)  { .rw-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; } .rw-input-row { grid-template-columns: 1fr; } }
+  .rw-daterange { display: flex; align-items: center; gap: 6px; }
+  .rw-daterange-label { font-size: 11px; color: #9ca3af; font-weight: 500; white-space: nowrap; }
+  .rw-daterange input { padding: 5px 9px; border-radius: 8px; border: 1.5px solid #e5e7eb; font-size: 11px; font-family: inherit; color: #374151; outline: none; background: #fff; cursor: pointer; }
+  .rw-daterange input:focus { border-color: #f97316; }
+  .rw-daterange-clear { font-size: 10px; color: #f97316; cursor: pointer; font-weight: 600; white-space: nowrap; padding: 4px 8px; border-radius: 6px; background: #fff7ed; border: 1px solid #fed7aa; }
 `;
 
 function StyleInjector() {
@@ -395,6 +400,9 @@ export default function Riwayat({ user, globalData = {} }) {
   const [search,     setSearch]     = useState("");
   const [filterKamar, setFK]        = useState("all");
   const [sortBy,     setSortBy]     = useState("terbaru");
+  const [filterDari,  setFilterDari]  = useState("");
+  const [filterSampai,setFilterSampai]= useState("");
+
 
   const isAdmin = user?.role === "superadmin" || user?.role === "admin";
 
@@ -402,6 +410,8 @@ export default function Riwayat({ user, globalData = {} }) {
   const filtered = riwayatList
     .filter(p => {
       if (filterKamar !== "all" && String(p.kamarId) !== filterKamar) return false;
+
+
       if (search) {
         const q = search.toLowerCase();
         return p.nama?.toLowerCase().includes(q) || String(p.kamarId).includes(q) || p.nik?.includes(q) || p.noHP?.includes(q);
@@ -477,6 +487,15 @@ export default function Riwayat({ user, globalData = {} }) {
               <option value="terlama">Terlama</option>
               <option value="nama">A–Z Nama</option>
             </select>
+            <div className="rw-daterange">
+              <span className="rw-daterange-label">Dari</span>
+              <input type="date" value={filterDari} onChange={e => setFilterDari(e.target.value)} />
+              <span className="rw-daterange-label">s/d</span>
+              <input type="date" value={filterSampai} onChange={e => setFilterSampai(e.target.value)} />
+              {(filterDari || filterSampai) && (
+                <span className="rw-daterange-clear" onClick={() => { setFilterDari(""); setFilterSampai(""); }}>✕ Reset</span>
+              )}
+            </div>
           </div>
 
           {/* List */}

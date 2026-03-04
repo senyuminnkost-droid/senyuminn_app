@@ -322,7 +322,7 @@ const CSS = `
   .s-header-titles {}
   .s-header-context { font-size: 10px; color: var(--gray-400); font-weight: 400; margin-bottom: 1px; }
   .s-header-title { font-size: 14px; font-weight: 600; color: var(--gray-900); }
-  .s-header-right { display: flex; align-items: center; gap: 8px; }
+  .s-header-right { display: flex; align-items: center; gap: 8px;  overflow: visible; position: relative; z-index: 101; }
   .s-header-btn {
     width: 32px; height: 32px; border-radius: 7px;
     background: var(--gray-100); border: 1px solid var(--gray-200);
@@ -345,6 +345,79 @@ const CSS = `
     .s-content { padding: 12px 12px; }
     .s-header-title { font-size: 13px; }
   }
+
+  /* ─── SEARCH GLOBAL ─────────────────────── */
+  .s-search-wrap { position: relative; }
+  .s-search-box {
+    display: flex; align-items: center; gap: 7px;
+    background: var(--gray-100); border: 1.5px solid var(--gray-200);
+    border-radius: 8px; padding: 5px 11px; width: 220px;
+    transition: all 0.15s; cursor: text;
+  }
+  .s-search-box:focus-within { background: #fff; border-color: var(--orange); width: 260px; }
+  .s-search-input {
+    border: none; outline: none; background: transparent;
+    font-size: 12px; color: var(--gray-900); width: 100%; font-family: inherit;
+  }
+  .s-search-input::placeholder { color: var(--gray-400); }
+  .s-search-dropdown {
+    position: absolute; top: calc(100% + 6px); right: 0;
+    background: #fff; border: 1px solid var(--gray-200);
+    border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    width: 320px; z-index: 99999; overflow: hidden;
+    animation: shDropIn 0.15s ease;
+  }
+  @keyframes shDropIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+  .s-search-section { padding: 8px 12px 4px; font-size: 9px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1px; }
+  .s-search-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; cursor: pointer; transition: background 0.1s;
+  }
+  .s-search-item:hover { background: #fff7ed; }
+  .s-search-item-icon { width: 28px; height: 28px; border-radius: 7px; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .s-search-item-name { font-size: 12px; font-weight: 600; color: var(--gray-900); }
+  .s-search-item-sub  { font-size: 10px; color: var(--gray-400); margin-top: 1px; }
+  .s-search-empty { padding: 20px; text-align: center; font-size: 12px; color: var(--gray-400); }
+
+  /* ─── NOTIFIKASI ─────────────────────────── */
+  .s-notif-wrap { position: relative; }
+  .s-notif-btn {
+    width: 32px; height: 32px; border-radius: 7px; position: relative;
+    background: var(--gray-100); border: 1px solid var(--gray-200);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 14px; transition: all 0.12s;
+  }
+  .s-notif-btn:hover { background: var(--gray-200); }
+  .s-notif-badge {
+    position: absolute; top: -4px; right: -4px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #ef4444; color: #fff; font-size: 9px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid #fff;
+  }
+  .s-notif-dropdown {
+    position: absolute; top: calc(100% + 6px); right: 0;
+    background: #fff; border: 1px solid var(--gray-200);
+    border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    width: 300px; z-index: 99999; overflow: hidden;
+    animation: shDropIn 0.15s ease;
+  }
+  .s-notif-head { padding: 12px 14px 8px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; }
+  .s-notif-head-title { font-size: 12px; font-weight: 700; color: var(--gray-900); }
+  .s-notif-head-clear { font-size: 10px; color: var(--orange); cursor: pointer; font-weight: 600; }
+  .s-notif-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 14px; border-bottom: 1px solid var(--gray-100);
+    cursor: pointer; transition: background 0.1s;
+  }
+  .s-notif-item:last-child { border-bottom: none; }
+  .s-notif-item:hover { background: #fafafa; }
+  .s-notif-item.unread { background: #fff7ed; }
+  .s-notif-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .s-notif-text { flex: 1; min-width: 0; }
+  .s-notif-msg  { font-size: 12px; font-weight: 500; color: var(--gray-800); line-height: 1.4; }
+  .s-notif-time { font-size: 10px; color: var(--gray-400); margin-top: 2px; }
+  .s-notif-empty { padding: 24px; text-align: center; font-size: 12px; color: var(--gray-400); }
 
   /* ─── LOADING ────────────────────────────── */
   .s-loading {
@@ -576,12 +649,50 @@ function Sidebar({ user, active, onSelect, onLogout, minimized, isMobile, mobile
 // ============================================================
 // HEADER
 // ============================================================
-function Header({ activeMenu, onToggle }) {
+function Header({ activeMenu, onToggle, globalData = {}, onMenuChange }) {
+  const { penyewaList=[], tagihanList=[], tiketList=[] } = globalData;
   let sectionName = "";
   for (const s of MENU_ADMIN) {
     if (s.items.find(i => i.id === activeMenu)) { sectionName = s.section; break; }
   }
   const title = MENU_TITLES[activeMenu] || activeMenu;
+
+  // ── Search state
+  const [searchQ,    setSearchQ]    = useState("");
+  const [showSearch, setShowSearch] = useState(false);
+  const [showNotif,  setShowNotif]  = useState(false);
+  const [readNotifs, setReadNotifs] = useState([]);
+
+  // ── Generate notifikasi dari data real
+  const notifikasi = [];
+  penyewaList.forEach(p => {
+    const sisa = p.kontrakSelesai ? Math.ceil((new Date(p.kontrakSelesai) - new Date()) / 86400000) : null;
+    if (sisa !== null && sisa <= 30 && sisa >= 0)
+      notifikasi.push({ id: `k-${p.id}`, icon: "⚠️", msg: `Kontrak ${p.nama} (Kamar ${p.kamarId}) habis ${sisa} hari lagi`, menu: "checkin", time: "Hari ini" });
+    if (sisa !== null && sisa < 0)
+      notifikasi.push({ id: `kx-${p.id}`, icon: "🔴", msg: `Kontrak ${p.nama} sudah HABIS ${Math.abs(sisa)} hari lalu!`, menu: "checkin", time: "Hari ini" });
+  });
+  tagihanList.filter(t => t.status === "terlambat").forEach(t => {
+    notifikasi.push({ id: `t-${t.id}`, icon: "💸", msg: `Tagihan ${t.nama} Kamar ${t.kamarId} terlambat ${t.dendaHari} hari`, menu: "tagihan", time: "Hari ini" });
+  });
+  tiketList.filter(t => t.prioritas === "urgent" && t.status !== "selesai").forEach(t => {
+    notifikasi.push({ id: `tk-${t.id}`, icon: "🔧", msg: `Tiket urgent: ${t.kategori} Kamar ${t.kamar}`, menu: "keluhan", time: t.tanggal });
+  });
+
+  const unreadCount = notifikasi.filter(n => !readNotifs.includes(n.id)).length;
+
+  // ── Search results
+  const searchResults = searchQ.length >= 2 ? [
+    ...penyewaList.filter(p => p.nama?.toLowerCase().includes(searchQ.toLowerCase()) || String(p.kamarId).includes(searchQ))
+      .slice(0,4).map(p => ({ icon:"👤", name: p.nama, sub: `Kamar ${p.kamarId} · ${p.noHP||"—"}`, menu:"penyewa" })),
+  ] : [];
+
+  // Close dropdown saat klik luar
+  useEffect(() => {
+    const handler = () => { setShowSearch(false); setShowNotif(false); };
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, []);
 
   return (
     <header className="s-header">
@@ -594,8 +705,77 @@ function Header({ activeMenu, onToggle }) {
       </div>
       <div className="s-header-right">
         <div className="s-date">{formatDate()}</div>
-        <div className="s-header-btn" title="Notifikasi">🔔</div>
-        <div className="s-header-btn" title="Cari">🔍</div>
+
+        {/* Search Global */}
+        <div className="s-search-wrap" onClick={e => e.stopPropagation()}>
+          <div className="s-search-box">
+            <span style={{ fontSize: 13, color: "var(--gray-400)" }}>🔍</span>
+            <input
+              className="s-search-input"
+              placeholder="Cari penyewa, kamar..."
+              value={searchQ}
+              onChange={e => { setSearchQ(e.target.value); setShowSearch(true); setShowNotif(false); }}
+              onFocus={() => { setShowSearch(true); setShowNotif(false); }}
+            />
+            {searchQ && <span style={{ cursor:"pointer", color:"var(--gray-400)", fontSize:12 }} onClick={() => { setSearchQ(""); setShowSearch(false); }}>✕</span>}
+          </div>
+          {showSearch && (
+            <div className="s-search-dropdown">
+              {searchQ.length < 2 ? (
+                <div className="s-search-empty">Ketik minimal 2 karakter untuk mencari</div>
+              ) : searchResults.length === 0 ? (
+                <div className="s-search-empty">Tidak ada hasil untuk "{searchQ}"</div>
+              ) : (
+                <>
+                  <div className="s-search-section">Penyewa</div>
+                  {searchResults.map((r,i) => (
+                    <div key={i} className="s-search-item" onClick={() => { onMenuChange(r.menu); setShowSearch(false); setSearchQ(""); }}>
+                      <div className="s-search-item-icon">{r.icon}</div>
+                      <div>
+                        <div className="s-search-item-name">{r.name}</div>
+                        <div className="s-search-item-sub">{r.sub}</div>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Notifikasi */}
+        <div className="s-notif-wrap" onClick={e => e.stopPropagation()}>
+          <div className="s-notif-btn" onClick={() => { setShowNotif(v => !v); setShowSearch(false); }}>
+            🔔
+            {unreadCount > 0 && <div className="s-notif-badge">{unreadCount > 9 ? "9+" : unreadCount}</div>}
+          </div>
+          {showNotif && (
+            <div className="s-notif-dropdown">
+              <div className="s-notif-head">
+                <div className="s-notif-head-title">🔔 Notifikasi {unreadCount > 0 && `(${unreadCount})`}</div>
+                {notifikasi.length > 0 && <div className="s-notif-head-clear" onClick={() => setReadNotifs(notifikasi.map(n=>n.id))}>Tandai semua dibaca</div>}
+              </div>
+              {notifikasi.length === 0 ? (
+                <div className="s-notif-empty">
+                  <div style={{ fontSize: 28, marginBottom: 6 }}>✅</div>
+                  Tidak ada notifikasi
+                </div>
+              ) : (
+                notifikasi.slice(0,8).map(n => (
+                  <div key={n.id} className={`s-notif-item ${!readNotifs.includes(n.id)?"unread":""}`}
+                    onClick={() => { onMenuChange(n.menu); setReadNotifs(p=>[...p,n.id]); setShowNotif(false); }}>
+                    <div className="s-notif-icon">{n.icon}</div>
+                    <div className="s-notif-text">
+                      <div className="s-notif-msg">{n.msg}</div>
+                      <div className="s-notif-time">{n.time}</div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+
       </div>
     </header>
   );
@@ -744,7 +924,7 @@ export default function App() {
         onOverlayClick={() => setMobileOpen(false)}
       />
       <div className="s-main">
-        <Header activeMenu={activeMenu} onToggle={handleToggle} />
+        <Header activeMenu={activeMenu} onToggle={handleToggle} globalData={globalData} onMenuChange={setActiveMenu} />
         <div className="s-content">
           <RenderModule menuId={activeMenu} user={user} globalData={globalData} />
         </div>

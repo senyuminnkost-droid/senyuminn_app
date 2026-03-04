@@ -882,6 +882,15 @@ export default function App() {
   const [kasJurnal,    setKasJurnal]    = useState([]);
   const [weeklyList,   setWeeklyList]   = useState([]);
   const [absensiList,  setAbsensiList]  = useState([]);
+  const [asetList,     setAsetList]     = useState([]);
+  const [sakuConfig,   setSakuConfig]   = useState([
+    { kode:"A", nama:"Petty Cash",     tipe:"pct",  nilai:5,      color:"#f97316" },
+    { kode:"B", nama:"General Saving", tipe:"pct",  nilai:23,     color:"#3b82f6" },
+    { kode:"C", nama:"Internet",       tipe:"flat", nilai:500000, color:"#06b6d4" },
+    { kode:"D", nama:"Tax Saving",     tipe:"pct",  nilai:0.5,    color:"#8b5cf6" },
+    { kode:"E", nama:"Operasional",    tipe:"pct",  nilai:0,      color:"#22c55e" },
+    { kode:"F", nama:"THR Saving",     tipe:"pct",  nilai:0,      color:"#eab308" },
+  ]);
 
   // Bundel semua data & setter jadi satu object
   const globalData = {
@@ -894,6 +903,8 @@ export default function App() {
     kasJurnal,    setKasJurnal,
     weeklyList,   setWeeklyList,
     absensiList,  setAbsensiList,
+    asetList,     setAsetList,
+    sakuConfig,   setSakuConfig,
   };
 
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;

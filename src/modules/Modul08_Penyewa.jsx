@@ -56,7 +56,7 @@ const CSS = `
   .py-partner-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: #f9fafb; border-radius: 8px; margin-bottom: 6px; }
   .py-partner-icon { width: 28px; height: 28px; border-radius: 7px; background: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
   .py-partner-name { font-size: 12px; font-weight: 500; color: #374151; }
-  .py-overlay { position: fixed; inset: 0; background: rgba(17,24,39,0.45); backdrop-filter: blur(3px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px 16px; animation: pyFade 0.18s ease; }
+  .py-overlay { position: fixed; inset: 0; background: rgba(17,24,39,0.45); backdrop-filter: blur(3px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px 16px; animation: pyFade 0.18s ease; }
   @keyframes pyFade { from { opacity: 0; } to { opacity: 1; } }
   .py-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 520px; max-height: 88vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.15); animation: pySlide 0.2s cubic-bezier(0.4,0,0.2,1); margin: auto; }
   @keyframes pySlide { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -85,6 +85,7 @@ const CSS = `
   @media (max-width: 1024px) { .py-layout { grid-template-columns: 1fr; } }
   @media (max-width: 768px) { .py-cards { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 480px) { .py-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; } .py-input-row { grid-template-columns: 1fr; } }
+  @media (max-width: 390px) { .py-cards { grid-template-columns: 1fr 1fr; gap: 6px; } .py-modal { border-radius: 12px; } .py-modal-body { padding: 12px 14px; } .py-modal-head { padding: 12px 14px 10px; } .py-modal-foot { padding: 10px 14px; } .py-field-label { font-size: 10px; } .py-input { font-size: 12px; padding: 7px 10px; } .py-layout { gap: 10px; } }
 `;
 
 function StyleInjector() {

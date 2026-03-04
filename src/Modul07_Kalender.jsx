@@ -76,21 +76,7 @@ const EVENT_CFG = {
   reminder:    { label:"Reminder",       color:"#9ca3af", bg:"#f3f4f6", icon:"⚠️" },
 };
 
-const MOCK_EVENTS = [
-  { id:1,  tanggal:"2026-03-02", tipe:"weekly",     label:"Weekly Service — Kamar 1, 4, 7" },
-  { id:2,  tanggal:"2026-03-04", tipe:"checkin",    label:"Check-in — Kamar 11" },
-  { id:3,  tanggal:"2026-03-04", tipe:"keluhan",    label:"Tiket T001 — AC Bocor Kamar 9" },
-  { id:4,  tanggal:"2026-03-05", tipe:"maintenance",label:"Maintenance — Kamar 5 Pintu" },
-  { id:5,  tanggal:"2026-03-07", tipe:"weekly",     label:"Weekly Service — Kamar 2, 6, 9" },
-  { id:6,  tanggal:"2026-03-10", tipe:"servis_ac",  label:"Servis AC Rutin — 13 Unit" },
-  { id:7,  tanggal:"2026-03-12", tipe:"deepclean",  label:"Deep Clean — Kamar 8" },
-  { id:8,  tanggal:"2026-03-14", tipe:"weekly",     label:"Weekly Service — Kamar 3, 5, 11" },
-  { id:9,  tanggal:"2026-03-15", tipe:"checkout",   label:"Check-out — Kamar 6" },
-  { id:10, tanggal:"2026-03-15", tipe:"selesai",    label:"Selesai — Tiket T001 AC Kamar 9" },
-  { id:11, tanggal:"2026-03-21", tipe:"weekly",     label:"Weekly Service — Kamar 1, 8, 12" },
-  { id:12, tanggal:"2026-03-25", tipe:"reminder",   label:"Reminder — Kontrak Kamar 9 H-7" },
-  { id:13, tanggal:"2026-03-28", tipe:"weekly",     label:"Weekly Service — Kamar 4, 7, 10" },
-];
+const MOCK_EVENTS = [ nul ];
 
 const BULAN = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
 const HARI  = ["MIN","SEN","SEL","RAB","KAM","JUM","SAB"];

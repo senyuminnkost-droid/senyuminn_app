@@ -283,8 +283,9 @@ function ModalCheckout({ penyewa, kamarList, onClose, onCheckout }) {
 
   // Hitung denda sewa harian jika check-out setelah kontrak habis
   const hariTerlambat = sisa !== null && sisa < 0 ? Math.abs(sisa) : 0;
-  const dendaHarian   = 250000; // Rp 250.000/hari — dari Pengaturan nanti
-  const totalDendaSewa = hariTerlambat * dendaHarian;
+  const SEWA_HARIAN = pengaturanConfig.sewaHarian   || 250000;
+  const dendaCheckout = pengaturanConfig.dendaPerHari || 50000;
+  const totalDendaSewa = hariTerlambat * SEWA_HARIAN;
 
   const totalTagihan = totalDendaSewa + Number(form.dendaKerusakan || 0);
 
@@ -496,10 +497,15 @@ function ActionPanel({ penyewa, kamarList, onPerpanjang, onCheckout, onClose }) 
 // ============================================================
 export default function Checkout({ user, globalData = {} }) {
   const {
-    penyewaList  = [], setPenyewaList  = () => {},
-    riwayatList  = [], setRiwayatList  = () => {},
-    kamarList    = [],
+    penyewaList        = [], setPenyewaList  = () => {},
+    riwayatList        = [], setRiwayatList  = () => {},
+    kamarList          = [], setKamarList    = () => {},
+    pengaturanConfig   = {},
+    isReadOnly         = false,
   } = globalData;
+
+  const SEWA_HARIAN    = pengaturanConfig.sewaHarian    || 250000;
+  const DENDA_CHECKOUT = pengaturanConfig.dendaPerHari  || 50000;
 
   const [tab,      setTab]      = useState("semua"); // semua | mau-habis | terlambat
   const [selected, setSelected] = useState(null);

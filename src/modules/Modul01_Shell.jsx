@@ -5,7 +5,11 @@ import { createPortal } from "react-dom";
 // USER CONFIG — ganti setelah connect Supabase
 // ============================================================
 const USERS = [
-  { id: 1, username: "admin", password: "admin123", role: "superadmin", name: "Yusuf Vindra Asmara", jabatan: "Owner", avatar: "YV" },
+  { id: 1, username: "owner",    password: "owner123",  role: "owner",     name: "Yusuf Vindra Asmara", jabatan: "Owner" },
+  { id: 2, username: "direktur", password: "dir123",    role: "direktur",  name: "Budi Santosa",        jabatan: "Direktur" },
+  { id: 3, username: "admin",    password: "admin123",  role: "manajemen", name: "Rina Manajemen",      jabatan: "Super Admin" },
+  { id: 4, username: "staff1",   password: "staff123",  role: "staff",     name: "Muh. Krisna Mukti",   jabatan: "Clean & Service" },
+  { id: 5, username: "staff2",   password: "staff123",  role: "staff",     name: "Gurit Yudho Anggoro", jabatan: "Staf Penjaga Malam" },
 ];
 
 // ============================================================
@@ -26,6 +30,9 @@ const USERS = [
 // const ModulKaryawan    = lazy(() => import("./Modul14_Karyawan"));
 // const ModulPenggajian  = lazy(() => import("./Modul15_Penggajian"));
 // const ModulLapAbsensi  = lazy(() => import("./Modul16_LaporanAbsensi"));
+// const ModulProfil      = lazy(() => import("./Modul17_Profil"));
+// const ModulUsers       = lazy(() => import("./Modul18_Users"));
+// const ModulSOP         = lazy(() => import("./Modul19_SOP"));
 // const ModulProfil      = lazy(() => import("./Modul17_Profil"));
 // const ModulUsers       = lazy(() => import("./Modul18_Users"));
 
@@ -73,6 +80,7 @@ const MENU_ADMIN = [
     items: [
       { id: "profil", label: "Profil Kost",      icon: "⊙" },
       { id: "users",  label: "Manajemen User",   icon: "⊗" },
+      { id: "sop",    label: "SOP & Standar",    icon: "📜" },
     ],
   },
 ];
@@ -838,6 +846,7 @@ function RenderModule({ menuId, user, globalData }) {
     laporanabsensi: "Modul16_LaporanAbsensi",
     profil:         "Modul17_Profil",
     users:          "Modul18_Users",
+    sop:            "Modul19_SOP",
   };
 
   useEffect(() => {
@@ -902,6 +911,39 @@ export default function App() {
   const [asetList,     setAsetList]     = useState([]);
   const [saldoAwal,    setSaldoAwal]    = useState({}); // { "2026-03": 15000000, ... } per bulan
   const [carryOver,    setCarryOver]    = useState({}); // { "2026-03": { A:200000, B:500000 }, ... }
+  const [pengaturanConfig, setPengaturanConfig] = useState({
+    // Profil Kost
+    namaKost:       "Senyum Inn Exclusive Kost",
+    alamat:         "Jl. Punggawan, Solo",
+    telepon:        "",
+    namaDirektur:   "Yusuf Vindra Asmara",
+    gpsLat:         -7.5755,
+    gpsLng:         110.8243,
+    gpsRadius:      500,
+    jamBuka:        "06:00",
+    jamTutup:       "22:00",
+    // Keuangan
+    managementFee:  22,        // %
+    dendaPerHari:   50000,     // keterlambatan bayar
+    batasTagihan:   25,        // tanggal jatuh tempo
+    toleransiHari:  3,
+    sewaHarian:     250000,
+    depositAktif:   false,
+    depositNominal: 500000,
+    depositBisaDipotong: true,
+    // HR & Penggajian
+    lemburPerShift: 50000,
+    dendaIjinTidakSah: 50000,  // per hari
+    maxPinjamanKoperasi: 700000,
+    nominalInsentif: 500000,
+    kpiThresholdPct: 90,       // % kehadiran untuk dapat insentif
+    rekeningKoperasi: "",
+    // Rekening bank (array)
+    rekening: [
+      { id:1, bank:"BCA", noRek:"", atasNama:"Senyum Inn", default:true }
+    ],
+  });
+
   const [sakuConfig,   setSakuConfig]   = useState([
     { kode:"A", nama:"Petty Cash",     tipe:"pct",  nilai:5,      color:"#f97316" },
     { kode:"B", nama:"General Saving", tipe:"pct",  nilai:23,     color:"#3b82f6" },
@@ -923,10 +965,11 @@ export default function App() {
     weeklyList,   setWeeklyList,
     absensiList,  setAbsensiList,
     asetList,     setAsetList,
-    sakuConfig,   setSakuConfig,
-    saldoAwal,    setSaldoAwal,
-    carryOver,    setCarryOver,
-    isReadOnly:   isReadOnly(user),
+    sakuConfig,        setSakuConfig,
+    saldoAwal,         setSaldoAwal,
+    carryOver,         setCarryOver,
+    pengaturanConfig,  setPengaturanConfig,
+    isReadOnly:        isReadOnly(user),
   };
 
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;

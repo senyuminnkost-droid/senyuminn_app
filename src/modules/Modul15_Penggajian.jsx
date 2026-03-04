@@ -134,8 +134,8 @@ const getColor = (id) => AVATAR_COLORS[(id||0) % AVATAR_COLORS.length];
 // Default komponen gaji per karyawan
 const defaultGaji = (k) => ({
   gajiPokok:      Number(k?.gajiPokok) || 0,
-  insentif:       500000, // default nominal KPI insentif
-  lemburShift:    0,      // jumlah shift lembur × Rp 50.000
+  insentif:       NOMINAL_INSENTIF,
+  lemburShift:    0,      // jumlah shift lembur × LEMBUR_SHIFT
   lemburTambahan: 0,      // nominal langsung dari PJ
   potonganIjin:   0,      // jumlah hari ijin tidak sah × Rp 50.000
   pinjaman:       0,      // maks 700.000 sekali potong
@@ -145,9 +145,11 @@ const defaultGaji = (k) => ({
   status:         "draft", // draft | final | dibayar
 });
 
-const hitungTotal = (g) => {
-  const pendapatan = (g.gajiPokok||0) + (g.insentif||0) + ((g.lemburShift||0)*50000) + (g.lemburTambahan||0);
-  const potongan   = (g.potonganIjin||0)*50000 + (g.pinjaman||0) + (g.bpjs||0) + (g.pajak||0);
+const hitungTotal = (g, cfg={}) => {
+  const LS = cfg.lemburPerShift||50000;
+  const DI = cfg.dendaIjinTidakSah||50000;
+  const pendapatan = (g.gajiPokok||0) + (g.insentif||0) + ((g.lemburShift||0)*LEMBUR_SHIFT) + (g.lemburTambahan||0);
+  const potongan   = (g.potonganIjin||0)*DENDA_IJIN + (g.pinjaman||0) + (g.bpjs||0) + (g.pajak||0);
   return { pendapatan, potongan, netto: pendapatan - potongan };
 };
 
@@ -250,7 +252,7 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
               <div className="pg-slip-row">
                 <span className="pg-slip-key">
                   Lembur Shift
-                  {isEditable && <span style={{fontSize:10,color:"#9ca3af",marginLeft:4}}>(×Rp50rb/shift)</span>}
+                  {isEditable && <span style={{fontSize:10,color:"#9ca3af",marginLeft:4}}>{`(×${(LEMBUR_SHIFT/1000).toFixed(0)}rb/shift)`}</span>}
                 </span>
                 {isEditable ? (
                   <div style={{display:"flex",alignItems:"center",gap:6}}>
@@ -280,7 +282,7 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
               <div className="pg-slip-row">
                 <span className="pg-slip-key">
                   Ijin Tidak Sah
-                  {isEditable && <span style={{fontSize:10,color:"#9ca3af",marginLeft:4}}>(×Rp50rb/hari)</span>}
+                  {isEditable && <span style={{fontSize:10,color:"#9ca3af",marginLeft:4}}>{`(×${(DENDA_IJIN/1000).toFixed(0)}rb/hari)`}</span>}
                 </span>
                 {isEditable ? (
                   <div style={{display:"flex",alignItems:"center",gap:6}}>
@@ -303,7 +305,7 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
                   <input
                     type="number" className="pg-inline-input"
                     value={g.pinjaman||0}
-                    onChange={e=>setV("pinjaman",Math.min(700000,Number(e.target.value)))}
+                    onChange={e=>setV("pinjaman",Math.min(MAX_PINJAMAN,Number(e.target.value)))}
                     min={0} max={700000}
                     style={{borderColor:"#fca5a5",color:"#dc2626"}}
                   />
@@ -385,10 +387,17 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
 // ============================================================
 export default function Penggajian({ user, globalData = {} }) {
   const {
-    karyawanList = [],
-    kasJurnal    = [], setKasJurnal = ()=>{},
-    isReadOnly   = false,
+    karyawanList       = [],
+    kasJurnal          = [], setKasJurnal = ()=>{},
+    pengaturanConfig   = {},
+    isReadOnly         = false,
   } = globalData;
+
+  // Baca dari pengaturan, fallback ke default
+  const LEMBUR_SHIFT   = pengaturanConfig.lemburPerShift      || 50000;
+  const DENDA_IJIN     = pengaturanConfig.dendaIjinTidakSah   || 50000;
+  const MAX_PINJAMAN   = pengaturanConfig.maxPinjamanKoperasi  || 700000;
+  const NOMINAL_INSENTIF = pengaturanConfig.nominalInsentif   || 500000;
 
   const [periode,    setPeriode]   = useState({ tahun:thisYear, bulan:thisMonth });
   const [gajiData,   setGajiData]  = useState({}); // { "karyawanId-YYYY-MM": {...gaji} }

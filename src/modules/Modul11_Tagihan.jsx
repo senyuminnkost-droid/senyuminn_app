@@ -169,7 +169,7 @@ const generateTagihan = (penyewaList, kamarList, existingTagihan) => {
       t => t.penyewaId === p.id && t.periode === thisMonth
     );
     if (!sudahAda) {
-      // Hitung jatuh tempo: tanggal 25 bulan ini
+      // Hitung jatuh tempo: tanggal {BATAS_TAGIHAN} bulan ini
       const jatuhTempo = `${thisMonth}-25`;
       const sisaHari   = hariSisa(jatuhTempo);
       result.push({
@@ -194,7 +194,7 @@ const generateTagihan = (penyewaList, kamarList, existingTagihan) => {
 // MODAL KONFIRMASI BAYAR
 // ============================================================
 function ModalBayar({ tagihan, onClose, onKonfirmasi }) {
-  const denda50k = 50000; // Rp 50.000/hari — dari Pengaturan nanti
+  const denda50k = DENDA_PER_HARI; // Rp 50.000/hari — dari Pengaturan nanti
   const totalDenda = tagihan.dendaHari * denda50k;
   const totalBayar = tagihan.nominal + totalDenda;
 
@@ -326,7 +326,7 @@ function ModalBayar({ tagihan, onClose, onKonfirmasi }) {
 // ============================================================
 function DetailPanel({ tagihan, onBayar, onClose }) {
   const st = STATUS_CONFIG[tagihan.status] || STATUS_CONFIG.belum;
-  const denda50k = 50000;
+  const denda50k = DENDA_PER_HARI;
   const totalDenda = (tagihan.dendaHari || 0) * denda50k;
   const totalBayar = tagihan.nominal + totalDenda;
 
@@ -418,11 +418,17 @@ function DetailPanel({ tagihan, onBayar, onClose }) {
 // ============================================================
 export default function Tagihan({ user, globalData = {} }) {
   const {
-    penyewaList = [],
-    kamarList   = [],
-    tagihanList = [], setTagihanList = () => {},
-    setKasJurnal = () => {},
+    penyewaList        = [],
+    kamarList          = [],
+    tagihanList        = [], setTagihanList  = () => {},
+    kasJurnal          = [], setKasJurnal    = () => {},
+    pengaturanConfig   = {},
+    isReadOnly         = false,
   } = globalData;
+
+  const DENDA_PER_HARI = pengaturanConfig.dendaPerHari  || 50000;
+  const BATAS_TAGIHAN  = pengaturanConfig.batasTagihan  || 25;
+  const TOLERANSI_HARI = pengaturanConfig.toleransiHari || 3;
 
   const [tab,      setTab]      = useState("semua");
   const [selected, setSelected] = useState(null);

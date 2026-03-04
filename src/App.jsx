@@ -1,5 +1,2 @@
-import Shell from "./modules/Modul01_Shell";
-
-export default function App() {
-  return <Shell />;
-}
+import App from './Modul01_Shell'
+export default App

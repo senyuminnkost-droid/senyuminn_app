@@ -152,6 +152,20 @@ const fmtRpShort = (n) => {
 };
 
 const KATEGORI_PEMASUKAN  = ["Sewa Kamar","Denda Keterlambatan","Lain-lain"];
+
+// Kategori aset & aturan depresiasi
+const KATEGORI_ASET = [
+  { id:"tanah",       label:"Tanah",              dep:false, umurDefault:0,  icon:"🏞️",  note:"Tidak didepresiasi — nilai tetap" },
+  { id:"bangunan",    label:"Bangunan",            dep:true,  umurDefault:20, icon:"🏠",  note:"Depresiasi garis lurus" },
+  { id:"kendaraan",   label:"Kendaraan",           dep:true,  umurDefault:5,  icon:"🚗",  note:"Depresiasi garis lurus" },
+  { id:"elektronik",  label:"Elektronik / AC",     dep:true,  umurDefault:5,  icon:"❄️",  note:"Depresiasi garis lurus" },
+  { id:"furnitur",    label:"Furnitur & Perabot",  dep:true,  umurDefault:8,  icon:"🪑",  note:"Depresiasi garis lurus" },
+  { id:"peralatan",   label:"Peralatan Kantor",    dep:true,  umurDefault:4,  icon:"🖥️",  note:"Depresiasi garis lurus" },
+  { id:"lainnya",     label:"Lainnya",             dep:true,  umurDefault:5,  icon:"📦",  note:"Depresiasi garis lurus" },
+];
+
+const getKategoriAset = (id) => KATEGORI_ASET.find(k=>k.id===id) || KATEGORI_ASET[6];
+const isDep = (kategori) => getKategoriAset(kategori)?.dep !== false;
 const KATEGORI_PENGELUARAN = ["Management Fee","Gaji & Insentif","Peralatan","Listrik/Internet/Air","Maintenance","Akomodasi/Op","Perlengkapan","THR","Prive/Dividen","Lain-lain"];
 // sakuConfig diambil dari globalData (diatur di Pengaturan)
 // Default ada di Shell globalData
@@ -285,9 +299,17 @@ function ModalTransaksi({ onClose, onSave, rekeningList }) {
 // MODAL TAMBAH ASET
 // ============================================================
 function ModalAset({ onClose, onSave }) {
-  const [form,setForm] = useState({ nama:"", nilaiPerolehan:"", umurEkonomis:"5", tanggalBeli:todayStr });
+  const [form,setForm] = useState({ nama:"", kategori:"elektronik", nilaiPerolehan:"", umurEkonomis:"5", tanggalBeli:todayStr });
   const set = (k,v) => setForm(p=>({...p,[k]:v}));
-  const depPerBulan = form.nilaiPerolehan && form.umurEkonomis
+
+  // Saat kategori berubah, auto-set umur default & nonaktifkan dep jika tanah
+  const handleKategori = (id) => {
+    const kat = getKategoriAset(id);
+    setForm(p=>({...p, kategori:id, umurEkonomis: String(kat.umurDefault||5)}));
+  };
+
+  const tidakDep = !isDep(form.kategori);
+  const depPerBulan = !tidakDep && form.nilaiPerolehan && form.umurEkonomis
     ? Math.round(Number(form.nilaiPerolehan) / (Number(form.umurEkonomis)*12))
     : 0;
   const valid = form.nama && form.nilaiPerolehan && Number(form.nilaiPerolehan)>0;
@@ -300,38 +322,81 @@ function ModalAset({ onClose, onSave }) {
           <button className="ks-modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="ks-modal-body">
+          {/* Kategori */}
+          <div className="ks-field">
+            <label className="ks-field-label">Kategori Aset</label>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6,marginBottom:4}}>
+              {KATEGORI_ASET.map(k=>(
+                <div
+                  key={k.id}
+                  onClick={()=>handleKategori(k.id)}
+                  style={{
+                    padding:"7px 6px",borderRadius:8,textAlign:"center",cursor:"pointer",
+                    border:`1.5px solid ${form.kategori===k.id?"#f97316":"#e5e7eb"}`,
+                    background:form.kategori===k.id?"#fff7ed":"#fff",
+                    transition:"all .12s"
+                  }}
+                >
+                  <div style={{fontSize:16,marginBottom:2}}>{k.icon}</div>
+                  <div style={{fontSize:10,fontWeight:600,color:form.kategori===k.id?"#ea580c":"#6b7280"}}>{k.label}</div>
+                </div>
+              ))}
+            </div>
+            {tidakDep && (
+              <div style={{background:"#f0fdf4",border:"1px solid #86efac",borderRadius:7,padding:"6px 10px",fontSize:11,color:"#15803d",fontWeight:500}}>
+                ✅ {getKategoriAset(form.kategori).note}
+              </div>
+            )}
+          </div>
+
           <div className="ks-field">
             <label className="ks-field-label">Nama Aset</label>
-            <input className="ks-input" placeholder="Contoh: AC Kamar 1, Kursi Kantor..." value={form.nama} onChange={e=>set("nama",e.target.value)} />
+            <input className="ks-input" placeholder="Contoh: Tanah Jl. Mawar No.5, Bangunan Kost..." value={form.nama} onChange={e=>set("nama",e.target.value)} />
           </div>
+
           <div className="ks-input-row">
             <div className="ks-field">
               <label className="ks-field-label">Nilai Perolehan (Rp)</label>
               <input type="number" className="ks-input" placeholder="0" value={form.nilaiPerolehan} onChange={e=>set("nilaiPerolehan",e.target.value)} />
             </div>
             <div className="ks-field">
-              <label className="ks-field-label">Umur Ekonomis (tahun)</label>
-              <select className="ks-input" value={form.umurEkonomis} onChange={e=>set("umurEkonomis",e.target.value)}>
-                {[1,2,3,4,5,8,10,15,20].map(y=><option key={y} value={y}>{y} tahun</option>)}
+              <label className="ks-field-label">
+                Umur Ekonomis (tahun)
+                {tidakDep && <span style={{color:"#9ca3af",fontWeight:400}}> — N/A</span>}
+              </label>
+              <select className="ks-input" value={form.umurEkonomis} onChange={e=>set("umurEkonomis",e.target.value)} disabled={tidakDep} style={{opacity:tidakDep?.4:1}}>
+                {[1,2,3,4,5,8,10,15,20,25,30,40,50].map(y=><option key={y} value={y}>{y} tahun</option>)}
               </select>
             </div>
           </div>
+
           <div className="ks-field">
             <label className="ks-field-label">Tanggal Perolehan</label>
             <input type="date" className="ks-input" value={form.tanggalBeli} onChange={e=>set("tanggalBeli",e.target.value)} />
           </div>
-          {depPerBulan>0 && (
-            <div style={{background:"#fff7ed",border:"1px solid #fed7aa",borderRadius:8,padding:"10px 12px",fontSize:12}}>
-              <div style={{color:"#9a3412",fontWeight:600,marginBottom:4}}>📊 Estimasi Depresiasi (Garis Lurus)</div>
-              <div style={{display:"flex",gap:16}}>
-                <div><span style={{color:"#9ca3af"}}>Per bulan: </span><b style={{color:"#ea580c"}}>{fmtRp(depPerBulan)}</b></div>
-                <div><span style={{color:"#9ca3af"}}>Per tahun: </span><b style={{color:"#ea580c"}}>{fmtRp(depPerBulan*12)}</b></div>
-              </div>
+
+          {/* Preview depresiasi */}
+          {form.nilaiPerolehan && (
+            <div style={{background:tidakDep?"#f0fdf4":"#fff7ed",border:`1px solid ${tidakDep?"#86efac":"#fed7aa"}`,borderRadius:8,padding:"10px 12px",fontSize:12}}>
+              {tidakDep ? (
+                <div style={{color:"#15803d",fontWeight:600}}>
+                  🏞️ Tanah tidak didepresiasi — nilai buku tetap <b>{fmtRp(Number(form.nilaiPerolehan))}</b> selamanya
+                </div>
+              ) : depPerBulan>0 ? (
+                <>
+                  <div style={{color:"#9a3412",fontWeight:600,marginBottom:6}}>📊 Estimasi Depresiasi (Garis Lurus)</div>
+                  <div style={{display:"flex",gap:16,flexWrap:"wrap"}}>
+                    <div><span style={{color:"#9ca3af"}}>Per bulan: </span><b style={{color:"#ea580c"}}>{fmtRp(depPerBulan)}</b></div>
+                    <div><span style={{color:"#9ca3af"}}>Per tahun: </span><b style={{color:"#ea580c"}}>{fmtRp(depPerBulan*12)}</b></div>
+                    <div><span style={{color:"#9ca3af"}}>Nilai sisa: </span><b style={{color:"#6b7280"}}>Rp 0 (habis {form.umurEkonomis} thn)</b></div>
+                  </div>
+                </>
+              ) : null}
             </div>
           )}
         </div>
         <div className="ks-modal-foot">
-          <button className="ks-btn primary" disabled={!valid} onClick={()=>{ onSave({...form,id:Date.now(),nilaiPerolehan:Number(form.nilaiPerolehan),depPerBulan}); onClose(); }}>
+          <button className="ks-btn primary" disabled={!valid} onClick={()=>{ onSave({...form,id:Date.now(),nilaiPerolehan:Number(form.nilaiPerolehan),depPerBulan:isDep(form.kategori)?depPerBulan:0,tidakDep:!isDep(form.kategori)}); onClose(); }}>
             ✅ Simpan Aset
           </button>
           <button className="ks-btn ghost" onClick={onClose}>Batal</button>
@@ -713,7 +778,7 @@ function TabBudget({ kasJurnal, sakuConfig, setSakuConfig }) {
 // MODAL DATA AWAL ASET (input multiple sekaligus)
 // ============================================================
 function ModalDataAwalAset({ existing, onClose, onSave }) {
-  const emptyRow = () => ({ id: Date.now()+Math.random(), nama:"", nilaiPerolehan:"", umurEkonomis:"5", tanggalBeli:todayStr });
+  const emptyRow = () => ({ id: Date.now()+Math.random(), nama:"", kategori:"elektronik", nilaiPerolehan:"", umurEkonomis:"5", tanggalBeli:todayStr });
   const [rows, setRows] = useState(
     existing.length > 0
       ? existing.map(a => ({...a, nilaiPerolehan: String(a.nilaiPerolehan), umurEkonomis: String(a.umurEkonomis)}))
@@ -754,8 +819,8 @@ function ModalDataAwalAset({ existing, onClose, onSave }) {
           </div>
 
           {/* Header tabel */}
-          <div style={{display:"grid",gridTemplateColumns:"1fr 110px 80px 110px 32px",gap:8,marginBottom:6,padding:"0 4px"}}>
-            {["Nama Aset","Harga Beli (Rp)","Umur (thn)","Tgl Beli",""].map((h,i)=>(
+          <div style={{display:"grid",gridTemplateColumns:"100px 1fr 110px 80px 110px 32px",gap:8,marginBottom:6,padding:"0 4px"}}>
+            {["Kategori","Nama Aset","Harga Beli (Rp)","Umur (thn)","Tgl Beli",""].map((h,i)=>(
               <div key={i} style={{fontSize:10,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",letterSpacing:.6}}>{h}</div>
             ))}
           </div>
@@ -766,7 +831,18 @@ function ModalDataAwalAset({ existing, onClose, onSave }) {
               const dep = r.nilaiPerolehan && r.umurEkonomis
                 ? Math.round(Number(r.nilaiPerolehan)/(Number(r.umurEkonomis)*12)) : 0;
               return (
-                <div key={r.id} style={{display:"grid",gridTemplateColumns:"1fr 110px 80px 110px 32px",gap:8,alignItems:"center"}}>
+                <div key={r.id} style={{display:"grid",gridTemplateColumns:"100px 1fr 110px 80px 110px 32px",gap:8,alignItems:"center"}}>
+                  <select
+                    className="ks-input" value={r.kategori||"lainnya"}
+                    onChange={e=>{
+                      const kat = getKategoriAset(e.target.value);
+                      setRow(r.id,"kategori",e.target.value);
+                      if(kat) setRow(r.id,"umurEkonomis",String(kat.umurDefault||5));
+                    }}
+                    style={{fontSize:11,padding:"6px 7px"}}
+                  >
+                    {KATEGORI_ASET.map(k=><option key={k.id} value={k.id}>{k.icon} {k.label}</option>)}
+                  </select>
                   <input
                     className="ks-input" placeholder="Nama aset..."
                     value={r.nama} onChange={e=>setRow(r.id,"nama",e.target.value)}
@@ -776,8 +852,14 @@ function ModalDataAwalAset({ existing, onClose, onSave }) {
                     value={r.nilaiPerolehan} onChange={e=>setRow(r.id,"nilaiPerolehan",e.target.value)}
                     style={{fontFamily:"JetBrains Mono,monospace",fontSize:11}}
                   />
-                  <select className="ks-input" value={r.umurEkonomis} onChange={e=>setRow(r.id,"umurEkonomis",e.target.value)}>
-                    {[1,2,3,4,5,8,10,15,20].map(y=><option key={y} value={y}>{y}</option>)}
+                  <select
+                    className="ks-input" value={r.umurEkonomis}
+                    onChange={e=>setRow(r.id,"umurEkonomis",e.target.value)}
+                    disabled={!isDep(r.kategori||"lainnya")}
+                    style={{opacity:!isDep(r.kategori||"lainnya")?.4:1}}
+                    title={!isDep(r.kategori||"lainnya")?"Tanah tidak didepresiasi":""}
+                  >
+                    {[1,2,3,4,5,8,10,15,20,25,30,40,50].map(y=><option key={y} value={y}>{y}</option>)}
                   </select>
                   <input
                     type="date" className="ks-input"
@@ -844,6 +926,7 @@ function TabAset({ asetList, setAsetList }) {
 
   // Hitung nilai buku saat ini
   const nilaiSekarang = (aset) => {
+    if (aset.tidakDep) return aset.nilaiPerolehan; // Tanah — tidak berkurang
     const bulanBerlalu = Math.floor((new Date()-new Date(aset.tanggalBeli))/(1000*60*60*24*30));
     return Math.max(0, aset.nilaiPerolehan - (aset.depPerBulan * bulanBerlalu));
   };
@@ -902,9 +985,15 @@ function TabAset({ asetList, setAsetList }) {
                 <div key={a.id} style={{padding:"12px 16px",borderBottom:"1px solid #f3f4f6"}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
                     <div>
-                      <div style={{fontSize:13,fontWeight:600,color:"#1f2937"}}>{a.nama}</div>
-                      <div style={{fontSize:10,color:"#9ca3af",marginTop:1}}>
-                        Dibeli: {a.tanggalBeli} · Umur: {a.umurEkonomis} thn
+                      <div style={{fontSize:13,fontWeight:600,color:"#1f2937"}}>
+                        {getKategoriAset(a.kategori||"lainnya").icon} {a.nama}
+                      </div>
+                      <div style={{fontSize:10,color:"#9ca3af",marginTop:1,display:"flex",gap:8,flexWrap:"wrap"}}>
+                        <span>Dibeli: {a.tanggalBeli}</span>
+                        {a.tidakDep
+                          ? <span style={{color:"#16a34a",fontWeight:600}}>✅ Tidak Didepresiasi</span>
+                          : <span>Umur: {a.umurEkonomis} thn</span>
+                        }
                       </div>
                     </div>
                     <div style={{textAlign:"right"}}>
@@ -912,12 +1001,18 @@ function TabAset({ asetList, setAsetList }) {
                       <div style={{fontSize:10,color:"#9ca3af"}}>Nilai buku ({pct}%)</div>
                     </div>
                   </div>
-                  <div style={{height:5,background:"#f3f4f6",borderRadius:3,overflow:"hidden",marginBottom:4}}>
-                    <div style={{height:"100%",width:`${pct}%`,background:pct>50?"#3b82f6":pct>25?"#f97316":"#ef4444",borderRadius:3,transition:"width .4s"}} />
-                  </div>
+                  {a.tidakDep ? (
+                    <div style={{height:5,background:"#dcfce7",borderRadius:3,marginBottom:4}}>
+                      <div style={{height:"100%",width:"100%",background:"#16a34a",borderRadius:3}} />
+                    </div>
+                  ) : (
+                    <div style={{height:5,background:"#f3f4f6",borderRadius:3,overflow:"hidden",marginBottom:4}}>
+                      <div style={{height:"100%",width:`${pct}%`,background:pct>50?"#3b82f6":pct>25?"#f97316":"#ef4444",borderRadius:3,transition:"width .4s"}} />
+                    </div>
+                  )}
                   <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:"#9ca3af"}}>
-                    <span>Harga beli: {fmtRp(a.nilaiPerolehan)}</span>
-                    <span>Dep/bln: {fmtRp(a.depPerBulan)}</span>
+                    <span>Harga perolehan: {fmtRp(a.nilaiPerolehan)}</span>
+                    <span>{a.tidakDep ? "Nilai tetap" : `Dep/bln: ${fmtRp(a.depPerBulan)}`}</span>
                   </div>
                 </div>
               );

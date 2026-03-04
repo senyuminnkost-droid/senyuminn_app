@@ -494,10 +494,12 @@ function ActionPanel({ penyewa, kamarList, onPerpanjang, onCheckout, onClose }) 
 // ============================================================
 // MAIN
 // ============================================================
-export default function Checkout({ user }) {
-  // Data dari Supabase nanti
-  const [penyewaList, setPenyewaList] = useState([]);
-  const kamarList = [];
+export default function Checkout({ user, globalData = {} }) {
+  const {
+    penyewaList  = [], setPenyewaList  = () => {},
+    riwayatList  = [], setRiwayatList  = () => {},
+    kamarList    = [],
+  } = globalData;
 
   const [tab,      setTab]      = useState("semua"); // semua | mau-habis | terlambat
   const [selected, setSelected] = useState(null);
@@ -524,11 +526,14 @@ export default function Checkout({ user }) {
 
   const handlePerpanjang = (data) => {
     setPenyewaList(prev => prev.map(p => p.id === data.id ? data : p));
-    if (selected?.id === data.id) setSelected(data);
+    setSelected(data);
     setModal(null);
   };
 
   const handleCheckout = (data) => {
+    // Pindah ke riwayat
+    setRiwayatList(prev => [...prev, { ...data, statusRiwayat: "checkout", tglCheckout: data.tglCheckout || todayStr }]);
+    // Hapus dari aktif
     setPenyewaList(prev => prev.filter(p => p.id !== data.id));
     setSelected(null);
     setModal(null);

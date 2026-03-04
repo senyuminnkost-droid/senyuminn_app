@@ -635,7 +635,7 @@ function ComingSoon({ menuId }) {
 // ============================================================
 const moduleCache = {};
 
-function RenderModule({ menuId, user }) {
+function RenderModule({ menuId, user, globalData }) {
   const [Comp, setComp] = useState(null);
   const [failed, setFailed] = useState(false);
 
@@ -647,7 +647,7 @@ function RenderModule({ menuId, user }) {
     weekly:         "Modul06_Weekly",
     kalender:       "Modul07_Kalender",
     penyewa:        "Modul08_Penyewa",
-    checkin:        "Modul09_Checkin",
+    checkin:        "Modul09_Checkout",
     riwayat:        "Modul10_Riwayat",
     tagihan:        "Modul11_Tagihan",
     kas:            "Modul12_Kas",
@@ -680,7 +680,7 @@ function RenderModule({ menuId, user }) {
 
   if (failed) return <div className="fade-in"><ComingSoon menuId={menuId} /></div>;
   if (!Comp)  return <LoadingFallback />;
-  return <div className="fade-in"><Comp user={user} /></div>;
+  return <div className="fade-in"><Comp user={user} globalData={globalData} /></div>;
 }
 
 // ============================================================
@@ -691,6 +691,30 @@ export default function App() {
   const [activeMenu,  setActiveMenu] = useState("dashboard");
   const [minimized,   setMinimized]  = useState(false);
   const [mobileOpen,  setMobileOpen] = useState(false);
+
+  // ── GLOBAL DATA STATE (→ Supabase nanti) ──────────────
+  const [penyewaList,  setPenyewaList]  = useState([]);
+  const [riwayatList,  setRiwayatList]  = useState([]);
+  const [kamarList,    setKamarList]    = useState([]);
+  const [karyawanList, setKaryawanList] = useState([]);
+  const [tiketList,    setTiketList]    = useState([]);
+  const [tagihanList,  setTagihanList]  = useState([]);
+  const [kasJurnal,    setKasJurnal]    = useState([]);
+  const [weeklyList,   setWeeklyList]   = useState([]);
+  const [absensiList,  setAbsensiList]  = useState([]);
+
+  // Bundel semua data & setter jadi satu object
+  const globalData = {
+    penyewaList,  setPenyewaList,
+    riwayatList,  setRiwayatList,
+    kamarList,    setKamarList,
+    karyawanList, setKaryawanList,
+    tiketList,    setTiketList,
+    tagihanList,  setTagihanList,
+    kasJurnal,    setKasJurnal,
+    weeklyList,   setWeeklyList,
+    absensiList,  setAbsensiList,
+  };
 
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
 
@@ -722,7 +746,7 @@ export default function App() {
       <div className="s-main">
         <Header activeMenu={activeMenu} onToggle={handleToggle} />
         <div className="s-content">
-          <RenderModule menuId={activeMenu} user={user} />
+          <RenderModule menuId={activeMenu} user={user} globalData={globalData} />
         </div>
       </div>
     </div>

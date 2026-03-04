@@ -571,9 +571,11 @@ function DetailPanel({ penyewa, onEdit, onClose }) {
 // ============================================================
 // MAIN
 // ============================================================
-export default function Penyewa({ user }) {
-  const [penyewaList, setPenyewaList] = useState([]);
-  const kamarList = []; // dari Supabase nanti
+export default function Penyewa({ user, globalData = {} }) {
+  const {
+    penyewaList  = [], setPenyewaList  = () => {},
+    kamarList    = [], setKamarList    = () => {},
+  } = globalData; // dari Supabase nanti
   const [selected,  setSelected]  = useState(null);
   const [showForm,  setShowForm]  = useState(false);
   const [search,    setSearch]    = useState("");
@@ -595,6 +597,7 @@ export default function Penyewa({ user }) {
   const handleCheckin = (data) => {
     setPenyewaList(prev => [...prev, data]);
     setShowForm(false);
+    setSelected(data);
   };
 
   return (

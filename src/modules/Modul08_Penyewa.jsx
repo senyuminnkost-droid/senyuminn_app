@@ -117,14 +117,27 @@ const getInisial = (nama) => {
 function FormPenyewa({ penyewa, kamarList, onClose, onSave }) {
   const isEdit = !!penyewa;
   const [form, setForm] = useState({
-    nama: penyewa?.nama || "", noHP: penyewa?.noHP || "",
-    noKTP: penyewa?.noKTP || "", noHPDarurat: penyewa?.noHPDarurat || "",
-    tglMasuk: penyewa?.tglMasuk || todayStr, kamarId: penyewa?.kamarId || "",
-    kontrakMulai: penyewa?.kontrakMulai || "", kontrakSelesai: penyewa?.kontrakSelesai || "",
-    durasi: penyewa?.durasi || "6", partner1: penyewa?.partner?.[0] || "",
-    partner2: penyewa?.partner?.[1] || "", catatan: penyewa?.catatan || "",
+    nama: penyewa?.nama || "",
+    noHP: penyewa?.noHP || "",
+    noKTP: penyewa?.noKTP || "",
+    alamat: penyewa?.alamat || "",
+    namaDarurat: penyewa?.namaDarurat || "",
+    noHPDarurat: penyewa?.noHPDarurat || "",
+    tglMasuk: penyewa?.tglMasuk || todayStr,
+    kamarId: penyewa?.kamarId || "",
+    kontrakMulai: penyewa?.kontrakMulai || todayStr,
+    kontrakSelesai: penyewa?.kontrakSelesai || "",
+    durasi: penyewa?.durasi || "6",
+    partner: penyewa?.partner || [{ nama: "", noHP: "" }, { nama: "", noHP: "" }],
+    catatan: penyewa?.catatan || "",
   });
   const set = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
+  const setPartner = (idx, field, val) => setForm(prev => {
+    const p = [...prev.partner];
+    if (!p[idx]) p[idx] = { nama: "", noHP: "" };
+    p[idx] = { ...p[idx], [field]: val };
+    return { ...prev, partner: p };
+  });
 
   const handleDurasi = (dur) => {
     set("durasi", dur);
@@ -143,7 +156,17 @@ function FormPenyewa({ penyewa, kamarList, onClose, onSave }) {
     }
   };
 
-  const valid = form.nama && form.noHP && form.kamarId && form.kontrakMulai;
+  const nikValid = !form.noKTP || /^\d{16}$/.test(form.noKTP);
+  const valid = form.nama && form.noHP && form.kamarId && form.kontrakMulai && nikValid;
+
+  // Auto-compute kontrakSelesai on mount if kontrakMulai exists
+  useEffect(() => {
+    if (form.kontrakMulai && form.durasi && !form.kontrakSelesai) {
+      const d = new Date(form.kontrakMulai);
+      d.setMonth(d.getMonth() + parseInt(form.durasi));
+      set("kontrakSelesai", `${d.getFullYear()}-${padD(d.getMonth()+1)}-${padD(d.getDate())}`);
+    }
+  }, []);
 
   return (
     <div className="py-overlay" onClick={onClose}>
@@ -164,29 +187,40 @@ function FormPenyewa({ penyewa, kamarList, onClose, onSave }) {
               <input className="py-input" placeholder="08xx-xxxx-xxxx" value={form.noHP} onChange={e => set("noHP", e.target.value)} />
             </div>
             <div className="py-field">
-              <label className="py-field-label">NIK / No. KTP</label>
-              <input className="py-input" placeholder="16 digit NIK" value={form.noKTP} onChange={e => set("noKTP", e.target.value)} />
+              <label className="py-field-label">NIK / No. KTP {!nikValid && form.noKTP && <span style={{color:"#ef4444",fontWeight:400}}>— harus 16 digit</span>}</label>
+              <input className="py-input" placeholder="16 digit NIK" maxLength={16} value={form.noKTP} onChange={e => set("noKTP", e.target.value.replace(/\D/g,""))} style={!nikValid && form.noKTP ? {borderColor:"#ef4444"} : {}} />
             </div>
           </div>
+          <div className="py-field">
+            <label className="py-field-label">Alamat</label>
+            <textarea className="py-input" rows={2} placeholder="Alamat lengkap sesuai KTP..." value={form.alamat} onChange={e => set("alamat", e.target.value)} style={{ resize: "none" }} />
+          </div>
+          <div className="py-section-divider">Kontak Darurat</div>
           <div className="py-input-row">
             <div className="py-field">
-              <label className="py-field-label">No. Darurat</label>
-              <input className="py-input" placeholder="Keluarga / wali" value={form.noHPDarurat} onChange={e => set("noHPDarurat", e.target.value)} />
+              <label className="py-field-label">Nama Darurat</label>
+              <input className="py-input" placeholder="Nama keluarga / wali" value={form.namaDarurat} onChange={e => set("namaDarurat", e.target.value)} />
             </div>
             <div className="py-field">
-              <label className="py-field-label">Tanggal Masuk</label>
-              <input type="date" className="py-input" value={form.tglMasuk} onChange={e => set("tglMasuk", e.target.value)} />
+              <label className="py-field-label">No. HP Darurat</label>
+              <input className="py-input" placeholder="08xx-xxxx-xxxx" value={form.noHPDarurat} onChange={e => set("noHPDarurat", e.target.value)} />
             </div>
           </div>
           <div className="py-section-divider">Kamar & Kontrak</div>
-          <div className="py-field">
-            <label className="py-field-label">Kamar <span>*</span></label>
-            <select className="py-input" value={form.kamarId} onChange={e => set("kamarId", e.target.value)}>
-              <option value="">Pilih kamar...</option>
-              {kamarList.filter(k => k.status === "tersedia" || k.status === "booked" || k.id === penyewa?.kamarId).map(k => (
-                <option key={k.id} value={k.id}>Kamar {k.id} — {k.tipe} ({k.status})</option>
-              ))}
-            </select>
+          <div className="py-input-row">
+            <div className="py-field">
+              <label className="py-field-label">Tanggal Masuk (Check-in)</label>
+              <input type="date" className="py-input" value={form.tglMasuk} onChange={e => set("tglMasuk", e.target.value)} />
+            </div>
+            <div className="py-field">
+              <label className="py-field-label">Kamar <span>*</span></label>
+              <select className="py-input" value={form.kamarId} onChange={e => set("kamarId", e.target.value)}>
+                <option value="">Pilih kamar...</option>
+                {kamarList.filter(k => k.status === "tersedia" || k.status === "booked" || k.id === penyewa?.kamarId).map(k => (
+                  <option key={k.id} value={k.id}>Kamar {k.id} — {k.tipe} ({k.status})</option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="py-input-row">
             <div className="py-field">
@@ -196,6 +230,7 @@ function FormPenyewa({ penyewa, kamarList, onClose, onSave }) {
             <div className="py-field">
               <label className="py-field-label">Durasi</label>
               <select className="py-input" value={form.durasi} onChange={e => handleDurasi(e.target.value)}>
+                <option value="1">1 bulan</option>
                 <option value="3">3 bulan</option>
                 <option value="6">6 bulan</option>
                 <option value="12">12 bulan</option>
@@ -207,25 +242,46 @@ function FormPenyewa({ penyewa, kamarList, onClose, onSave }) {
               ✅ Kontrak selesai: <b>{form.kontrakSelesai}</b>
             </div>
           )}
-          <div className="py-section-divider">Partner (maks 2)</div>
-          <div className="py-input-row">
-            <div className="py-field">
-              <label className="py-field-label">Partner 1</label>
-              <input className="py-input" placeholder="Nama partner 1" value={form.partner1} onChange={e => set("partner1", e.target.value)} />
+          {!isEdit && (
+            <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 8, padding: "8px 12px", fontSize: 11, color: "#1d4ed8", marginBottom: 12 }}>
+              🏠 Menyimpan data ini akan otomatis <b>Check-in</b> penyewa & mengubah status kamar menjadi <b>terisi</b>.
             </div>
-            <div className="py-field">
-              <label className="py-field-label">Partner 2</label>
-              <input className="py-input" placeholder="Nama partner 2" value={form.partner2} onChange={e => set("partner2", e.target.value)} />
+          )}
+          <div className="py-section-divider">Partner / Penghuni Tambahan (maks 2)</div>
+          {[0, 1].map(idx => (
+            <div key={idx} style={{ background: "#f9fafb", borderRadius: 10, padding: "10px 12px", marginBottom: 8, border: "1px solid #e5e7eb" }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", marginBottom: 6 }}>Partner {idx + 1}</div>
+              <div className="py-input-row">
+                <div className="py-field" style={{ marginBottom: 0 }}>
+                  <label className="py-field-label">Nama</label>
+                  <input className="py-input" placeholder={`Nama partner ${idx + 1}`} value={form.partner[idx]?.nama || ""} onChange={e => setPartner(idx, "nama", e.target.value)} />
+                </div>
+                <div className="py-field" style={{ marginBottom: 0 }}>
+                  <label className="py-field-label">No. HP</label>
+                  <input className="py-input" placeholder="08xx-xxxx-xxxx" value={form.partner[idx]?.noHP || ""} onChange={e => setPartner(idx, "noHP", e.target.value)} />
+                </div>
+              </div>
             </div>
-          </div>
+          ))}
           <div className="py-field">
             <label className="py-field-label">Catatan</label>
             <textarea className="py-input" rows={2} placeholder="Catatan tambahan..." value={form.catatan} onChange={e => set("catatan", e.target.value)} style={{ resize: "none" }} />
           </div>
         </div>
         <div className="py-modal-foot">
-          <button className="py-btn primary" onClick={() => { if(!valid) return; onSave({ id: penyewa?.id || Date.now(), ...form, partner: [form.partner1, form.partner2].filter(Boolean) }); onClose(); }} disabled={!valid}>
-            {isEdit ? "Simpan Perubahan" : "Tambah Penyewa"}
+          <button className="py-btn primary" onClick={() => {
+            if (!valid) return;
+            const partnerFilled = form.partner.filter(p => p.nama);
+            onSave({
+              id: penyewa?.id || Date.now(),
+              ...form,
+              partner: partnerFilled,
+              checkinAt: penyewa?.checkinAt || new Date().toISOString(),
+              isCheckedIn: true,
+            });
+            onClose();
+          }} disabled={!valid}>
+            {isEdit ? "Simpan Perubahan" : "✅ Simpan & Check-in"}
           </button>
           <button className="py-btn ghost" onClick={onClose}>Batal</button>
         </div>
@@ -280,9 +336,11 @@ function DetailPanel({ penyewa, onEdit, onClose }) {
           <div className="py-info-grid">
             {[
               { key: "NIK / KTP",      val: penyewa.noKTP       || "—", cls: "mono" },
-              { key: "No. Darurat",    val: penyewa.noHPDarurat || "—" },
               { key: "Tanggal Masuk",  val: penyewa.tglMasuk    || "—", cls: "mono" },
+              { key: "Nama Darurat",   val: penyewa.namaDarurat || "—" },
+              { key: "No. Darurat",    val: penyewa.noHPDarurat || "—" },
               { key: "Durasi Kontrak", val: `${penyewa.durasi || "—"} bulan` },
+              { key: "Status",         val: penyewa.isCheckedIn ? "✅ Check-in" : "⏳ Belum check-in", cls: "orange" },
             ].map((i,idx) => (
               <div key={idx} className="py-info-item">
                 <div className="py-info-key">{i.key}</div>
@@ -290,14 +348,23 @@ function DetailPanel({ penyewa, onEdit, onClose }) {
               </div>
             ))}
           </div>
+          {penyewa.alamat && (
+            <div className="py-info-item" style={{ marginTop: 8 }}>
+              <div className="py-info-key">Alamat</div>
+              <div className="py-info-val" style={{ fontSize: 11, lineHeight: 1.5 }}>{penyewa.alamat}</div>
+            </div>
+          )}
         </div>
         {penyewa.partner?.length > 0 && (
           <div className="py-section">
-            <div className="py-section-label">Partner</div>
+            <div className="py-section-label">Partner / Penghuni Tambahan</div>
             {penyewa.partner.map((p, i) => (
               <div key={i} className="py-partner-item">
                 <div className="py-partner-icon">👥</div>
-                <div className="py-partner-name">{p}</div>
+                <div style={{ flex: 1 }}>
+                  <div className="py-partner-name">{typeof p === "object" ? p.nama : p}</div>
+                  {typeof p === "object" && p.noHP && <div style={{ fontSize: 11, color: "#9ca3af" }}>📞 {p.noHP}</div>}
+                </div>
               </div>
             ))}
           </div>
@@ -318,7 +385,7 @@ function DetailPanel({ penyewa, onEdit, onClose }) {
 
 export default function Penyewa({ user }) {
   const [penyewaList, setPenyewaList] = useState([]);
-  const kamarList = [];
+  const [kamarList, setKamarList] = useState([]);
   const [selected,  setSelected]  = useState(null);
   const [showForm,  setShowForm]  = useState(false);
   const [editData,  setEditData]  = useState(null);
@@ -339,8 +406,17 @@ export default function Penyewa({ user }) {
   const kontrakHabis = penyewaList.filter(p => { const s = hariSisa(p.kontrakSelesai); return s !== null && s >= 0 && s <= 30; }).length;
 
   const handleSave = (data) => {
-    if (editData) { setPenyewaList(prev => prev.map(p => p.id === data.id ? data : p)); if (selected?.id === data.id) setSelected(data); }
-    else setPenyewaList(prev => [...prev, data]);
+    const isNew = !editData;
+    if (editData) {
+      setPenyewaList(prev => prev.map(p => p.id === data.id ? data : p));
+      if (selected?.id === data.id) setSelected(data);
+    } else {
+      setPenyewaList(prev => [...prev, data]);
+    }
+    // Auto check-in: ubah status kamar jadi "terisi" saat penyewa baru ditambahkan
+    if (isNew && data.kamarId) {
+      setKamarList(prev => prev.map(k => k.id === data.kamarId ? { ...k, status: "terisi" } : k));
+    }
     setEditData(null);
   };
 

@@ -76,7 +76,7 @@ const EVENT_CFG = {
   reminder:    { label:"Reminder",       color:"#9ca3af", bg:"#f3f4f6", icon:"⚠️" },
 };
 
-const MOCK_EVENTS = [ nul ];
+
 
 const BULAN = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
 const HARI  = ["MIN","SEN","SEL","RAB","KAM","JUM","SAB"];
@@ -94,7 +94,7 @@ export default function Kalender({ user, globalData = {} }) {
   const [month,        setMonth]        = useState(today.getMonth());
   const [selectedDate, setSelectedDate] = useState(todayStr);
   const [showModal,    setShowModal]    = useState(false);
-  const [eventList,    setEventList]    = useState(MOCK_EVENTS);
+  const [eventList,    setEventList]    = useState([]);
   const [form,         setForm]         = useState({ tanggal: todayStr, tipe:"weekly", label:"", catatan:"" });
 
   const canEdit = user?.role === "manajemen";

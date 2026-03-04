@@ -117,7 +117,7 @@ const getBulanList = (year) => Array.from({length:12},(_,i)=>{
 });
 
 // Hitung data keuangan dari transaksi untuk periode tertentu
-const hitungKeuangan = (kasJurnal, asetList, penyewaList, karyawanList, periode) => {
+const hitungKeuangan = (kasJurnal, asetList, penyewaList, karyawanList, periode, depositList=[], sewaDimukaList=[], saldoAwal={}) => {
   const { dari, sampai } = periode;
 
   const txInRange = kasJurnal.filter(t => {
@@ -151,9 +151,31 @@ const hitungKeuangan = (kasJurnal, asetList, penyewaList, karyawanList, periode)
   const mgmtFee = Math.round(totalPendapatan * 0.22);
 
   // Arus kas
-  const kasIn  = txInRange.filter(t=>t.tipe==="pemasukan").reduce((s,t)=>s+t.nominal,0);
-  const kasOut = txInRange.filter(t=>t.tipe==="pengeluaran").reduce((s,t)=>s+t.nominal,0);
+  // Kas operasional (exclude liabilitas — deposit masuk/keluar bukan pendapatan/beban)
+  const kasIn  = txInRange.filter(t=>t.tipe==="pemasukan"  && !t.isLiabilitas).reduce((s,t)=>s+t.nominal,0);
+  const kasOut = txInRange.filter(t=>t.tipe==="pengeluaran" && !t.isLiabilitas).reduce((s,t)=>s+t.nominal,0);
   const netKas = kasIn - kasOut;
+
+  // Arus kas per aktivitas
+  const arusOperating  = kasIn - kasOut; // pendapatan earned - beban operasional
+  const arusInvesting  = -txInRange.filter(t=>t.tipe==="pengeluaran"&&t.kategori==="Peralatan").reduce((s,t)=>s+t.nominal,0);
+  const arusFinancing  = txInRange.filter(t=>t.isLiabilitas).reduce((s,t)=>
+    t.tipe==="pemasukan" ? s+t.nominal : s-t.nominal, 0
+  ) - txInRange.filter(t=>t.kategori==="Prive/Dividen").reduce((s,t)=>s+t.nominal,0);
+
+  // Pendapatan accrual (earned) — exclude sewa dimuka yang belum di-release bulan ini
+  const pendapatanEarned = pendapatanSewa; // sudah benar karena release per bulan di Tagihan
+
+  // Liabilitas
+  const totalDepositAktif = depositList.filter(d=>d.status==="aktif").reduce((s,d)=>s+d.nominal,0);
+  const totalSewaDimuka   = sewaDimukaList.filter(sd=>!sd.selesai).reduce((acc,sd)=>{
+    const released = (sd.sudahRelease||[]).length * sd.perBulan;
+    return acc + Math.max(0, sd.totalBayar - released);
+  },0);
+  const totalLiabilitas   = totalDepositAktif + totalSewaDimuka;
+
+  // Piutang (tagihan belum lunas dari penyewaList)
+  const piutangUsaha = penyewaList.reduce((s,p)=>s+(p.piutang||0),0);
 
   // Aset tetap
   const nilaiTanah     = asetList.filter(a=>a.tidakDep).reduce((s,a)=>s+a.nilaiPerolehan,0);
@@ -170,11 +192,13 @@ const hitungKeuangan = (kasJurnal, asetList, penyewaList, karyawanList, periode)
   const roe  = totalPendapatan>0 ? (labaBersih/totalPendapatan)*100 : 0; // simplified
 
   return {
-    pendapatanSewa, pendapatanLain, totalPendapatan,
+    pendapatanSewa, pendapatanLain, totalPendapatan, pendapatanEarned,
     beban, totalBeban, totalDepresiasi,
     labaKotor, labaBersih, mgmtFee,
     kasIn, kasOut, netKas,
+    arusOperating, arusInvesting, arusFinancing,
     nilaiTanah, nilaiAsetLain, akumDepresiasi, nilaiBukuAset,
+    totalDepositAktif, totalSewaDimuka, totalLiabilitas, piutangUsaha,
     npm, roa, roe, jumlahBulan,
     txCount: txInRange.length,
   };
@@ -262,42 +286,79 @@ function LabaRugi({ data, label }) {
 // ============================================================
 function ArusKas({ data, kasJurnal, periode }) {
   if (!data) return <div className="lk-empty"><div className="lk-empty-icon">💧</div></div>;
-  const { kasIn, kasOut, netKas } = data;
+  const { arusOperating, arusInvesting, arusFinancing, kasIn, kasOut, netKas } = data;
   const { dari, sampai } = periode;
 
   const txInRange = kasJurnal.filter(t=>t.tanggal>=dari&&t.tanggal<=sampai);
 
-  // Kelompokkan pemasukan
-  const pemasukanByKat = {};
-  txInRange.filter(t=>t.tipe==="pemasukan").forEach(t=>{
-    pemasukanByKat[t.kategori] = (pemasukanByKat[t.kategori]||0)+t.nominal;
-  });
-  const pengeluaranByKat = {};
-  txInRange.filter(t=>t.tipe==="pengeluaran").forEach(t=>{
-    pengeluaranByKat[t.kategori] = (pengeluaranByKat[t.kategori]||0)+t.nominal;
-  });
+  // Operating: pendapatan & beban operasional (exclude liabilitas & investasi)
+  const opIn  = txInRange.filter(t=>t.tipe==="pemasukan"  && !t.isLiabilitas && t.kategori!=="Peralatan");
+  const opOut = txInRange.filter(t=>t.tipe==="pengeluaran" && !t.isLiabilitas && t.kategori!=="Peralatan" && t.kategori!=="Prive/Dividen");
+  const totalOpIn  = opIn.reduce((s,t)=>s+t.nominal,0);
+  const totalOpOut = opOut.reduce((s,t)=>s+t.nominal,0);
+  const netOp      = totalOpIn - totalOpOut;
+
+  // Investing: pembelian aset
+  const invOut = txInRange.filter(t=>t.tipe==="pengeluaran" && t.kategori==="Peralatan");
+  const netInv = -invOut.reduce((s,t)=>s+t.nominal,0);
+
+  // Financing: deposit masuk/keluar + prive
+  const finTx  = txInRange.filter(t=>t.isLiabilitas || t.kategori==="Prive/Dividen");
+  const netFin = finTx.reduce((s,t)=>t.tipe==="pemasukan"?s+t.nominal:s-t.nominal,0);
+
+  const netTotal = netOp + netInv + netFin;
+
+  const Row = ({label, val, indent=false, bold=false, positive=false, negative=false}) => (
+    <tr className={bold?"total":(positive?"indent positive":(negative?"indent negative":"indent"))}>
+      <td style={indent?{paddingLeft:24}:{}}>{label}</td>
+      <td className="right">{val<0?`(${fmtRp(Math.abs(val))})`:fmtRp(val)}</td>
+    </tr>
+  );
 
   return (
     <table className="lk-table">
       <thead><tr><th>Keterangan</th><th className="right">Nominal</th></tr></thead>
       <tbody>
-        <tr className="section-header"><td>ARUS KAS MASUK (Operasional)</td><td></td></tr>
-        {Object.entries(pemasukanByKat).map(([k,v])=>(
-          <tr key={k} className="indent positive"><td>{k}</td><td className="right">{fmtRp(v)}</td></tr>
-        ))}
-        {Object.keys(pemasukanByKat).length===0 && <tr className="indent"><td style={{color:"#9ca3af",fontStyle:"italic"}}>Belum ada pemasukan</td><td></td></tr>}
-        <tr className="subtotal"><td>Total Kas Masuk</td><td className="right">{fmtRp(kasIn)}</td></tr>
+        {/* Aktivitas Operasi */}
+        <tr className="section-header"><td>Aktivitas Operasi</td><td></td></tr>
+        {opIn.length===0 && opOut.length===0 ? (
+          <tr className="indent"><td colSpan={2} style={{color:"#9ca3af"}}>Belum ada transaksi operasional</td></tr>
+        ) : (
+          <>
+            {Object.entries(opIn.reduce((acc,t)=>{acc[t.kategori]=(acc[t.kategori]||0)+t.nominal;return acc},{} )).map(([k,v])=>(
+              <Row key={k} label={k} val={v} indent positive />
+            ))}
+            {Object.entries(opOut.reduce((acc,t)=>{acc[t.kategori]=(acc[t.kategori]||0)+t.nominal;return acc},{})).map(([k,v])=>(
+              <Row key={k} label={k} val={-v} indent negative />
+            ))}
+          </>
+        )}
+        <tr className="subtotal"><td>Net Arus Operasi</td><td className="right" style={{color:netOp>=0?"#16a34a":"#dc2626"}}>{netOp<0?`(${fmtRp(Math.abs(netOp))})`:fmtRp(netOp)}</td></tr>
 
-        <tr className="section-header"><td>ARUS KAS KELUAR (Operasional)</td><td></td></tr>
-        {Object.entries(pengeluaranByKat).map(([k,v])=>(
-          <tr key={k} className="indent negative"><td>{k}</td><td className="right">({fmtRp(v)})</td></tr>
+        {/* Aktivitas Investasi */}
+        <tr className="section-header"><td>Aktivitas Investasi</td><td></td></tr>
+        {invOut.length===0 ? (
+          <tr className="indent"><td colSpan={2} style={{color:"#9ca3af"}}>Tidak ada pembelian aset</td></tr>
+        ) : invOut.map(t=>(
+          <Row key={t.id} label={t.keterangan||t.kategori} val={-t.nominal} indent negative />
         ))}
-        {Object.keys(pengeluaranByKat).length===0 && <tr className="indent"><td style={{color:"#9ca3af",fontStyle:"italic"}}>Belum ada pengeluaran</td><td></td></tr>}
-        <tr className="subtotal"><td>Total Kas Keluar</td><td className="right">({fmtRp(kasOut)})</td></tr>
+        <tr className="subtotal"><td>Net Arus Investasi</td><td className="right" style={{color:netInv>=0?"#16a34a":"#dc2626"}}>{netInv<0?`(${fmtRp(Math.abs(netInv))})`:fmtRp(netInv)}</td></tr>
 
-        <tr className="total">
-          <td>NET CASHFLOW</td>
-          <td className="right" style={{color:netKas>=0?"#16a34a":"#dc2626"}}>{netKas>=0?fmtRp(netKas):`(${fmtRp(netKas)})`}</td>
+        {/* Aktivitas Pendanaan */}
+        <tr className="section-header"><td>Aktivitas Pendanaan</td><td></td></tr>
+        {finTx.length===0 ? (
+          <tr className="indent"><td colSpan={2} style={{color:"#9ca3af"}}>Tidak ada aktivitas pendanaan</td></tr>
+        ) : finTx.map(t=>(
+          <Row key={t.id} label={t.keterangan||t.kategori} val={t.tipe==="pemasukan"?t.nominal:-t.nominal} indent positive={t.tipe==="pemasukan"} negative={t.tipe==="pengeluaran"} />
+        ))}
+        <tr className="subtotal"><td>Net Arus Pendanaan</td><td className="right" style={{color:netFin>=0?"#16a34a":"#dc2626"}}>{netFin<0?`(${fmtRp(Math.abs(netFin))})`:fmtRp(netFin)}</td></tr>
+
+        {/* Total */}
+        <tr className="total" style={{borderTop:"2px solid #1f2937"}}>
+          <td>KENAIKAN (PENURUNAN) KAS</td>
+          <td className="right" style={{color:netTotal>=0?"#16a34a":"#dc2626", fontSize:15}}>
+            {netTotal<0?`(${fmtRp(Math.abs(netTotal))})`:fmtRp(netTotal)}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -309,33 +370,63 @@ function ArusKas({ data, kasJurnal, periode }) {
 // ============================================================
 function Neraca({ data }) {
   if (!data) return <div className="lk-empty"><div className="lk-empty-icon">⚖️</div></div>;
-  const { nilaiTanah, nilaiAsetLain, akumDepresiasi, nilaiBukuAset, totalPendapatan, labaBersih, mgmtFee } = data;
+  const {
+    nilaiTanah, nilaiAsetLain, akumDepresiasi, nilaiBukuAset,
+    labaBersih, mgmtFee, kasIn, kasOut, piutangUsaha,
+    totalDepositAktif, totalSewaDimuka, totalLiabilitas,
+  } = data;
 
-  const totalAset = nilaiTanah + nilaiBukuAset;
-  const modal     = totalAset; // simplified — modal = aset (tanpa hutang untuk sekarang)
+  const kas             = kasIn - kasOut;
+  const totalAsetLancar = Math.max(0, kas) + Math.max(0, piutangUsaha);
+  const totalAsetTetap  = nilaiTanah + nilaiBukuAset;
+  const totalAset       = totalAsetLancar + totalAsetTetap;
+
+  const modalPemilik    = totalAset - totalLiabilitas - labaBersih;
+  const totalModal      = modalPemilik + labaBersih - mgmtFee;
+  const totalLiabModal  = totalLiabilitas + totalModal;
 
   return (
     <table className="lk-table">
       <thead><tr><th>Keterangan</th><th className="right">Nominal</th></tr></thead>
       <tbody>
+        {/* ─── ASET ─── */}
         <tr className="section-header"><td>ASET</td><td></td></tr>
+
         <tr className="section-header"><td style={{paddingLeft:16}}>Aset Lancar</td><td></td></tr>
-        <tr className="indent"><td>Kas & Setara Kas</td><td className="right">{fmtRp(data.kasIn-data.kasOut)}</td></tr>
-        <tr className="indent"><td>Piutang Usaha</td><td className="right">{fmtRp(data.totalPendapatan - data.kasIn)}</td></tr>
-        <tr className="subtotal"><td>Total Aset Lancar</td><td className="right">{fmtRp(Math.max(0,(data.kasIn-data.kasOut)+(data.totalPendapatan-data.kasIn)))}</td></tr>
+        <tr className="indent"><td>Kas & Setara Kas</td><td className="right">{fmtRp(Math.max(0,kas))}</td></tr>
+        <tr className="indent"><td>Piutang Usaha</td><td className="right">{fmtRp(Math.max(0,piutangUsaha))}</td></tr>
+        <tr className="subtotal"><td>Total Aset Lancar</td><td className="right">{fmtRp(totalAsetLancar)}</td></tr>
 
         <tr className="section-header"><td style={{paddingLeft:16}}>Aset Tetap</td><td></td></tr>
-        <tr className="indent"><td>Tanah</td><td className="right">{fmtRp(nilaiTanah)}</td></tr>
-        <tr className="indent"><td>Bangunan & Peralatan</td><td className="right">{fmtRp(nilaiAsetLain)}</td></tr>
+        <tr className="indent"><td>Tanah & Bangunan</td><td className="right">{fmtRp(nilaiTanah)}</td></tr>
+        <tr className="indent"><td>Peralatan & Inventaris</td><td className="right">{fmtRp(nilaiAsetLain)}</td></tr>
         <tr className="indent negative"><td>Akumulasi Depresiasi</td><td className="right">({fmtRp(akumDepresiasi)})</td></tr>
-        <tr className="subtotal"><td>Total Aset Tetap (Nilai Buku)</td><td className="right">{fmtRp(nilaiTanah+nilaiBukuAset)}</td></tr>
+        <tr className="subtotal"><td>Total Aset Tetap</td><td className="right">{fmtRp(totalAsetTetap)}</td></tr>
+
         <tr className="total"><td>TOTAL ASET</td><td className="right">{fmtRp(totalAset)}</td></tr>
 
-        <tr className="section-header"><td>MODAL & KEWAJIBAN</td><td></td></tr>
-        <tr className="indent positive"><td>Modal Pemilik</td><td className="right">{fmtRp(totalAset - labaBersih)}</td></tr>
+        {/* ─── LIABILITAS ─── */}
+        <tr className="section-header"><td>LIABILITAS</td><td></td></tr>
+        <tr className="indent"><td>Deposit Penyewa</td>
+          <td className="right" style={{color: totalDepositAktif>0?"#dc2626":"#374151"}}>
+            {fmtRp(totalDepositAktif)}
+          </td>
+        </tr>
+        <tr className="indent"><td>Sewa Diterima Dimuka</td>
+          <td className="right" style={{color: totalSewaDimuka>0?"#dc2626":"#374151"}}>
+            {fmtRp(totalSewaDimuka)}
+          </td>
+        </tr>
+        <tr className="subtotal"><td>Total Liabilitas</td><td className="right">{fmtRp(totalLiabilitas)}</td></tr>
+
+        {/* ─── MODAL ─── */}
+        <tr className="section-header"><td>MODAL</td><td></td></tr>
+        <tr className="indent positive"><td>Modal Pemilik</td><td className="right">{fmtRp(Math.max(0, modalPemilik))}</td></tr>
         <tr className="indent positive"><td>Laba Bersih Periode</td><td className="right">{fmtRp(labaBersih)}</td></tr>
         <tr className="indent negative"><td>Management Fee Terutang</td><td className="right">({fmtRp(mgmtFee)})</td></tr>
-        <tr className="total"><td>TOTAL MODAL</td><td className="right">{fmtRp(totalAset)}</td></tr>
+        <tr className="subtotal"><td>Total Modal</td><td className="right">{fmtRp(totalModal)}</td></tr>
+
+        <tr className="total"><td>TOTAL LIABILITAS + MODAL</td><td className="right">{fmtRp(totalLiabModal)}</td></tr>
       </tbody>
     </table>
   );
@@ -492,11 +583,15 @@ const downloadCSV = (data, kasJurnal, periode, reportType, label) => {
 // ============================================================
 export default function Laporan({ user, globalData = {} }) {
   const {
-    kasJurnal    = [],
-    asetList     = [],
-    penyewaList  = [],
-    karyawanList = [],
-    tagihanList  = [],
+    kasJurnal      = [],
+    asetList       = [],
+    penyewaList    = [],
+    karyawanList   = [],
+    tagihanList    = [],
+    depositList    = [],
+    sewaDimukaList = [],
+    saldoAwal      = {},
+    isReadOnly     = false,
   } = globalData;
 
   // ── Periode state
@@ -540,7 +635,7 @@ export default function Laporan({ user, globalData = {} }) {
 
   const periode  = getPeriodeRange();
   const label    = getPeriodeLabel();
-  const data     = useMemo(()=>hitungKeuangan(kasJurnal,asetList,penyewaList,karyawanList,periode),[kasJurnal,asetList,periode]);
+  const data     = useMemo(()=>hitungKeuangan(kasJurnal,asetList,penyewaList,karyawanList,periode,depositList,sewaDimukaList,saldoAwal),[kasJurnal,asetList,penyewaList,periode,depositList,sewaDimukaList,saldoAwal]);
 
   const years = [thisYear-2, thisYear-1, thisYear, thisYear+1];
 

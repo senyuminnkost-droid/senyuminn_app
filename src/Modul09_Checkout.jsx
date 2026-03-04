@@ -502,6 +502,9 @@ export default function Checkout({ user, globalData = {} }) {
     kamarList          = [], setKamarList    = () => {},
     pengaturanConfig   = {},
     isReadOnly         = false,
+    depositList      = [], setDepositList    = () => {},
+    sewaDimukaList   = [], setSewaDimukaList = () => {},
+    kasJurnal        = [], setKasJurnal      = () => {},
   } = globalData;
 
   const SEWA_HARIAN    = pengaturanConfig.sewaHarian    || 250000;
@@ -537,8 +540,52 @@ export default function Checkout({ user, globalData = {} }) {
   };
 
   const handleCheckout = (data) => {
+    const tglOut = data.tglCheckout || todayStr;
+
+    // Proses deposit jika ada
+    const dep = depositList.find(d => d.penyewaId === data.id && d.status === "aktif");
+    if (dep) {
+      const dendaKerusakan = data.dendaKerusakan || 0;
+      const sisaDeposit    = Math.max(0, dep.nominal - dendaKerusakan);
+      const statusDeposit  = dendaKerusakan >= dep.nominal ? "dipotong" : dendaKerusakan > 0 ? "dipotong_sebagian" : "dikembalikan";
+
+      setDepositList(prev => prev.map(d =>
+        d.id === dep.id ? { ...d, status: statusDeposit, tglKeluar: tglOut, dendaKerusakan } : d
+      ));
+
+      // Pengembalian deposit → keluar dari kas
+      if (sisaDeposit > 0) {
+        setKasJurnal(prev => [...prev, {
+          id:         "KJ-RETDEP-" + Date.now(),
+          tanggal:    tglOut,
+          tipe:       "keluar",
+          kategori:   "Pengembalian Deposit",
+          nominal:    sisaDeposit,
+          keterangan: "Pengembalian deposit " + data.nama + " — Kamar " + data.kamarId,
+          ref:        dep.id,
+          isLiabilitas: true,
+        }]);
+      }
+    }
+
+    // Tandai sewa dimuka selesai
+    setSewaDimukaList(prev => prev.map(sd =>
+      sd.penyewaId === data.id ? { ...sd, periodeEnd: tglOut, selesai: true } : sd
+    ));
+
+    // Update status kamar → deep-clean
+    setKamarList(prev => prev.map(k =>
+      k.id === data.kamarId ? { ...k, status: "deep-clean", penghuni: null, partner: [] } : k
+    ));
+
     // Pindah ke riwayat
-    setRiwayatList(prev => [...prev, { ...data, statusRiwayat: "checkout", tglCheckout: data.tglCheckout || todayStr }]);
+    setRiwayatList(prev => [...prev, {
+      ...data,
+      statusRiwayat: "checkout",
+      tglCheckout:   tglOut,
+      dendaKerusakan: data.dendaKerusakan || 0,
+    }]);
+
     // Hapus dari aktif
     setPenyewaList(prev => prev.filter(p => p.id !== data.id));
     setSelected(null);

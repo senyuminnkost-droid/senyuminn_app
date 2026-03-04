@@ -573,15 +573,23 @@ function DetailPanel({ penyewa, onEdit, onClose }) {
 // ============================================================
 export default function Penyewa({ user, globalData = {} }) {
   const {
-    penyewaList  = [], setPenyewaList  = () => {},
-    kamarList    = [], setKamarList    = () => {},
-  } = globalData; // dari Supabase nanti
+    penyewaList      = [], setPenyewaList    = () => {},
+    kamarList        = [], setKamarList      = () => {},
+    kasJurnal        = [], setKasJurnal      = () => {},
+    depositList      = [], setDepositList    = () => {},
+    sewaDimukaList   = [], setSewaDimukaList = () => {},
+    pengaturanConfig = {},
+    isReadOnly       = false,
+  } = globalData;
+
+  const DEPOSIT_AKTIF    = pengaturanConfig.depositAktif    || false;
+  const DEPOSIT_NOMINAL  = pengaturanConfig.depositNominal  || 500000;
   const [selected,  setSelected]  = useState(null);
   const [showForm,  setShowForm]  = useState(false);
   const [search,    setSearch]    = useState("");
   const [filterK,   setFilterK]   = useState("all");
 
-  const isAdmin = user?.role === "superadmin" || user?.role === "admin";
+  const isAdmin = user?.role === "manajemen";
 
   const filtered = penyewaList.filter(p => {
     if (filterK !== "all" && String(p.kamarId) !== filterK) return false;
@@ -595,6 +603,64 @@ export default function Penyewa({ user, globalData = {} }) {
   const kontrakHabis = penyewaList.filter(p => { const s = hariSisa(p.kontrakSelesai); return s !== null && s >= 0 && s <= 30; }).length;
 
   const handleCheckin = (data) => {
+    const now = new Date().toISOString().slice(0,10);
+
+    // Catat deposit jika aktif
+    if (DEPOSIT_AKTIF && data.depositNominal > 0) {
+      const dep = {
+        id:          "DEP-" + Date.now(),
+        penyewaId:   data.id,
+        kamarId:     data.kamarId,
+        nominal:     data.depositNominal,
+        status:      "aktif",
+        tglMasuk:    now,
+        tglKeluar:   null,
+        keterangan:  "Deposit check-in " + data.nama,
+      };
+      setDepositList(prev => [...prev, dep]);
+      // Deposit masuk kas sebagai liabilitas (bukan pendapatan)
+      setKasJurnal(prev => [...prev, {
+        id:         "KJ-DEP-" + Date.now(),
+        tanggal:    now,
+        tipe:       "masuk",
+        kategori:   "Deposit Penyewa",
+        nominal:    data.depositNominal,
+        keterangan: "Deposit " + data.nama + " — Kamar " + data.kamarId,
+        ref:        dep.id,
+        isLiabilitas: true,
+      }]);
+    }
+
+    // Catat sewa dimuka jika durasi > 1 bulan
+    const durasi = parseInt(data.durasi) || 1;
+    if (durasi > 1 && data.totalBayar > 0) {
+      const perBulan = data.hargaKamar || Math.round(data.totalBayar / durasi);
+      const sd = {
+        id:           "SD-" + Date.now(),
+        penyewaId:    data.id,
+        kamarId:      data.kamarId,
+        totalBayar:   data.totalBayar,
+        perBulan:     perBulan,
+        periodeStart: data.kontrakMulai,
+        periodeEnd:   data.kontrakSelesai,
+        sudahRelease: [], // array of "YYYY-MM" yang sudah diakui
+      };
+      setSewaDimukaList(prev => [...prev, sd]);
+    }
+
+    // Kas masuk untuk pembayaran sewa
+    if (data.totalBayar > 0) {
+      setKasJurnal(prev => [...prev, {
+        id:         "KJ-SEWA-" + Date.now(),
+        tanggal:    now,
+        tipe:       "masuk",
+        kategori:   "Sewa Kamar",
+        nominal:    data.totalBayar,
+        keterangan: "Pembayaran sewa " + data.nama + " — Kamar " + data.kamarId + " (" + durasi + " bln)",
+        ref:        data.id,
+      }]);
+    }
+
     setPenyewaList(prev => [...prev, data]);
     setShowForm(false);
     setSelected(data);

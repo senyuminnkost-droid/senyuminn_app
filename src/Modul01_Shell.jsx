@@ -959,13 +959,19 @@ export default function App() {
     ],
   });
 
+  const [depositList,      setDepositList]     = useState([]);
+  // [{id, penyewaId, kamarId, nominal, status:"aktif"|"dikembalikan"|"dipotong", tglMasuk, tglKeluar, keterangan}]
+
+  const [sewaDimukaList,   setSewaDimukaList]   = useState([]);
+  // [{id, penyewaId, kamarId, totalBayar, perBulan, periodeStart, periodeEnd, sudahRelease:[]}]
+
   const [sakuConfig,   setSakuConfig]   = useState([
-    { kode:"A", nama:"Petty Cash",     tipe:"pct",  nilai:5,      color:"#f97316" },
-    { kode:"B", nama:"General Saving", tipe:"pct",  nilai:23,     color:"#3b82f6" },
-    { kode:"C", nama:"Internet",       tipe:"flat", nilai:500000, color:"#06b6d4" },
-    { kode:"D", nama:"Tax Saving",     tipe:"pct",  nilai:0.5,    color:"#8b5cf6" },
-    { kode:"E", nama:"Operasional",    tipe:"pct",  nilai:0,      color:"#22c55e" },
-    { kode:"F", nama:"THR Saving",     tipe:"pct",  nilai:0,      color:"#eab308" },
+    { kode:"A", nama:"Petty Cash",      tipe:"pct",  nilai:5,       color:"#f97316" },
+    { kode:"B", nama:"General Saving",  tipe:"pct",  nilai:23,      color:"#3b82f6" },
+    { kode:"C", nama:"Internet",        tipe:"flat", nilai:500000,  color:"#06b6d4" },
+    { kode:"D", nama:"Tax Saving",      tipe:"pct",  nilai:0.5,     color:"#8b5cf6" },
+    { kode:"E", nama:"THR Saving",      tipe:"pct",  nilai:2,       color:"#ec4899" },
+    { kode:"F", nama:"Owner Share",     tipe:"pct",  nilai:10,      color:"#16a34a" },
   ]);
 
   // Bundel semua data & setter jadi satu object
@@ -984,6 +990,8 @@ export default function App() {
     saldoAwal,         setSaldoAwal,
     carryOver,         setCarryOver,
     pengaturanConfig,  setPengaturanConfig,
+    depositList,       setDepositList,
+    sewaDimukaList,    setSewaDimukaList,
     isReadOnly:        isReadOnly(user),
   };
 

@@ -424,6 +424,8 @@ export default function Tagihan({ user, globalData = {} }) {
     kasJurnal          = [], setKasJurnal    = () => {},
     pengaturanConfig   = {},
     isReadOnly         = false,
+    sewaDimukaList   = [], setSewaDimukaList = () => {},
+    depositList      = [],
   } = globalData;
 
   const DENDA_PER_HARI = pengaturanConfig.dendaPerHari  || 50000;
@@ -434,6 +436,7 @@ export default function Tagihan({ user, globalData = {} }) {
   const [selected, setSelected] = useState(null);
   const [showBayar,setShowBayar]= useState(false);
   const [search,   setSearch]   = useState("");
+  const [filterKat,setFilterKat]= useState("semua");
   const [filterBln,setFilterBln]= useState(thisMonth);
 
   const isAdmin = user?.role === "superadmin" || user?.role === "admin";
@@ -468,17 +471,43 @@ export default function Tagihan({ user, globalData = {} }) {
     } else {
       setTagihanList(prev => [...prev, updated]);
     }
-    // Catat ke Kas & Jurnal
-    setKasJurnal(prev => [...prev, {
-      id:       Date.now(),
-      tanggal:  updated.tglBayar,
-      keterangan: `Sewa Kamar ${updated.kamarId} — ${updated.nama} (${updated.periode})`,
-      kategori: "Sewa Kamar",
-      tipe:     "pemasukan",
-      nominal:  updated.riwayatBayar?.slice(-1)[0]?.nominal || updated.nominal,
-      metode:   updated.metode,
-    }]);
-    // Update selected
+
+    const nominalBayar = updated.riwayatBayar?.slice(-1)[0]?.nominal || updated.nominal;
+    const tglBayar     = updated.tglBayar;
+
+    // Cek apakah multi-bulan (sewa dimuka)
+    const sd = sewaDimukaList.find(s => s.penyewaId === updated.penyewaId && !s.selesai);
+    if (sd) {
+      // Cash basis: seluruh uang masuk kas sekarang
+      setKasJurnal(prev => [...prev, {
+        id:           "KJ-" + Date.now(),
+        tanggal:      tglBayar,
+        keterangan:   `Pembayaran sewa ${updated.nama} — Kamar ${updated.kamarId} (${updated.periode}) [Multi-bulan]`,
+        kategori:     "Sewa Kamar",
+        tipe:         "pemasukan",
+        nominal:      nominalBayar,
+        metode:       updated.metode,
+        isSewaDimuka: true,
+      }]);
+      // Tandai bulan ini sudah release di sewaDimukaList
+      setSewaDimukaList(prev => prev.map(s =>
+        s.id === sd.id
+          ? { ...s, sudahRelease: [...(s.sudahRelease||[]), updated.periode] }
+          : s
+      ));
+    } else {
+      // Pembayaran normal (1 bulan)
+      setKasJurnal(prev => [...prev, {
+        id:         "KJ-" + Date.now(),
+        tanggal:    tglBayar,
+        keterangan: `Sewa Kamar ${updated.kamarId} — ${updated.nama} (${updated.periode})`,
+        kategori:   "Sewa Kamar",
+        tipe:       "pemasukan",
+        nominal:    nominalBayar,
+        metode:     updated.metode,
+      }]);
+    }
+
     setSelected(updated);
     setShowBayar(false);
   };

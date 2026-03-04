@@ -120,8 +120,23 @@ const CSS = `
   .ks-empty-icon { font-size:32px; opacity:.4; }
   .ks-empty-title { font-size:13px; font-weight:600; color:#374151; }
 
+  /* Saldo cards */
+  .ks-saldo-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+  .ks-saldo-card { border-radius:10px; padding:13px 15px; border:1px solid #e5e7eb; }
+  .ks-saldo-label { font-size:10px; font-weight:600; color:#9ca3af; text-transform:uppercase; letter-spacing:.7px; margin-bottom:4px; }
+  .ks-saldo-val   { font-size:17px; font-weight:700; font-family:"JetBrains Mono",monospace; }
+  .ks-saldo-sub   { font-size:10px; color:#9ca3af; margin-top:3px; }
+
+  /* Carry-over badge */
+  .ks-carry-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:12px; font-size:10px; font-weight:600; }
+
+  /* Saku history */
+  .ks-saku-hist { display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+  .ks-saku-hist-row { display:grid; grid-template-columns:70px 1fr 1fr 1fr; gap:8px; align-items:center; font-size:11px; padding:5px 0; border-bottom:1px solid #f3f4f6; }
+  .ks-saku-hist-row:last-child { border-bottom:none; }
+
   @media(max-width:1024px){ .ks-layout{grid-template-columns:1fr} }
-  @media(max-width:768px) { .ks-cards{grid-template-columns:repeat(2,1fr)} .ks-saku-grid{grid-template-columns:1fr} }
+  @media(max-width:768px) { .ks-cards{grid-template-columns:repeat(2,1fr)} .ks-saku-grid{grid-template-columns:1fr} .ks-saldo-grid{grid-template-columns:1fr} }
   @media(max-width:480px) { .ks-cards{grid-template-columns:repeat(2,1fr);gap:8px} .ks-input-row{grid-template-columns:1fr} }
 `;
 
@@ -409,15 +424,20 @@ function ModalAset({ onClose, onSave }) {
 // ============================================================
 // TAB: JURNAL
 // ============================================================
-function TabJurnal({ kasJurnal, setKasJurnal, rekeningList }) {
+function TabJurnal({ kasJurnal, setKasJurnal, rekeningList, depositList=[], sewaDimukaList=[], isReadOnly=false }) {
   const [search,    setSearch]  = useState("");
   const [filterTipe,setFT]      = useState("all");
+  const [filterKat, setFK]      = useState("semua");
   const [filterBln, setFB]      = useState(thisMonth);
   const [showModal, setShow]    = useState(false);
 
+  const KAT_IN  = ["Sewa Kamar","Denda Keterlambatan","Deposit Penyewa","Lain-lain"];
+  const KAT_OUT = ["Management Fee","Gaji & Insentif","Peralatan","Listrik/Internet/Air","Maintenance","Akomodasi/Op","Perlengkapan","Konsumsi","THR","Pengembalian Deposit","Prive/Dividen","Lain-lain"];
+
   const filtered = kasJurnal.filter(t=>{
-    if (filterTipe!=="all" && t.tipe!==filterTipe) return false;
-    if (filterBln!=="all"  && !t.tanggal?.startsWith(filterBln)) return false;
+    if (filterTipe!=="all"    && t.tipe!==filterTipe)           return false;
+    if (filterKat!=="semua"   && t.kategori!==filterKat)        return false;
+    if (filterBln!=="all"     && !t.tanggal?.startsWith(filterBln)) return false;
     if (search){ const q=search.toLowerCase(); return t.keterangan?.toLowerCase().includes(q)||t.kategori?.toLowerCase().includes(q); }
     return true;
   }).sort((a,b)=>b.tanggal?.localeCompare(a.tanggal));
@@ -451,10 +471,17 @@ function TabJurnal({ kasJurnal, setKasJurnal, rekeningList }) {
             <span>🔍</span>
             <input placeholder="Cari keterangan..." value={search} onChange={e=>setSearch(e.target.value)} />
           </div>
-          <select className="ks-select" value={filterTipe} onChange={e=>setFT(e.target.value)}>
+          
+          <select className="ks-select" value={filterTipe} onChange={e=>{ setFT(e.target.value); setFK("semua"); }}>
             <option value="all">Semua Tipe</option>
             <option value="pemasukan">⬆️ Pemasukan</option>
             <option value="pengeluaran">⬇️ Pengeluaran</option>
+          </select>
+          <select className="ks-select" value={filterKat} onChange={e=>setFK(e.target.value)}>
+            <option value="semua">Semua Kategori</option>
+            {(filterTipe==="pengeluaran" ? KAT_OUT : filterTipe==="pemasukan" ? KAT_IN : [...KAT_IN,...KAT_OUT]).map(k=>(
+              <option key={k} value={k}>{k}</option>
+            ))}
           </select>
           <select className="ks-select" value={filterBln} onChange={e=>setFB(e.target.value)}>
             <option value="all">Semua Bulan</option>
@@ -674,7 +701,7 @@ function ModalEditSaku({ sakuConfig, onClose, onSave }) {
 // ============================================================
 // TAB: BUDGET PLANNING
 // ============================================================
-function TabBudget({ kasJurnal, sakuConfig, setSakuConfig }) {
+function TabBudget({ kasJurnal, sakuConfig, setSakuConfig, inBln=0, saldoMengendap=0, carryOverBln={}, isReadOnly=false }) {
   const totalPemasukan = kasJurnal.filter(t=>t.tipe==="pemasukan"&&t.tanggal?.startsWith(thisMonth)).reduce((s,t)=>s+t.nominal,0);
 
   const [showEditSaku, setShowEditSaku] = useState(false);
@@ -1044,8 +1071,32 @@ export default function Kas({ user, globalData = {} }) {
   const rekeningList = [];
 
   // Stats header
-  const inBln  = kasJurnal.filter(t=>t.tipe==="pemasukan"&&t.tanggal?.startsWith(thisMonth)).reduce((s,t)=>s+t.nominal,0);
-  const outBln = kasJurnal.filter(t=>t.tipe==="pengeluaran"&&t.tanggal?.startsWith(thisMonth)).reduce((s,t)=>s+t.nominal,0);
+  const inBln       = kasJurnal.filter(t=>t.tipe==="pemasukan"&&t.tanggal?.startsWith(thisMonth)&&!t.isLiabilitas).reduce((s,t)=>s+t.nominal,0);
+  const outBln      = kasJurnal.filter(t=>t.tipe==="pengeluaran"&&t.tanggal?.startsWith(thisMonth)&&!t.isLiabilitas).reduce((s,t)=>s+t.nominal,0);
+  const saldoAwalBln= saldoAwal[thisMonth] || 0;
+  const saldoBerjalan = saldoAwalBln + inBln - outBln;
+
+  // Liabilitas (deposit + sewa dimuka belum release)
+  const totalDepositAktif   = depositList.filter(d=>d.status==="aktif").reduce((s,d)=>s+d.nominal,0);
+  const totalSewaDimuka     = sewaDimukaList.filter(s=>!s.selesai).reduce((acc,sd)=>{
+    const released = (sd.sudahRelease||[]).length * sd.perBulan;
+    return acc + (sd.totalBayar - released);
+  },0);
+
+  // Saldo mengendap = saldo berjalan - total alokasi saku
+  const totalAlokSaku = sakuConfig.reduce((s,sk)=>{
+    if (sk.tipe==="pct") return s + Math.round(inBln * sk.nilai / 100);
+    return s + (sk.nilai||0);
+  },0);
+  const saldoMengendap = saldoBerjalan - totalAlokSaku;
+
+  // Carry-over dari bulan lalu
+  const prevMonth = (() => {
+    const d = new Date(thisMonth + "-01");
+    d.setMonth(d.getMonth()-1);
+    return d.toISOString().slice(0,7);
+  })();
+  const carryOverBln = carryOver[prevMonth] || {};
   const piutang= tagihanList.filter(t=>t.status!=="lunas").reduce((s,t)=>s+t.nominal,0);
 
   return (
@@ -1055,8 +1106,10 @@ export default function Kas({ user, globalData = {} }) {
       {/* Cards */}
       <div className="ks-cards">
         {[
-          {label:"Pemasukan Bulan Ini", val:fmtRp(inBln),        color:"#16a34a", sub:`${kasJurnal.filter(t=>t.tipe==="pemasukan"&&t.tanggal?.startsWith(thisMonth)).length} transaksi`},
-          {label:"Pengeluaran Bulan Ini",val:fmtRp(outBln),       color:"#dc2626", sub:`${kasJurnal.filter(t=>t.tipe==="pengeluaran"&&t.tanggal?.startsWith(thisMonth)).length} transaksi`},
+          {label:"Pemasukan Bulan Ini",  val:fmtRp(inBln),            color:"#16a34a", sub:`${kasJurnal.filter(t=>t.tipe==="pemasukan"&&t.tanggal?.startsWith(thisMonth)&&!t.isLiabilitas).length} transaksi`},
+          {label:"Pengeluaran Bulan Ini", val:fmtRp(outBln),           color:"#dc2626", sub:`${kasJurnal.filter(t=>t.tipe==="pengeluaran"&&t.tanggal?.startsWith(thisMonth)&&!t.isLiabilitas).length} transaksi`},
+          {label:"Saldo Berjalan",        val:fmtRp(saldoBerjalan),    color:"#f97316", sub:`Awal: ${fmtRp(saldoAwalBln)}`},
+          {label:"Saldo Mengendap",       val:fmtRp(saldoMengendap),   color:"#3b82f6", sub:"Setelah alokasi saku"},
           {label:"Net Cashflow",         val:fmtRp(inBln-outBln), color:inBln-outBln>=0?"#16a34a":"#dc2626", sub:"Bulan berjalan"},
           {label:"Piutang Outstanding",  val:fmtRp(piutang),      color:"#f97316", sub:`${tagihanList.filter(t=>t.status!=="lunas").length} belum lunas`},
         ].map((c,i)=>(
@@ -1083,8 +1136,8 @@ export default function Kas({ user, globalData = {} }) {
       </div>
 
       {/* Content */}
-      {activeTab==="jurnal"  && <TabJurnal  kasJurnal={kasJurnal} setKasJurnal={setKasJurnal} rekeningList={rekeningList} />}
-      {activeTab==="budget"  && <TabBudget  kasJurnal={kasJurnal} sakuConfig={sakuConfig} setSakuConfig={setSakuConfig} />}
+      {activeTab==="jurnal"  && <TabJurnal  kasJurnal={kasJurnal} setKasJurnal={setKasJurnal} rekeningList={rekeningList} depositList={depositList} sewaDimukaList={sewaDimukaList} isReadOnly={isReadOnly} />}
+      {activeTab==="budget"  && <TabBudget  kasJurnal={kasJurnal} sakuConfig={sakuConfig} setSakuConfig={setSakuConfig} inBln={inBln} saldoMengendap={saldoMengendap} carryOverBln={carryOverBln} isReadOnly={isReadOnly} />}
       {activeTab==="aset"    && <TabAset    asetList={asetList} setAsetList={setAsetList} />}
 
     </div>

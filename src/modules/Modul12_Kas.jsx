@@ -153,14 +153,8 @@ const fmtRpShort = (n) => {
 
 const KATEGORI_PEMASUKAN  = ["Sewa Kamar","Denda Keterlambatan","Lain-lain"];
 const KATEGORI_PENGELUARAN = ["Management Fee","Gaji & Insentif","Peralatan","Listrik/Internet/Air","Maintenance","Akomodasi/Op","Perlengkapan","THR","Prive/Dividen","Lain-lain"];
-const SAKU_DEFAULT = [
-  { kode:"A", nama:"Petty Cash",     pct:5,    flat:0,   color:"#f97316" },
-  { kode:"B", nama:"General Saving", pct:23,   flat:0,   color:"#3b82f6" },
-  { kode:"C", nama:"Internet",       pct:0,    flat:500000, color:"#06b6d4" },
-  { kode:"D", nama:"Tax Saving",     pct:0.5,  flat:0,   color:"#8b5cf6" },
-  { kode:"E", nama:"Operasional",    pct:0,    flat:0,   color:"#22c55e" },
-  { kode:"F", nama:"THR Saving",     pct:0,    flat:0,   color:"#eab308" },
-];
+// sakuConfig diambil dari globalData (diatur di Pengaturan)
+// Default ada di Shell globalData
 
 // ============================================================
 // MODAL TAMBAH TRANSAKSI
@@ -496,15 +490,132 @@ function TabJurnal({ kasJurnal, setKasJurnal, rekeningList }) {
   );
 }
 
+
+// ============================================================
+// MODAL EDIT KONFIGURASI SAKU
+// ============================================================
+function ModalEditSaku({ sakuConfig, onClose, onSave }) {
+  const [rows, setRows] = useState(sakuConfig.map(s => ({...s})));
+  const setRow = (kode, k, v) => setRows(prev => prev.map(r => r.kode===kode ? {...r,[k]:v} : r));
+
+  const totalPct = rows.filter(r=>r.tipe==="pct").reduce((s,r)=>s+Number(r.nilai||0),0);
+
+  return createPortal(
+    <div className="ks-overlay" onClick={onClose}>
+      <div className="ks-modal" onClick={e=>e.stopPropagation()} style={{maxWidth:520}}>
+        <div className="ks-modal-head">
+          <div className="ks-modal-title">⚙️ Konfigurasi Saku Budget</div>
+          <button className="ks-modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="ks-modal-body">
+
+          <div style={{background:"#fff7ed",border:"1px solid #fed7aa",borderRadius:8,padding:"8px 12px",fontSize:11,color:"#92400e",marginBottom:14}}>
+            ℹ️ Persentase dihitung dari total pemasukan bulan berjalan. Flat = nominal tetap per bulan.
+          </div>
+
+          {/* Header */}
+          <div style={{display:"grid",gridTemplateColumns:"28px 1fr 90px 110px",gap:8,padding:"0 4px",marginBottom:6}}>
+            {["Kode","Nama Saku","Tipe","Nilai"].map((h,i)=>(
+              <div key={i} style={{fontSize:10,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",letterSpacing:.6}}>{h}</div>
+            ))}
+          </div>
+
+          {/* Rows */}
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            {rows.map(r=>(
+              <div key={r.kode} style={{display:"grid",gridTemplateColumns:"28px 1fr 90px 110px",gap:8,alignItems:"center"}}>
+                {/* Kode badge */}
+                <div style={{width:24,height:24,borderRadius:6,background:r.color+"22",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,color:r.color}}>
+                  {r.kode}
+                </div>
+                {/* Nama */}
+                <input
+                  className="ks-input" value={r.nama}
+                  onChange={e=>setRow(r.kode,"nama",e.target.value)}
+                  style={{fontSize:12}}
+                />
+                {/* Tipe */}
+                <select className="ks-input" value={r.tipe} onChange={e=>setRow(r.kode,"tipe",e.target.value)}>
+                  <option value="pct">% Persen</option>
+                  <option value="flat">Flat Rp</option>
+                </select>
+                {/* Nilai */}
+                <div style={{position:"relative"}}>
+                  <input
+                    type="number" className="ks-input"
+                    value={r.nilai}
+                    onChange={e=>setRow(r.kode,"nilai",e.target.value)}
+                    style={{fontFamily:"JetBrains Mono,monospace",fontSize:11,paddingRight:r.tipe==="pct"?28:8}}
+                    step={r.tipe==="pct"?0.5:50000}
+                    min={0}
+                  />
+                  {r.tipe==="pct" && (
+                    <span style={{position:"absolute",right:9,top:"50%",transform:"translateY(-50%)",fontSize:11,color:"#9ca3af",fontWeight:600}}>%</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Preview total % */}
+          <div style={{marginTop:14,background:"#f9fafb",borderRadius:8,padding:"10px 12px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <div style={{fontSize:12,color:"#374151"}}>
+              Total alokasi %:&nbsp;
+              <b style={{color:totalPct>100?"#dc2626":totalPct===100?"#16a34a":"#f97316"}}>
+                {totalPct.toFixed(1)}%
+              </b>
+            </div>
+            {totalPct > 100 && (
+              <span style={{fontSize:11,color:"#dc2626",fontWeight:600}}>⚠️ Melebihi 100%!</span>
+            )}
+            {totalPct <= 100 && (
+              <span style={{fontSize:11,color:"#9ca3af"}}>{(100-totalPct).toFixed(1)}% tidak dialokasikan</span>
+            )}
+          </div>
+
+          {/* Preview nominal contoh */}
+          <div style={{marginTop:10,background:"#f0fdf4",border:"1px solid #86efac",borderRadius:8,padding:"10px 12px"}}>
+            <div style={{fontSize:10,fontWeight:700,color:"#15803d",textTransform:"uppercase",letterSpacing:.8,marginBottom:8}}>
+              Preview — jika pemasukan Rp 20.000.000
+            </div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+              {rows.map(r=>{
+                const contoh = 20000000;
+                const alokasi = r.tipe==="pct"
+                  ? Math.round(contoh*(Number(r.nilai||0)/100))
+                  : Number(r.nilai||0);
+                return (
+                  <div key={r.kode} style={{background:"#fff",borderRadius:7,padding:"5px 10px",border:"1px solid #e5e7eb"}}>
+                    <span style={{fontSize:10,fontWeight:700,color:r.color,marginRight:4}}>{r.kode}</span>
+                    <span style={{fontSize:11,fontWeight:600,color:"#374151"}}>{fmtRp(alokasi)}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+        </div>
+        <div className="ks-modal-foot">
+          <button className="ks-btn primary" onClick={()=>{ onSave(rows.map(r=>({...r,nilai:Number(r.nilai||0)}))); onClose(); }}>
+            ✅ Simpan Konfigurasi
+          </button>
+          <button className="ks-btn ghost" onClick={onClose}>Batal</button>
+        </div>
+      </div>
+    </div>
+  , document.body);
+}
+
 // ============================================================
 // TAB: BUDGET PLANNING
 // ============================================================
-function TabBudget({ kasJurnal }) {
+function TabBudget({ kasJurnal, sakuConfig, setSakuConfig }) {
   const totalPemasukan = kasJurnal.filter(t=>t.tipe==="pemasukan"&&t.tanggal?.startsWith(thisMonth)).reduce((s,t)=>s+t.nominal,0);
 
-  const saku = SAKU_DEFAULT.map(s=>{
-    const alokasi = s.flat>0 ? s.flat : Math.round(totalPemasukan*(s.pct/100));
-    // Hitung pengeluaran per kategori yang relevan
+  const [showEditSaku, setShowEditSaku] = useState(false);
+
+  const saku = sakuConfig.map(s=>{
+    const alokasi = s.tipe==="flat" ? s.nilai : Math.round(totalPemasukan*(s.nilai/100));
     const terpakai = s.kode==="A"
       ? kasJurnal.filter(t=>t.tipe==="pengeluaran"&&t.tanggal?.startsWith(thisMonth)&&["Perlengkapan","Akomodasi/Op","Lain-lain"].includes(t.kategori)).reduce((x,t)=>x+t.nominal,0)
       : s.kode==="B" ? 0
@@ -524,7 +635,7 @@ function TabBudget({ kasJurnal }) {
       <div className="ks-widget">
         <div className="ks-widget-head">
           <div className="ks-widget-title">💰 Budget Planning — {thisMonth}</div>
-          <span style={{fontSize:11,color:"#9ca3af"}}>Cash basis · Single Source of Truth</span>
+          <button className="ks-pdf-btn" onClick={()=>setShowEditSaku(true)}>⚙️ Atur Saku</button>
         </div>
         <div className="ks-widget-body">
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12,marginBottom:16}}>
@@ -549,7 +660,7 @@ function TabBudget({ kasJurnal }) {
                     <span className="ks-saku-name">{s.nama}</span>
                   </div>
                   <span className="ks-saku-pct">
-                    {s.flat>0 ? fmtRpShort(s.flat)+" flat" : `${s.pct}%`}
+                    {s.tipe==="flat" ? fmtRpShort(s.nilai)+" flat" : `${s.nilai}%`}
                   </span>
                 </div>
                 <div className="ks-saku-bar">
@@ -597,11 +708,136 @@ function TabBudget({ kasJurnal }) {
   );
 }
 
+
+// ============================================================
+// MODAL DATA AWAL ASET (input multiple sekaligus)
+// ============================================================
+function ModalDataAwalAset({ existing, onClose, onSave }) {
+  const emptyRow = () => ({ id: Date.now()+Math.random(), nama:"", nilaiPerolehan:"", umurEkonomis:"5", tanggalBeli:todayStr });
+  const [rows, setRows] = useState(
+    existing.length > 0
+      ? existing.map(a => ({...a, nilaiPerolehan: String(a.nilaiPerolehan), umurEkonomis: String(a.umurEkonomis)}))
+      : [emptyRow()]
+  );
+
+  const setRow = (id, k, v) => setRows(prev => prev.map(r => r.id===id ? {...r,[k]:v} : r));
+  const addRow = () => setRows(prev => [...prev, emptyRow()]);
+  const delRow = (id) => setRows(prev => prev.filter(r => r.id!==id));
+
+  const valid = rows.some(r => r.nama && r.nilaiPerolehan && Number(r.nilaiPerolehan)>0);
+
+  const handleSave = () => {
+    const result = rows
+      .filter(r => r.nama && r.nilaiPerolehan && Number(r.nilaiPerolehan)>0)
+      .map(r => ({
+        ...r,
+        id: typeof r.id === "number" ? r.id : Date.now()+Math.random(),
+        nilaiPerolehan: Number(r.nilaiPerolehan),
+        umurEkonomis:   Number(r.umurEkonomis),
+        depPerBulan:    Math.round(Number(r.nilaiPerolehan) / (Number(r.umurEkonomis)*12)),
+      }));
+    onSave(result);
+    onClose();
+  };
+
+  return createPortal(
+    <div className="ks-overlay" onClick={onClose}>
+      <div className="ks-modal" onClick={e=>e.stopPropagation()} style={{maxWidth:640}}>
+        <div className="ks-modal-head">
+          <div className="ks-modal-title">🏷️ Input Data Awal Aset</div>
+          <button className="ks-modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="ks-modal-body">
+
+          <div style={{background:"#fff7ed",border:"1px solid #fed7aa",borderRadius:8,padding:"8px 12px",fontSize:11,color:"#92400e",marginBottom:14}}>
+            ℹ️ Input semua aset yang sudah dimiliki sebelum sistem dipakai. Data ini dipakai untuk menghitung depresiasi & nilai buku.
+          </div>
+
+          {/* Header tabel */}
+          <div style={{display:"grid",gridTemplateColumns:"1fr 110px 80px 110px 32px",gap:8,marginBottom:6,padding:"0 4px"}}>
+            {["Nama Aset","Harga Beli (Rp)","Umur (thn)","Tgl Beli",""].map((h,i)=>(
+              <div key={i} style={{fontSize:10,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",letterSpacing:.6}}>{h}</div>
+            ))}
+          </div>
+
+          {/* Rows */}
+          <div style={{maxHeight:320,overflowY:"auto",display:"flex",flexDirection:"column",gap:6}}>
+            {rows.map((r,idx) => {
+              const dep = r.nilaiPerolehan && r.umurEkonomis
+                ? Math.round(Number(r.nilaiPerolehan)/(Number(r.umurEkonomis)*12)) : 0;
+              return (
+                <div key={r.id} style={{display:"grid",gridTemplateColumns:"1fr 110px 80px 110px 32px",gap:8,alignItems:"center"}}>
+                  <input
+                    className="ks-input" placeholder="Nama aset..."
+                    value={r.nama} onChange={e=>setRow(r.id,"nama",e.target.value)}
+                  />
+                  <input
+                    type="number" className="ks-input" placeholder="0"
+                    value={r.nilaiPerolehan} onChange={e=>setRow(r.id,"nilaiPerolehan",e.target.value)}
+                    style={{fontFamily:"JetBrains Mono,monospace",fontSize:11}}
+                  />
+                  <select className="ks-input" value={r.umurEkonomis} onChange={e=>setRow(r.id,"umurEkonomis",e.target.value)}>
+                    {[1,2,3,4,5,8,10,15,20].map(y=><option key={y} value={y}>{y}</option>)}
+                  </select>
+                  <input
+                    type="date" className="ks-input"
+                    value={r.tanggalBeli} onChange={e=>setRow(r.id,"tanggalBeli",e.target.value)}
+                    style={{fontSize:11}}
+                  />
+                  <button
+                    onClick={()=>delRow(r.id)} disabled={rows.length===1}
+                    style={{width:28,height:28,borderRadius:6,border:"1px solid #e5e7eb",background:"#fff",cursor:"pointer",color:"#9ca3af",fontSize:13,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"inherit"}}
+                  >✕</button>
+                </div>
+              );
+            })}
+          </div>
+
+          <button
+            onClick={addRow}
+            style={{marginTop:10,width:"100%",padding:"8px",borderRadius:8,border:"1.5px dashed #e5e7eb",background:"transparent",cursor:"pointer",fontSize:12,color:"#9ca3af",fontFamily:"inherit",transition:"all .12s"}}
+            onMouseOver={e=>e.target.style.borderColor="#f97316"}
+            onMouseOut={e=>e.target.style.borderColor="#e5e7eb"}
+          >
+            ＋ Tambah baris
+          </button>
+
+          {/* Preview total */}
+          {rows.some(r=>r.nilaiPerolehan) && (
+            <div style={{marginTop:12,background:"#f9fafb",borderRadius:8,padding:"10px 12px",display:"flex",gap:20,fontSize:12}}>
+              <div>
+                <span style={{color:"#9ca3af"}}>Total Nilai: </span>
+                <b style={{color:"#3b82f6"}}>{fmtRp(rows.reduce((s,r)=>s+(Number(r.nilaiPerolehan)||0),0))}</b>
+              </div>
+              <div>
+                <span style={{color:"#9ca3af"}}>Total Dep/bln: </span>
+                <b style={{color:"#f97316"}}>{fmtRp(rows.reduce((s,r)=>s+(r.nilaiPerolehan&&r.umurEkonomis?Math.round(Number(r.nilaiPerolehan)/(Number(r.umurEkonomis)*12)):0),0))}</b>
+              </div>
+              <div>
+                <span style={{color:"#9ca3af"}}>Jumlah aset: </span>
+                <b style={{color:"#374151"}}>{rows.filter(r=>r.nama&&r.nilaiPerolehan).length}</b>
+              </div>
+            </div>
+          )}
+
+        </div>
+        <div className="ks-modal-foot">
+          <button className="ks-btn primary" disabled={!valid} onClick={handleSave}>
+            ✅ Simpan Data Awal
+          </button>
+          <button className="ks-btn ghost" onClick={onClose}>Batal</button>
+        </div>
+      </div>
+    </div>
+  , document.body);
+}
+
 // ============================================================
 // TAB: ASET & DEPRESIASI
 // ============================================================
 function TabAset({ asetList, setAsetList }) {
-  const [showModal, setShow] = useState(false);
+  const [showModal,     setShow]     = useState(false);
+  const [showDataAwal,  setDataAwal] = useState(false);
 
   const totalNilai  = asetList.reduce((s,a)=>s+a.nilaiPerolehan,0);
   const totalDepBln = asetList.reduce((s,a)=>s+a.depPerBulan,0);
@@ -632,16 +868,31 @@ function TabAset({ asetList, setAsetList }) {
       <div className="ks-widget">
         <div className="ks-widget-head">
           <div className="ks-widget-title">🏷️ Daftar Aset</div>
-          <button className="ks-btn primary" style={{flex:"none",padding:"6px 14px",fontSize:12}} onClick={()=>setShow(true)}>
-            ➕ Tambah Aset
-          </button>
+          <div style={{display:"flex",gap:8}}>
+            {asetList.length === 0 && (
+              <button className="ks-btn ghost" style={{flex:"none",padding:"6px 12px",fontSize:12}} onClick={()=>setDataAwal(true)}>
+                📋 Input Data Awal
+              </button>
+            )}
+            {asetList.length > 0 && (
+              <button className="ks-btn ghost" style={{flex:"none",padding:"6px 12px",fontSize:12}} onClick={()=>setDataAwal(true)}>
+                ✏️ Edit Semua
+              </button>
+            )}
+            <button className="ks-btn primary" style={{flex:"none",padding:"6px 14px",fontSize:12}} onClick={()=>setShow(true)}>
+              ➕ Tambah Aset
+            </button>
+          </div>
         </div>
         <div>
           {asetList.length===0 ? (
             <div className="ks-empty">
               <div className="ks-empty-icon">🏷️</div>
               <div className="ks-empty-title">Belum ada aset</div>
-              <div style={{fontSize:11,color:"#9ca3af"}}>Tambah aset untuk tracking depresiasi otomatis</div>
+              <div style={{fontSize:11,color:"#9ca3af",marginBottom:12}}>Tambah aset untuk tracking depresiasi otomatis</div>
+              <button className="ks-btn primary" style={{maxWidth:200,fontSize:12}} onClick={()=>setDataAwal(true)}>
+                📋 Input Data Awal
+              </button>
             </div>
           ) : (
             asetList.map(a=>{
@@ -675,7 +926,8 @@ function TabAset({ asetList, setAsetList }) {
         </div>
       </div>
 
-      {showModal && <ModalAset onClose={()=>setShow(false)} onSave={a=>setAsetList(p=>[...p,a])} />}
+      {showModal    && <ModalAset       onClose={()=>setShow(false)}     onSave={a=>setAsetList(p=>[...p,a])} />}
+      {showDataAwal && <ModalDataAwalAset onClose={()=>setDataAwal(false)} existing={asetList} onSave={result=>setAsetList(result)} />}
     </div>
   );
 }
@@ -687,10 +939,11 @@ export default function Kas({ user, globalData = {} }) {
   const {
     kasJurnal    = [], setKasJurnal    = ()=>{},
     tagihanList  = [],
+    asetList     = [], setAsetList     = ()=>{},
+    sakuConfig   = [], setSakuConfig   = ()=>{},
   } = globalData;
 
   const [activeTab,  setActiveTab]  = useState("jurnal");
-  const [asetList,   setAsetList]   = useState([]);
 
   // Rekening dummy — nanti dari Profil Kost
   const rekeningList = [];
@@ -736,7 +989,7 @@ export default function Kas({ user, globalData = {} }) {
 
       {/* Content */}
       {activeTab==="jurnal"  && <TabJurnal  kasJurnal={kasJurnal} setKasJurnal={setKasJurnal} rekeningList={rekeningList} />}
-      {activeTab==="budget"  && <TabBudget  kasJurnal={kasJurnal} />}
+      {activeTab==="budget"  && <TabBudget  kasJurnal={kasJurnal} sakuConfig={sakuConfig} setSakuConfig={setSakuConfig} />}
       {activeTab==="aset"    && <TabAset    asetList={asetList} setAsetList={setAsetList} />}
 
     </div>

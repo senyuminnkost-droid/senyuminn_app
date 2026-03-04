@@ -108,6 +108,66 @@ const CSS = `
   .kal-stat-val { font-size: 20px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: #111827; }
   .kal-stat-label { font-size: 10px; color: #9ca3af; margin-top: 2px; }
 
+  /* ─── MODAL ──────────────────────────────── */
+  .kal-overlay {
+    position: fixed; inset: 0; background: rgba(17,24,39,0.45);
+    backdrop-filter: blur(3px); z-index: 200; display: flex;
+    align-items: center; justify-content: center; padding: 16px;
+    animation: kalFade 0.18s ease;
+  }
+  @keyframes kalFade { from { opacity: 0; } to { opacity: 1; } }
+  .kal-modal {
+    background: #fff; border-radius: 16px; width: 100%; max-width: 480px;
+    max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    animation: kalSlide 0.2s cubic-bezier(0.4,0,0.2,1);
+  }
+  @keyframes kalSlide { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .kal-modal-head {
+    padding: 16px 20px 12px; border-bottom: 1px solid #f3f4f6;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; background: #fff; z-index: 1;
+  }
+  .kal-modal-title { font-size: 14px; font-weight: 700; color: #111827; }
+  .kal-modal-close {
+    width: 28px; height: 28px; border-radius: 7px; background: #f3f4f6;
+    border: none; cursor: pointer; font-size: 14px; color: #6b7280;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .kal-modal-close:hover { background: #fee2e2; color: #dc2626; }
+  .kal-modal-body { padding: 16px 20px; }
+  .kal-modal-foot { padding: 12px 20px; border-top: 1px solid #f3f4f6; display: flex; gap: 8px; }
+
+  .kal-field { margin-bottom: 14px; }
+  .kal-field-label { font-size: 11px; font-weight: 600; color: #374151; margin-bottom: 5px; display: block; }
+  .kal-input {
+    width: 100%; padding: 8px 11px; border-radius: 8px;
+    border: 1.5px solid #e5e7eb; font-size: 12px; font-family: inherit;
+    color: #1f2937; outline: none; background: #fff; transition: border-color 0.12s;
+    box-sizing: border-box;
+  }
+  .kal-input:focus { border-color: #f97316; }
+  .kal-input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .kal-btn {
+    flex: 1; padding: 9px 14px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    border: none; cursor: pointer; font-family: inherit; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+  }
+  .kal-btn.primary { background: linear-gradient(135deg, #f97316, #ea580c); color: #fff; box-shadow: 0 3px 10px rgba(249,115,22,0.25); }
+  .kal-btn.ghost { background: #f3f4f6; color: #4b5563; }
+  .kal-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Rutin list */
+  .kal-rutin-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 12px; border-radius: 9px; border: 1px solid #e5e7eb;
+    margin-bottom: 8px; background: #f9fafb;
+  }
+  .kal-rutin-name { font-size: 12px; font-weight: 600; color: #1f2937; }
+  .kal-rutin-meta { font-size: 10px; color: #9ca3af; margin-top: 2px; }
+  .kal-rutin-next { font-size: 11px; font-weight: 600; color: #ea580c; font-family: 'JetBrains Mono', monospace; }
+
   /* ─── EMPTY ──────────────────────────────── */
   .kal-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px 0; color: #9ca3af; text-align: center; gap: 6px; }
   .kal-empty-icon { font-size: 28px; opacity: 0.4; }
@@ -167,12 +227,82 @@ const today  = new Date();
 const todayStr = `${today.getFullYear()}-${padD(today.getMonth()+1)}-${padD(today.getDate())}`;
 
 // ============================================================
+// INTERVAL CONFIG
+// ============================================================
+const INTERVAL_LABEL = {
+  "1bln": "Setiap 1 bulan",
+  "2bln": "Setiap 2 bulan",
+  "3bln": "Setiap 3 bulan",
+  "6bln": "Setiap 6 bulan",
+  "1thn": "Setiap 1 tahun",
+};
+
+// ============================================================
+// MODAL FORM EVENT RUTIN
+// ============================================================
+function ModalEventRutin({ onClose, onSave }) {
+  const [form, setForm] = useState({
+    nama: "", tipe: "servis_ac", interval: "2bln",
+    terakhir: "", catatan: "",
+  });
+  const set = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
+  const valid = form.nama && form.interval && form.terakhir;
+
+  return (
+    <div className="kal-overlay" onClick={onClose}>
+      <div className="kal-modal" onClick={e => e.stopPropagation()}>
+        <div className="kal-modal-head">
+          <div className="kal-modal-title">🔄 Tambah Perawatan Rutin</div>
+          <button className="kal-modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="kal-modal-body">
+          <div className="kal-field">
+            <label className="kal-field-label">Nama Perawatan</label>
+            <input className="kal-input" placeholder="Contoh: Servis AC Rutin, Pest Control..." value={form.nama} onChange={e => set("nama", e.target.value)} />
+          </div>
+          <div className="kal-input-row">
+            <div className="kal-field">
+              <label className="kal-field-label">Interval</label>
+              <select className="kal-input" value={form.interval} onChange={e => set("interval", e.target.value)}>
+                {Object.entries(INTERVAL_LABEL).map(([k, v]) => (
+                  <option key={k} value={k}>{v}</option>
+                ))}
+              </select>
+            </div>
+            <div className="kal-field">
+              <label className="kal-field-label">Terakhir Dilakukan</label>
+              <input type="date" className="kal-input" value={form.terakhir} onChange={e => set("terakhir", e.target.value)} />
+            </div>
+          </div>
+          <div className="kal-field">
+            <label className="kal-field-label">Catatan (opsional)</label>
+            <input className="kal-input" placeholder="Contoh: Semua 13 unit AC, vendor XYZ..." value={form.catatan} onChange={e => set("catatan", e.target.value)} />
+          </div>
+          {form.terakhir && form.interval && (
+            <div style={{ background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 8, padding: "10px 12px", fontSize: 12, color: "#92400e" }}>
+              📅 Jadwal berikutnya akan muncul otomatis di kalender
+            </div>
+          )}
+        </div>
+        <div className="kal-modal-foot">
+          <button className="kal-btn primary" onClick={() => onSave(form)} disabled={!valid}>Simpan</button>
+          <button className="kal-btn ghost" onClick={onClose}>Batal</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
 // MAIN
 // ============================================================
 export default function Kalender({ user }) {
+  const isAdmin = user?.role === "superadmin" || user?.role === "admin";
   const [year,  setYear]  = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
   const [selectedDate, setSelectedDate] = useState(todayStr);
+  const [showModal, setShowModal] = useState(false);
+  const [rutinList, setRutinList] = useState([]); // [{id, nama, tipe, interval, terakhir, catatan}]
 
   // Semua events datang dari modul lain (Supabase) — kosong dulu
   // Format: { [dateKey]: [ {type, label, ref?} ] }
@@ -186,7 +316,26 @@ export default function Kalender({ user }) {
   // penggajian        → dari Modul15_Penggajian
   // tagihan jatuh tempo → dari Modul11_Tagihan
 
-  const daysInMonth  = new Date(year, month + 1, 0).getDate();
+  // ── Hitung tanggal berikutnya dari interval ──
+  const hitungBerikutnya = (terakhir, interval) => {
+    if (!terakhir) return null;
+    const d = new Date(terakhir);
+    if (interval === "1bln")  d.setMonth(d.getMonth() + 1);
+    if (interval === "2bln")  d.setMonth(d.getMonth() + 2);
+    if (interval === "3bln")  d.setMonth(d.getMonth() + 3);
+    if (interval === "6bln")  d.setMonth(d.getMonth() + 6);
+    if (interval === "1thn")  d.setFullYear(d.getFullYear() + 1);
+    return `${d.getFullYear()}-${padD(d.getMonth()+1)}-${padD(d.getDate())}`;
+  };
+
+  // ── Inject rutin ke eventMap ──
+  rutinList.forEach(r => {
+    const tgl = hitungBerikutnya(r.terakhir, r.interval);
+    if (tgl) {
+      if (!eventMap[tgl]) eventMap[tgl] = [];
+      eventMap[tgl].push({ type: "servis_ac", label: r.nama, detail: r.catatan });
+    }
+  });
   const firstDayOfWeek = new Date(year, month, 1).getDay();
 
   const prevMonth = () => {
@@ -259,6 +408,13 @@ export default function Kalender({ user }) {
           <div className="kal-widget-head">
             <div className="kal-widget-title">📅 Kalender Operasional</div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              {isAdmin && (
+                <button
+                  onClick={() => setShowModal(true)}
+                  style={{ background: "linear-gradient(135deg,#f97316,#ea580c)", color: "#fff", border: "none", borderRadius: 8, padding: "6px 12px", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
+                  + Event Rutin
+                </button>
+              )}
               <div className="kal-period">
                 <button className="kal-period-btn" onClick={prevMonth}>‹</button>
                 <span>{BULAN[month].toUpperCase()} {year}</span>
@@ -380,8 +536,52 @@ export default function Kalender({ user }) {
             </div>
           </div>
 
+          {/* Daftar Perawatan Rutin */}
+          <div className="kal-widget">
+            <div className="kal-widget-head">
+              <div className="kal-widget-title">🔄 Perawatan Rutin</div>
+              {isAdmin && (
+                <div className="kal-widget-action" style={{ fontSize: 10, fontWeight: 500, color: "#f97316", cursor: "pointer" }} onClick={() => setShowModal(true)}>+ Tambah</div>
+              )}
+            </div>
+            <div className="kal-widget-body">
+              {rutinList.length === 0 ? (
+                <div className="kal-empty" style={{ padding: "16px 0" }}>
+                  <div className="kal-empty-icon">🔄</div>
+                  <div className="kal-empty-text">Belum ada perawatan rutin</div>
+                </div>
+              ) : (
+                rutinList.map(r => {
+                  const next = hitungBerikutnya(r.terakhir, r.interval);
+                  return (
+                    <div key={r.id} className="kal-rutin-item">
+                      <div>
+                        <div className="kal-rutin-name">{r.nama}</div>
+                        <div className="kal-rutin-meta">
+                          {INTERVAL_LABEL[r.interval]} · Terakhir: {r.terakhir || "—"}
+                        </div>
+                      </div>
+                      <div className="kal-rutin-next">{next || "—"}</div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+
         </div>
       </div>
+
+      {/* Modal Form Event Rutin */}
+      {showModal && isAdmin && (
+        <ModalEventRutin
+          onClose={() => setShowModal(false)}
+          onSave={(data) => {
+            setRutinList(prev => [...prev, { id: Date.now(), ...data }]);
+            setShowModal(false);
+          }}
+        />
+      )}
     </div>
   );
 }

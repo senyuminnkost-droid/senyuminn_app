@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 const CSS = `
   .py-wrap { display: flex; flex-direction: column; gap: 16px; }
@@ -169,7 +170,7 @@ function FormPenyewa({ penyewa, kamarList, onClose, onSave }) {
     }
   }, []);
 
-  return (
+  return createPortal(
     <div className="py-overlay" onClick={onClose}>
       <div className="py-modal" onClick={e => e.stopPropagation()}>
         <div className="py-modal-head">
@@ -288,7 +289,7 @@ function FormPenyewa({ penyewa, kamarList, onClose, onSave }) {
         </div>
       </div>
     </div>
-  );
+  , document.body);
 }
 
 function DetailPanel({ penyewa, onEdit, onClose }) {

@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect } from "react";
 
 // ============================================================
 // USER CONFIG — ganti setelah connect Supabase
@@ -8,25 +8,25 @@ const USERS = [
 ];
 
 // ============================================================
-// LAZY MODULES
+// LAZY MODULES — uncomment satu per satu setelah file tersedia
 // ============================================================
-const ModulDashboard   = lazy(() => import("./Modul02_Dashboard"));
-const ModulMonitor     = lazy(() => import("./Modul03_Monitor"));
-const ModulAbsensi     = lazy(() => import("./Modul04_Absensi"));
-const ModulKeluhan     = lazy(() => import("./Modul05_Keluhan"));
-const ModulWeekly      = lazy(() => import("./Modul06_Weekly"));
-const ModulKalender    = lazy(() => import("./Modul07_Kalender"));
-const ModulPenyewa     = lazy(() => import("./Modul08_Penyewa"));
-const ModulCheckin     = lazy(() => import("./Modul09_Checkin"));
-const ModulRiwayat     = lazy(() => import("./Modul10_Riwayat"));
-const ModulTagihan     = lazy(() => import("./Modul11_Tagihan"));
-const ModulKas         = lazy(() => import("./Modul12_Kas"));
-const ModulLaporan     = lazy(() => import("./Modul13_Laporan"));
-const ModulKaryawan    = lazy(() => import("./Modul14_Karyawan"));
-const ModulPenggajian  = lazy(() => import("./Modul15_Penggajian"));
-const ModulLapAbsensi  = lazy(() => import("./Modul16_LaporanAbsensi"));
-const ModulProfil      = lazy(() => import("./Modul17_Profil"));
-const ModulUsers       = lazy(() => import("./Modul18_Users"));
+// const ModulDashboard   = lazy(() => import("./Modul02_Dashboard"));
+// const ModulMonitor     = lazy(() => import("./Modul03_Monitor"));
+// const ModulAbsensi     = lazy(() => import("./Modul04_Absensi"));
+// const ModulKeluhan     = lazy(() => import("./Modul05_Keluhan"));
+// const ModulWeekly      = lazy(() => import("./Modul06_Weekly"));
+// const ModulKalender    = lazy(() => import("./Modul07_Kalender"));
+// const ModulPenyewa     = lazy(() => import("./Modul08_Penyewa"));
+// const ModulCheckin     = lazy(() => import("./Modul09_Checkin"));
+// const ModulRiwayat     = lazy(() => import("./Modul10_Riwayat"));
+// const ModulTagihan     = lazy(() => import("./Modul11_Tagihan"));
+// const ModulKas         = lazy(() => import("./Modul12_Kas"));
+// const ModulLaporan     = lazy(() => import("./Modul13_Laporan"));
+// const ModulKaryawan    = lazy(() => import("./Modul14_Karyawan"));
+// const ModulPenggajian  = lazy(() => import("./Modul15_Penggajian"));
+// const ModulLapAbsensi  = lazy(() => import("./Modul16_LaporanAbsensi"));
+// const ModulProfil      = lazy(() => import("./Modul17_Profil"));
+// const ModulUsers       = lazy(() => import("./Modul18_Users"));
 
 // ============================================================
 // MENU CONFIG
@@ -551,37 +551,57 @@ function ComingSoon({ menuId }) {
 // ============================================================
 // RENDER MODULE
 // ============================================================
-function RenderModule({ menuId, user }) {
-  const props = { user };
+// ============================================================
+// RENDER MODULE — auto load, fallback ComingSoon
+// ============================================================
+const moduleCache = {};
 
-  const moduleMap = {
-    dashboard:      <ModulDashboard   {...props} />,
-    monitor:        <ModulMonitor     {...props} />,
-    absensi:        <ModulAbsensi     {...props} />,
-    keluhan:        <ModulKeluhan     {...props} />,
-    weekly:         <ModulWeekly      {...props} />,
-    kalender:       <ModulKalender    {...props} />,
-    penyewa:        <ModulPenyewa     {...props} />,
-    checkin:        <ModulCheckin     {...props} />,
-    riwayat:        <ModulRiwayat     {...props} />,
-    tagihan:        <ModulTagihan     {...props} />,
-    kas:            <ModulKas         {...props} />,
-    laporan:        <ModulLaporan     {...props} />,
-    karyawan:       <ModulKaryawan    {...props} />,
-    penggajian:     <ModulPenggajian  {...props} />,
-    laporanabsensi: <ModulLapAbsensi  {...props} />,
-    profil:         <ModulProfil      {...props} />,
-    users:          <ModulUsers       {...props} />,
+function RenderModule({ menuId, user }) {
+  const [Comp, setComp] = useState(null);
+  const [failed, setFailed] = useState(false);
+
+  const moduleNames = {
+    dashboard:      "Modul02_Dashboard",
+    monitor:        "Modul03_Monitor",
+    absensi:        "Modul04_Absensi",
+    keluhan:        "Modul05_Keluhan",
+    weekly:         "Modul06_Weekly",
+    kalender:       "Modul07_Kalender",
+    penyewa:        "Modul08_Penyewa",
+    checkin:        "Modul09_Checkin",
+    riwayat:        "Modul10_Riwayat",
+    tagihan:        "Modul11_Tagihan",
+    kas:            "Modul12_Kas",
+    laporan:        "Modul13_Laporan",
+    karyawan:       "Modul14_Karyawan",
+    penggajian:     "Modul15_Penggajian",
+    laporanabsensi: "Modul16_LaporanAbsensi",
+    profil:         "Modul17_Profil",
+    users:          "Modul18_Users",
   };
 
-  const el = moduleMap[menuId];
-  if (!el) return <ComingSoon menuId={menuId} />;
+  useEffect(() => {
+    const name = moduleNames[menuId];
+    if (!name) { setFailed(true); return; }
+    setComp(null);
+    setFailed(false);
 
-  return (
-    <Suspense fallback={<LoadingFallback />}>
-      <div className="fade-in">{el}</div>
-    </Suspense>
-  );
+    if (moduleCache[menuId]) {
+      setComp(() => moduleCache[menuId]);
+      return;
+    }
+
+    import(`./${name}.jsx`)
+      .then(m => {
+        moduleCache[menuId] = m.default;
+        setComp(() => m.default);
+      })
+      .catch(() => setFailed(true));
+  }, [menuId]);
+
+  if (failed) return <div className="fade-in"><ComingSoon menuId={menuId} /></div>;
+  if (!Comp)  return <LoadingFallback />;
+  return <div className="fade-in"><Comp user={user} /></div>;
 }
 
 // ============================================================

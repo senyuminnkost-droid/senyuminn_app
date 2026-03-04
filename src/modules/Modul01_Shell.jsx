@@ -12,6 +12,21 @@ const USERS = [
   { id: 5, username: "staff2",   password: "staff123",  role: "staff",     name: "Gurit Yudho Anggoro", jabatan: "Staf Penjaga Malam" },
 ];
 
+// Cek apakah user read-only (owner & direktur)
+const isReadOnly = (user) => user?.role === "owner" || user?.role === "direktur";
+
+// Cek akses menu per user
+const canAccess = (user, menuId) => {
+  if (!user) return "none";
+  if (user.role === "owner" || user.role === "direktur") return "read";
+  if (user.role === "manajemen") return "write";
+  const staffMenus = ["dashboard","monitor","keluhan","weekly","absensi","penyewa","checkin","sop"];
+  return staffMenus.includes(menuId) ? "write" : "none";
+};
+
+
+
+
 // ============================================================
 // LAZY MODULES — uncomment satu per satu setelah file tersedia
 // ============================================================

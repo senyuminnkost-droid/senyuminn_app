@@ -1059,16 +1059,21 @@ function TabAset({ asetList, setAsetList }) {
 // ============================================================
 export default function Kas({ user, globalData = {} }) {
   const {
-    kasJurnal    = [], setKasJurnal    = ()=>{},
-    tagihanList  = [],
-    asetList     = [], setAsetList     = ()=>{},
-    sakuConfig   = [], setSakuConfig   = ()=>{},
+    kasJurnal      = [], setKasJurnal      = ()=>{},
+    tagihanList    = [],
+    asetList       = [], setAsetList       = ()=>{},
+    sakuConfig     = [], setSakuConfig     = ()=>{},
+    saldoAwal      = {}, setSaldoAwal      = ()=>{},
+    carryOver      = {}, setCarryOver      = ()=>{},
+    depositList    = [],
+    sewaDimukaList = [],
+    pengaturanConfig = {}, setPengaturanConfig = ()=>{},
   } = globalData;
 
   const [activeTab,  setActiveTab]  = useState("jurnal");
 
-  // Rekening dummy — nanti dari Profil Kost
-  const rekeningList = [];
+  // Rekening dari pengaturanConfig
+  const rekeningList = pengaturanConfig.rekeningList || [];
 
   // Stats header
   const inBln       = kasJurnal.filter(t=>t.tipe==="pemasukan"&&t.tanggal?.startsWith(thisMonth)&&!t.isLiabilitas).reduce((s,t)=>s+t.nominal,0);

@@ -145,10 +145,75 @@ export default function SOPStandar({ user, globalData={} }) {
   const [inventaris,    setInventaris]  = useState(pengaturanConfig.inventarisKamar || [...DEFAULT_INVENTARIS]);
   const [dirty,         setDirty]       = useState(false);
 
-  // Modal states
-  const [showChecklistModal, setShowChecklistModal] = useState(null); // "weekly" | "deepclean" | null
-  const [showInvModal,       setShowInvModal]        = useState(false);
-  const [editInvItem,        setEditInvItem]          = useState(null); // item obj | null
+  // SOP Alur editable state
+  const DEFAULT_SOP_STATE = {
+    checkin:  pengaturanConfig.sopCheckin  || [...DEFAULT_SOP_CHECKIN],
+    checkout: pengaturanConfig.sopCheckout || [...DEFAULT_SOP_CHECKOUT],
+    keluhan:  pengaturanConfig.sopKeluhan  || [...DEFAULT_SOP_KELUHAN],
+  };
+  const [sopLists, setSopLists] = useState(DEFAULT_SOP_STATE);
+  const [sopModalOpen, setSopModalOpen] = useState(null); // "checkin"|"checkout"|"keluhan"|null
+  const [sopEditItem,  setSopEditItem]  = useState(null); // {which, idx, step} | null (null = tambah baru)
+  const [sopFormTitle, setSopFormTitle] = useState("");
+  const [sopFormDesc,  setSopFormDesc]  = useState("");
+
+  const openSopStepModal = (which, idx=null) => {
+    const step = idx !== null ? sopLists[which][idx] : null;
+    setSopFormTitle(step?.title || "");
+    setSopFormDesc(step?.desc || "");
+    setSopEditItem(idx !== null ? {which, idx} : {which, idx:null});
+  };
+  const saveSopStep = () => {
+    if (!sopFormTitle.trim()) return;
+    setSopLists(prev => {
+      const list = [...prev[sopEditItem.which]];
+      const newStep = {title:sopFormTitle.trim(), desc:sopFormDesc.trim(), id:Date.now()};
+      if (sopEditItem.idx !== null) list[sopEditItem.idx] = newStep;
+      else list.push(newStep);
+      return {...prev, [sopEditItem.which]: list};
+    });
+    setSopEditItem(null); setSopFormTitle(""); setSopFormDesc("");
+    setPengaturanConfig(p=>({...p, [`sop${sopEditItem.which.charAt(0).toUpperCase()+sopEditItem.which.slice(1)}`]: sopEditItem.idx !== null ? [...sopLists[sopEditItem.which].map((s,i)=>i===sopEditItem.idx?{title:sopFormTitle.trim(),desc:sopFormDesc.trim(),id:Date.now()}:s)] : [...sopLists[sopEditItem.which],{title:sopFormTitle.trim(),desc:sopFormDesc.trim(),id:Date.now()}]}));
+  };
+  const deleteSopStep = (which, idx) => {
+    if (!window.confirm("Hapus langkah ini?")) return;
+    setSopLists(prev => { const list = prev[which].filter((_,i)=>i!==idx); return {...prev,[which]:list}; });
+  };
+
+  // KPI Items state — admin bisa set item sendiri + bobot
+  const DEFAULT_KPI_ITEMS = pengaturanConfig.kpiItems || [
+    {id:1, nama:"Kehadiran",        bobot:60, sumber:"absensi",  keterangan:"% hari hadir dari total hari kerja"},
+    {id:2, nama:"Jobdesk Selesai",  bobot:30, sumber:"weekly",   keterangan:"% checklist weekly service selesai"},
+    {id:3, nama:"Respon Keluhan",   bobot:10, sumber:"tiket",    keterangan:"% tiket ditangani dalam 24 jam"},
+  ];
+  const [kpiItems, setKpiItems] = useState(DEFAULT_KPI_ITEMS);
+  const [kpiModal, setKpiModal] = useState(false);
+  const [kpiEditItem, setKpiEditItem] = useState(null);
+  const [kpiForm, setKpiForm] = useState({nama:"",bobot:0,sumber:"manual",keterangan:""});
+  const kpiTotalBobot = kpiItems.reduce((s,i)=>s+Number(i.bobot||0),0);
+  const kpiValid = kpiTotalBobot === 100;
+
+  const openKpiModal = (item=null) => {
+    setKpiEditItem(item);
+    setKpiForm(item ? {...item} : {nama:"",bobot:0,sumber:"manual",keterangan:""});
+    setKpiModal(true);
+  };
+  const saveKpiItem = () => {
+    if (!kpiForm.nama.trim()) return;
+    const newItem = {...kpiForm, id:kpiEditItem?.id||Date.now(), bobot:Number(kpiForm.bobot)||0};
+    const newList = kpiEditItem
+      ? kpiItems.map(i=>i.id===kpiEditItem.id ? newItem : i)
+      : [...kpiItems, newItem];
+    setKpiItems(newList);
+    setPengaturanConfig(p=>({...p, kpiItems:newList}));
+    setKpiModal(false);
+  };
+  const deleteKpiItem = (id) => {
+    if (!window.confirm("Hapus item KPI ini?")) return;
+    const newList = kpiItems.filter(i=>i.id!==id);
+    setKpiItems(newList);
+    setPengaturanConfig(p=>({...p, kpiItems:newList}));
+  };
 
   // KPI edit state
   const [kpiEdit, setKpiEdit] = useState({
@@ -368,79 +433,240 @@ export default function SOPStandar({ user, globalData={} }) {
       {/* SOP Alur */}
       {tab==="sop" && (
         <div style={{display:"flex",flexDirection:"column",gap:16}}>
-          <SOPView steps={DEFAULT_SOP_CHECKIN}  title="🔑 SOP Check-in Penyewa" />
-          <SOPView steps={DEFAULT_SOP_CHECKOUT} title="📦 SOP Check-out Penyewa" />
-          <SOPView steps={DEFAULT_SOP_KELUHAN}  title="🔧 SOP Penanganan Keluhan Urgent" />
+
+          {/* ── SOP Editor per alur ── */}
+          {[
+            {key:"checkin",  icon:"🔑", title:"SOP Check-in Penyewa"},
+            {key:"checkout", icon:"📦", title:"SOP Check-out Penyewa"},
+            {key:"keluhan",  icon:"🔧", title:"SOP Penanganan Keluhan Urgent"},
+          ].map(alur => (
+            <div key={alur.key} className="sp-widget">
+              <div className="sp-widget-head">
+                <div className="sp-widget-title">{alur.icon} {alur.title}</div>
+                {!isReadOnly && (
+                  <button className="sp-btn primary" style={{padding:"5px 12px",fontSize:11}} onClick={()=>openSopStepModal(alur.key)}>
+                    ＋ Tambah Langkah
+                  </button>
+                )}
+              </div>
+              <div className="sp-body">
+                {sopLists[alur.key].length === 0 ? (
+                  <div style={{textAlign:"center",padding:"16px 0",color:"#9ca3af",fontSize:12}}>
+                    Belum ada langkah. Klik ＋ untuk menambah.
+                  </div>
+                ) : sopLists[alur.key].map((step, idx) => (
+                  <div key={step.id||idx} className="sp-sop-step" style={{alignItems:"flex-start"}}>
+                    <div className="sp-sop-num">{idx+1}</div>
+                    <div className="sp-sop-content" style={{flex:1}}>
+                      <div className="sp-sop-title">{step.title}</div>
+                      {step.desc && <div className="sp-sop-desc">{step.desc}</div>}
+                    </div>
+                    {!isReadOnly && (
+                      <div style={{display:"flex",gap:4,flexShrink:0,marginLeft:8}}>
+                        <button onClick={()=>openSopStepModal(alur.key, idx)} style={{background:"#f3f4f6",border:"none",borderRadius:6,padding:"3px 8px",fontSize:11,cursor:"pointer",color:"#4b5563"}}>✏️</button>
+                        <button onClick={()=>deleteSopStep(alur.key, idx)} style={{background:"#fee2e2",border:"none",borderRadius:6,padding:"3px 8px",fontSize:11,cursor:"pointer",color:"#dc2626"}}>✕</button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {/* Modal edit/tambah langkah SOP */}
+          {sopEditItem !== null && (
+            <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:9999,padding:16,boxSizing:"border-box"}} onClick={()=>setSopEditItem(null)}>
+              <div style={{background:"#fff",borderRadius:14,width:"100%",maxWidth:440,boxShadow:"0 20px 60px rgba(0,0,0,.18)"}} onClick={e=>e.stopPropagation()}>
+                <div style={{padding:"14px 18px 12px",borderBottom:"1px solid #f3f4f6",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                  <div style={{fontSize:14,fontWeight:700,color:"#111827"}}>{sopEditItem.idx!==null ? "✏️ Edit Langkah" : "＋ Tambah Langkah"}</div>
+                  <button onClick={()=>setSopEditItem(null)} style={{background:"none",border:"none",cursor:"pointer",fontSize:18,color:"#9ca3af"}}>✕</button>
+                </div>
+                <div style={{padding:"16px 18px",display:"flex",flexDirection:"column",gap:12}}>
+                  <div>
+                    <label style={{fontSize:11,fontWeight:600,color:"#374151",textTransform:"uppercase",display:"block",marginBottom:4}}>Judul Langkah *</label>
+                    <input autoFocus style={{width:"100%",padding:"9px 11px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}
+                      value={sopFormTitle} onChange={e=>setSopFormTitle(e.target.value)} placeholder="Contoh: Verifikasi identitas penyewa" />
+                  </div>
+                  <div>
+                    <label style={{fontSize:11,fontWeight:600,color:"#374151",textTransform:"uppercase",display:"block",marginBottom:4}}>Deskripsi / Keterangan</label>
+                    <textarea style={{width:"100%",padding:"9px 11px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:12,fontFamily:"inherit",outline:"none",resize:"vertical",minHeight:64,boxSizing:"border-box"}}
+                      value={sopFormDesc} onChange={e=>setSopFormDesc(e.target.value)} placeholder="Detail langkah ini..." />
+                  </div>
+                </div>
+                <div style={{padding:"11px 18px",borderTop:"1px solid #f3f4f6",display:"flex",gap:8,justifyContent:"flex-end"}}>
+                  <button onClick={()=>setSopEditItem(null)} style={{padding:"8px 14px",background:"#f3f4f6",border:"none",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",color:"#4b5563"}}>Batal</button>
+                  <button onClick={saveSopStep} disabled={!sopFormTitle.trim()} style={{padding:"8px 16px",background:sopFormTitle.trim()?"linear-gradient(135deg,#f97316,#ea580c)":"#d1d5db",color:"#fff",border:"none",borderRadius:8,fontSize:12,fontWeight:700,cursor:sopFormTitle.trim()?"pointer":"not-allowed",fontFamily:"inherit"}}>✅ Simpan</button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
       {/* KPI & Insentif — editable */}
       {tab==="kpi" && (
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
+        <div style={{display:"flex",flexDirection:"column",gap:16}}>
+
+          {/* ── KPI Items + Bobot ── */}
           <div className="sp-widget">
             <div className="sp-widget-head">
-              <div className="sp-widget-title">🎯 Threshold KPI Insentif</div>
-              {kpiDirty && <span style={{fontSize:11,color:"#f97316",fontWeight:600}}>● Belum disimpan</span>}
+              <div className="sp-widget-title">🎯 Item KPI & Bobot</div>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <span style={{fontSize:11,fontWeight:700,color:kpiValid?"#16a34a":"#dc2626",background:kpiValid?"#dcfce7":"#fee2e2",padding:"3px 10px",borderRadius:20}}>
+                  Total bobot: {kpiTotalBobot}% {kpiValid?"✅":"⚠️ harus 100%"}
+                </span>
+                {!isReadOnly && (
+                  <button className="sp-btn primary" style={{padding:"5px 12px",fontSize:11}} onClick={()=>openKpiModal()}>＋ Tambah Item</button>
+                )}
+              </div>
             </div>
             <div className="sp-body">
-              {[
-                {key:"kpiThresholdPct",    label:"Kehadiran minimum",    suffix:"%"},
-                {key:"nominalInsentif",     label:"Nominal insentif",     prefix:"Rp"},
-                {key:"dendaIjinTidakSah",   label:"Denda ijin tidak sah/hari", prefix:"Rp"},
-                {key:"lemburPerShift",      label:"Lembur per shift",     prefix:"Rp"},
-                {key:"maxPinjamanKoperasi", label:"Maks pinjaman koperasi",prefix:"Rp"},
-              ].map(f=>(
-                <div key={f.key} className="sp-kpi-row">
-                  <span className="sp-kpi-key">{f.label}</span>
-                  {isReadOnly ? (
-                    <span className="sp-kpi-val">
-                      {f.prefix && "Rp "}{kpiEdit[f.key].toLocaleString("id-ID")}{f.suffix||""}
-                    </span>
-                  ) : (
-                    <div style={{display:"flex",alignItems:"center",gap:4}}>
-                      {f.prefix && <span style={{fontSize:11,color:"#9ca3af"}}>Rp</span>}
-                      <input
-                        style={{width:110,padding:"5px 8px",borderRadius:7,border:"1.5px solid #e5e7eb",fontSize:12,textAlign:"right",fontWeight:700,color:"#f97316",fontFamily:"inherit",outline:"none"}}
-                        value={kpiEdit[f.key].toLocaleString("id-ID")}
-                        onChange={e=>{
-                          const num = parseInt(e.target.value.replace(/\D/g,""))||0;
-                          setKpiEdit(p=>({...p,[f.key]:num}));
-                          setKpiDirty(true);
-                        }}
-                      />
-                      {f.suffix && <span style={{fontSize:11,color:"#9ca3af"}}>{f.suffix}</span>}
+              {kpiItems.length===0 ? (
+                <div style={{textAlign:"center",padding:"16px 0",color:"#9ca3af",fontSize:12}}>Belum ada item KPI. Klik ＋ untuk menambah.</div>
+              ) : (
+                <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                  {/* Header */}
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 80px 120px auto",gap:8,padding:"6px 10px",background:"#f9fafb",borderRadius:7}}>
+                    <span style={{fontSize:10,fontWeight:700,color:"#9ca3af",textTransform:"uppercase"}}>Nama Item KPI</span>
+                    <span style={{fontSize:10,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",textAlign:"center"}}>Bobot</span>
+                    <span style={{fontSize:10,fontWeight:700,color:"#9ca3af",textTransform:"uppercase"}}>Sumber Data</span>
+                    <span></span>
+                  </div>
+                  {kpiItems.map(item=>(
+                    <div key={item.id} style={{display:"grid",gridTemplateColumns:"1fr 80px 120px auto",gap:8,padding:"9px 10px",background:"#fff",border:"1px solid #e5e7eb",borderRadius:8,alignItems:"center"}}>
+                      <div>
+                        <div style={{fontSize:12,fontWeight:600,color:"#1f2937"}}>{item.nama}</div>
+                        {item.keterangan && <div style={{fontSize:10,color:"#9ca3af"}}>{item.keterangan}</div>}
+                      </div>
+                      <div style={{textAlign:"center"}}>
+                        <span style={{fontSize:14,fontWeight:800,color:"#f97316"}}>{item.bobot}%</span>
+                      </div>
+                      <div>
+                        <span style={{fontSize:11,padding:"2px 8px",borderRadius:20,background:"#f0f9ff",color:"#0369a1",fontWeight:600}}>
+                          {item.sumber==="absensi"?"📅 Absensi":item.sumber==="weekly"?"🧹 Weekly":item.sumber==="tiket"?"🔧 Tiket":"✏️ Manual"}
+                        </span>
+                      </div>
+                      {!isReadOnly && (
+                        <div style={{display:"flex",gap:4}}>
+                          <button onClick={()=>openKpiModal(item)} style={{background:"#f3f4f6",border:"none",borderRadius:6,padding:"3px 8px",fontSize:11,cursor:"pointer",color:"#4b5563"}}>✏️</button>
+                          <button onClick={()=>deleteKpiItem(item.id)} style={{background:"#fee2e2",border:"none",borderRadius:6,padding:"3px 8px",fontSize:11,cursor:"pointer",color:"#dc2626"}}>✕</button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  {!kpiValid && (
+                    <div style={{background:"#fff7ed",border:"1px solid #fed7aa",borderRadius:8,padding:"8px 12px",fontSize:11,color:"#9a3412"}}>
+                      ⚠️ Total bobot harus tepat 100%. Sekarang: {kpiTotalBobot}%. {kpiTotalBobot>100?"Kurangi":"Tambah"} {Math.abs(100-kpiTotalBobot)}% lagi.
                     </div>
                   )}
-                </div>
-              ))}
-              {!isReadOnly && kpiDirty && (
-                <div style={{display:"flex",justifyContent:"flex-end",gap:8,marginTop:8}}>
-                  <button className="sp-btn ghost" onClick={()=>{ setKpiEdit({kpiThresholdPct:pengaturanConfig.kpiThresholdPct||90,nominalInsentif:pengaturanConfig.nominalInsentif||500000,dendaIjinTidakSah:pengaturanConfig.dendaIjinTidakSah||50000,lemburPerShift:pengaturanConfig.lemburPerShift||50000,maxPinjamanKoperasi:pengaturanConfig.maxPinjamanKoperasi||700000}); setKpiDirty(false); }}>Batalkan</button>
-                  <button className="sp-btn primary" onClick={()=>{ setPengaturanConfig(p=>({...p,...kpiEdit})); setKpiDirty(false); }}>✅ Simpan</button>
                 </div>
               )}
             </div>
           </div>
-          <div className="sp-widget">
-            <div className="sp-widget-head"><div className="sp-widget-title">📊 Cara Hitung KPI</div></div>
-            <div className="sp-body">
-              {[
-                {n:"1",title:"Hitung hari kerja wajib",   desc:"Total hari dalam bulan dikurangi hari libur resmi"},
-                {n:"2",title:"Hitung kehadiran aktual",   desc:"Jumlah hari dengan kode: P, M, SM, IN, L, LL, PL, LS"},
-                {n:"3",title:"Hitung persentase",         desc:"(Kehadiran aktual ÷ Hari kerja wajib) × 100%"},
-                {n:"4",title:"Bandingkan threshold",      desc:`Jika ≥ ${kpiEdit.kpiThresholdPct}% → dapat insentif Rp ${kpiEdit.nominalInsentif.toLocaleString("id-ID")}`},
-                {n:"5",title:"Hitung potongan",           desc:`Ijin Tidak Sah → potong Rp ${kpiEdit.dendaIjinTidakSah.toLocaleString("id-ID")}/hari`},
-              ].map(s=>(
-                <div key={s.n} className="sp-sop-step">
-                  <div className="sp-sop-num" style={{background:"linear-gradient(135deg,#3b82f6,#2563eb)"}}>{s.n}</div>
-                  <div className="sp-sop-content">
-                    <div className="sp-sop-title">{s.title}</div>
-                    <div className="sp-sop-desc">{s.desc}</div>
+
+          {/* ── Threshold & Nominal ── */}
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
+            <div className="sp-widget">
+              <div className="sp-widget-head">
+                <div className="sp-widget-title">⚙️ Threshold & Nominal</div>
+                {kpiDirty && <span style={{fontSize:11,color:"#f97316",fontWeight:600}}>● Belum disimpan</span>}
+              </div>
+              <div className="sp-body">
+                {[
+                  {key:"kpiThresholdPct",    label:"Score minimum insentif", suffix:"%"},
+                  {key:"dendaIjinTidakSah",  label:"Denda ijin tidak sah/hari", prefix:"Rp"},
+                  {key:"lemburPerShift",     label:"Lembur per shift", prefix:"Rp"},
+                  {key:"maxPinjamanKoperasi",label:"Maks pinjaman koperasi", prefix:"Rp"},
+                ].map(f=>(
+                  <div key={f.key} className="sp-kpi-row">
+                    <span className="sp-kpi-key">{f.label}</span>
+                    {isReadOnly ? (
+                      <span className="sp-kpi-val">{f.prefix&&"Rp "}{kpiEdit[f.key]?.toLocaleString("id-ID")}{f.suffix||""}</span>
+                    ) : (
+                      <div style={{display:"flex",alignItems:"center",gap:4}}>
+                        {f.prefix && <span style={{fontSize:11,color:"#9ca3af"}}>Rp</span>}
+                        <input style={{width:100,padding:"5px 8px",borderRadius:7,border:"1.5px solid #e5e7eb",fontSize:12,textAlign:"right",fontWeight:700,color:"#f97316",fontFamily:"inherit",outline:"none"}}
+                          value={(kpiEdit[f.key]||0).toLocaleString("id-ID")}
+                          onChange={e=>{ setKpiEdit(p=>({...p,[f.key]:parseInt(e.target.value.replace(/\D/g,""))||0})); setKpiDirty(true); }} />
+                        {f.suffix && <span style={{fontSize:11,color:"#9ca3af"}}>{f.suffix}</span>}
+                      </div>
+                    )}
                   </div>
+                ))}
+                {!isReadOnly && kpiDirty && (
+                  <div style={{display:"flex",justifyContent:"flex-end",gap:8,marginTop:8}}>
+                    <button className="sp-btn ghost" onClick={()=>{setKpiEdit({kpiThresholdPct:pengaturanConfig.kpiThresholdPct||90,dendaIjinTidakSah:pengaturanConfig.dendaIjinTidakSah||50000,lemburPerShift:pengaturanConfig.lemburPerShift||50000,maxPinjamanKoperasi:pengaturanConfig.maxPinjamanKoperasi||700000});setKpiDirty(false);}}>Batalkan</button>
+                    <button className="sp-btn primary" onClick={()=>{setPengaturanConfig(p=>({...p,...kpiEdit}));setKpiDirty(false);}}>✅ Simpan</button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="sp-widget">
+              <div className="sp-widget-head"><div className="sp-widget-title">📊 Cara Hitung Score KPI</div></div>
+              <div className="sp-body">
+                <div style={{fontSize:11,color:"#9ca3af",marginBottom:8}}>Score = Σ (nilai item × bobot item)</div>
+                {kpiItems.map((item,idx)=>(
+                  <div key={item.id} className="sp-sop-step" style={{padding:"6px 10px"}}>
+                    <div className="sp-sop-num" style={{width:22,height:22,fontSize:10,background:"linear-gradient(135deg,#3b82f6,#2563eb)"}}>{idx+1}</div>
+                    <div className="sp-sop-content">
+                      <div className="sp-sop-title" style={{fontSize:11}}>{item.nama} <span style={{color:"#f97316",fontWeight:800}}>(bobot {item.bobot}%)</span></div>
+                      <div className="sp-sop-desc">{item.keterangan}</div>
+                    </div>
+                  </div>
+                ))}
+                <div style={{marginTop:8,padding:"8px 10px",background:"#f0fdf4",border:"1px solid #86efac",borderRadius:8,fontSize:11,color:"#15803d"}}>
+                  ✅ Jika total score ≥ {kpiEdit.kpiThresholdPct||90}% → Staff dapat insentif sesuai nominal di Data Karyawan
                 </div>
-              ))}
+              </div>
             </div>
           </div>
+
+          {/* Modal tambah/edit item KPI */}
+          {kpiModal && (
+            <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:9999,padding:16,boxSizing:"border-box"}} onClick={()=>setKpiModal(false)}>
+              <div style={{background:"#fff",borderRadius:14,width:"100%",maxWidth:420,boxShadow:"0 20px 60px rgba(0,0,0,.18)"}} onClick={e=>e.stopPropagation()}>
+                <div style={{padding:"14px 18px 12px",borderBottom:"1px solid #f3f4f6",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                  <div style={{fontSize:14,fontWeight:700,color:"#111827"}}>{kpiEditItem?"✏️ Edit Item KPI":"＋ Tambah Item KPI"}</div>
+                  <button onClick={()=>setKpiModal(false)} style={{background:"none",border:"none",cursor:"pointer",fontSize:18,color:"#9ca3af"}}>✕</button>
+                </div>
+                <div style={{padding:"16px 18px",display:"flex",flexDirection:"column",gap:11}}>
+                  <div>
+                    <label style={{fontSize:11,fontWeight:600,color:"#374151",textTransform:"uppercase",display:"block",marginBottom:4}}>Nama Item KPI *</label>
+                    <input autoFocus style={{width:"100%",padding:"9px 11px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}
+                      value={kpiForm.nama} onChange={e=>setKpiForm(p=>({...p,nama:e.target.value}))} placeholder="Contoh: Kehadiran, Jobdesk Selesai..." />
+                  </div>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                    <div>
+                      <label style={{fontSize:11,fontWeight:600,color:"#374151",textTransform:"uppercase",display:"block",marginBottom:4}}>Bobot (%)</label>
+                      <input type="number" min={0} max={100} style={{width:"100%",padding:"9px 11px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box",fontWeight:700,color:"#f97316"}}
+                        value={kpiForm.bobot} onChange={e=>setKpiForm(p=>({...p,bobot:Math.min(100,Math.max(0,parseInt(e.target.value)||0))}))} />
+                      <div style={{fontSize:10,color:"#9ca3af",marginTop:2}}>Sisa bobot: {100-kpiTotalBobot+(kpiEditItem?.bobot||0)}%</div>
+                    </div>
+                    <div>
+                      <label style={{fontSize:11,fontWeight:600,color:"#374151",textTransform:"uppercase",display:"block",marginBottom:4}}>Sumber Data</label>
+                      <select style={{width:"100%",padding:"9px 11px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:12,fontFamily:"inherit",outline:"none"}}
+                        value={kpiForm.sumber} onChange={e=>setKpiForm(p=>({...p,sumber:e.target.value}))}>
+                        <option value="absensi">📅 Absensi</option>
+                        <option value="weekly">🧹 Weekly Service</option>
+                        <option value="tiket">🔧 Tiket Keluhan</option>
+                        <option value="manual">✏️ Input Manual</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label style={{fontSize:11,fontWeight:600,color:"#374151",textTransform:"uppercase",display:"block",marginBottom:4}}>Keterangan</label>
+                    <input style={{width:"100%",padding:"9px 11px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:12,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}
+                      value={kpiForm.keterangan} onChange={e=>setKpiForm(p=>({...p,keterangan:e.target.value}))} placeholder="Cara hitung item ini..." />
+                  </div>
+                </div>
+                <div style={{padding:"11px 18px",borderTop:"1px solid #f3f4f6",display:"flex",gap:8,justifyContent:"flex-end"}}>
+                  <button onClick={()=>setKpiModal(false)} style={{padding:"8px 14px",background:"#f3f4f6",border:"none",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",color:"#4b5563"}}>Batal</button>
+                  <button onClick={saveKpiItem} disabled={!kpiForm.nama.trim()} style={{padding:"8px 16px",background:kpiForm.nama.trim()?"linear-gradient(135deg,#f97316,#ea580c)":"#d1d5db",color:"#fff",border:"none",borderRadius:8,fontSize:12,fontWeight:700,cursor:kpiForm.nama.trim()?"pointer":"not-allowed",fontFamily:"inherit"}}>✅ Simpan</button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

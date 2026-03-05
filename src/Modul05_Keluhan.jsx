@@ -123,7 +123,7 @@ const CSS = `
   .kl-overlay {
     position: fixed; inset: 0; background: rgba(17,24,39,0.45);
     backdrop-filter: blur(3px); z-index: 200; display: flex;
-    align-items: center; justify-content: center; padding: 16px;
+    align-items: flex-start; justify-content: center; padding: 80px 16px 16px;
     animation: klFade 0.18s ease;
   }
   @keyframes klFade { from { opacity: 0; } to { opacity: 1; } }

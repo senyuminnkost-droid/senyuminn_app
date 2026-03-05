@@ -186,7 +186,7 @@ function ModalUser({ userObj, currentUser, onClose, onSave }) {
                     padding:"8px 6px", borderRadius:9, textAlign:"center", cursor:isOwnerEdit?"not-allowed":"pointer",
                     border:`1.5px solid ${form.role===role?cfg.color:"#e5e7eb"}`,
                     background:form.role===role?cfg.bg:"#fff",
-                    transition:"all .12s", opacity:isOwnerEdit&&role!=="owner"?.5:1
+                    transition:"all .12s", opacity:isOwnerEdit&&role!=="owner" ? 0.5 : 1
                   }}
                 >
                   <div style={{fontSize:12,fontWeight:700,color:form.role===role?cfg.color:"#6b7280"}}>{cfg.label}</div>

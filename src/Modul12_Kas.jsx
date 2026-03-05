@@ -423,7 +423,7 @@ function ModalAset({ onClose, onSave }) {
                 Umur Ekonomis (tahun)
                 {tidakDep && <span style={{color:"#9ca3af",fontWeight:400}}> — N/A</span>}
               </label>
-              <select className="ks-input" value={form.umurEkonomis} onChange={e=>set("umurEkonomis",e.target.value)} disabled={tidakDep} style={{opacity:tidakDep?.4:1}}>
+              <select className="ks-input" value={form.umurEkonomis} onChange={e=>set("umurEkonomis",e.target.value)} disabled={tidakDep} style={{opacity:tidakDep ? 0.4 : 1}}>
                 {[1,2,3,4,5,8,10,15,20,25,30,40,50].map(y=><option key={y} value={y}>{y} tahun</option>)}
               </select>
             </div>
@@ -1078,7 +1078,7 @@ function ModalDataAwalAset({ existing, onClose, onSave }) {
                     className="ks-input" value={r.umurEkonomis}
                     onChange={e=>setRow(r.id,"umurEkonomis",e.target.value)}
                     disabled={!isDep(r.kategori||"lainnya")}
-                    style={{opacity:!isDep(r.kategori||"lainnya")?.4:1}}
+                    style={{opacity:!isDep(r.kategori||"lainnya") ? 0.4 : 1}}
                     title={!isDep(r.kategori||"lainnya")?"Tanah tidak didepresiasi":""}
                   >
                     {[1,2,3,4,5,8,10,15,20,25,30,40,50].map(y=><option key={y} value={y}>{y}</option>)}

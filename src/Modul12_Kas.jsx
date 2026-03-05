@@ -417,6 +417,7 @@ function ModalAset({ onClose, onSave }) {
           <button className="ks-btn ghost" onClick={onClose}>Batal</button>
         </div>
       </div>
+    </div>
   , document.body);
 }
 

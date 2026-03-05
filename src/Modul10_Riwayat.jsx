@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 
 // ============================================================
 // CSS
@@ -179,7 +178,7 @@ function ModalCheckinUlang({ penyewa, kamarList, onClose, onCheckin }) {
   const kamarDipilih = kamarList.find(k => k.id === form.kamarId);
   const valid = form.kamarId && form.kontrakMulai;
 
-  return createPortal(
+  return (
     <div className="rw-overlay-portal" onClick={onClose}>
       <div className="rw-modal" onClick={e => e.stopPropagation()}>
         <div className="rw-modal-head">
@@ -266,7 +265,7 @@ function ModalCheckinUlang({ penyewa, kamarList, onClose, onCheckin }) {
         </div>
       </div>
     </div>
-  , document.body);
+  );
 }
 
 // ============================================================

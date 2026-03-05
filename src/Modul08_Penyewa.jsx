@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 
 // ============================================================
 // CSS
@@ -242,7 +241,7 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
     setDone(true);
   };
 
-  if (done) return createPortal(
+  if (done) return (
     <div className="py-overlay-portal" onClick={onClose}>
       <div className="py-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 440 }}>
         <div className="py-modal-body">
@@ -264,9 +263,9 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
         </div>
       </div>
     </div>
-  , document.body);
+  );
 
-  return createPortal(
+  return (
     <div className="py-overlay-portal" onClick={onClose}>
       <div className="py-modal" onClick={e => e.stopPropagation()}>
         <div className="py-modal-head">
@@ -477,7 +476,7 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
         </div>
       </div>
     </div>
-  , document.body);
+  );
 }
 
 // ============================================================

@@ -185,6 +185,126 @@ function KalenderAbsensi({ karyawanId, absensiData, bulan, tahun, onInputKode, i
 // ============================================================
 // MAIN
 // ============================================================
+// ============================================================
+// PDF LAPORAN ABSENSI
+// ============================================================
+const loadJsPDF_LA = () => new Promise((resolve, reject) => {
+  if (window.jspdf) return resolve(window.jspdf.jsPDF);
+  const s = document.createElement("script");
+  s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+  s.onload  = () => resolve(window.jspdf.jsPDF);
+  s.onerror = () => reject(new Error("Gagal load jsPDF"));
+  document.head.appendChild(s);
+});
+
+const generateAbsensiPDF = async (karyawanList, absensiList, periode) => {
+  const JsPDF = await loadJsPDF_LA();
+  const doc   = new JsPDF({ orientation:"landscape", unit:"mm", format:"a4" });
+  const W = doc.internal.pageSize.getWidth();
+  const H = doc.internal.pageSize.getHeight();
+
+  const padD = n => String(n).padStart(2,"0");
+  const { tahun, bulan } = periode;
+  const bulanStr = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"][bulan-1];
+  const periodeLabel = `${bulanStr} ${tahun}`;
+
+  // Header
+  doc.setFillColor(30,41,59); doc.rect(0,0,W,28,"F");
+  doc.setFillColor(249,115,22); doc.circle(18,14,9,"F");
+  doc.setTextColor(255,255,255); doc.setFontSize(11); doc.setFont("helvetica","bold");
+  doc.text("S",18,17.5,{align:"center"});
+  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont("helvetica","bold");
+  doc.text("SENYUM INN",32,11);
+  doc.setFontSize(7); doc.setFont("helvetica","normal"); doc.setTextColor(148,163,184);
+  doc.text("EXCLUSIVE KOST",32,16);
+  doc.setTextColor(255,255,255); doc.setFontSize(12); doc.setFont("helvetica","bold");
+  doc.text("LAPORAN ABSENSI KARYAWAN",W-14,11,{align:"right"});
+  doc.setFontSize(8); doc.setFont("helvetica","normal"); doc.setTextColor(148,163,184);
+  doc.text("Periode: "+periodeLabel,W-14,18,{align:"right"});
+  doc.text("Dicetak: "+new Date().toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"}),W-14,23,{align:"right"});
+
+  let y = 36;
+
+  // Kolom header tabel
+  const cols = [
+    {label:"No",      w:8,  x:14},
+    {label:"Nama",    w:42, x:22},
+    {label:"Jabatan", w:36, x:64},
+    {label:"Masuk",   w:16, x:100},
+    {label:"Libur",   w:14, x:116},
+    {label:"Ijin",    w:12, x:130},
+    {label:"Sakit",   w:14, x:142},
+    {label:"Lembur",  w:14, x:156},
+    {label:"ITS",     w:10, x:170},
+    {label:"KPI %",   w:16, x:180},
+    {label:"Insentif",w:24, x:196},
+  ];
+
+  // Header tabel
+  doc.setFillColor(249,115,22); doc.rect(14,y,W-28,8,"F");
+  doc.setTextColor(255,255,255); doc.setFontSize(7); doc.setFont("helvetica","bold");
+  cols.forEach(col=>doc.text(col.label, col.x, y+5.5));
+  y += 8;
+
+  const aktif = karyawanList.filter(k=>k.aktif!==false);
+  const prefix = `${tahun}-${padD(bulan)}`;
+  const fmtR = n => "Rp "+(n||0).toLocaleString("id-ID");
+
+  aktif.forEach((k, idx) => {
+    const entries = absensiList.filter(a=>a.karyawanId===k.id && a.tanggal?.startsWith(prefix));
+    let masuk=0,libur=0,ijin=0,sakit=0,lembur=0,its=0;
+    entries.forEach(e=>{
+      const kd = e.kode;
+      if(["P","M","SM","IN"].includes(kd)) masuk++;
+      if(kd==="OFF") libur++;
+      if(kd==="IJ")  ijin++;
+      if(kd==="SKT") sakit++;
+      if(["L","LL","PL","LS"].includes(kd)) lembur++;
+      if(kd==="ITS") its++;
+    });
+    const hariKerja = masuk+ijin+sakit+cuti+its;
+    const kpiPct    = hariKerja>0 ? Math.round((masuk/hariKerja)*100) : 0;
+    const insentif  = kpiPct>=90 ? 500000 : 0;
+
+    // Zebra stripe
+    if(idx%2===0){ doc.setFillColor(248,250,252); doc.rect(14,y,W-28,7,"F"); }
+    doc.setTextColor(30,41,59); doc.setFontSize(7); doc.setFont("helvetica","normal");
+    doc.text(String(idx+1),      cols[0].x, y+5);
+    doc.text(k.nama||"—",        cols[1].x, y+5);
+    doc.text(k.jabatan||"—",     cols[2].x, y+5);
+    doc.text(String(masuk),      cols[3].x, y+5);
+    doc.text(String(libur),      cols[4].x, y+5);
+    doc.text(String(ijin),       cols[5].x, y+5);
+    doc.text(String(sakit),      cols[6].x, y+5);
+    doc.text(String(lembur),     cols[7].x, y+5);
+    doc.text(String(its),        cols[8].x, y+5);
+
+    // KPI % dengan warna
+    doc.setTextColor(kpiPct>=90?[22,163,74]:[220,38,38]);
+    if (Array.isArray(kpiPct>=90?[22,163,74]:[220,38,38]))
+      doc.setTextColor(...(kpiPct>=90?[22,163,74]:[220,38,38]));
+    doc.text(kpiPct+"%",         cols[9].x,  y+5);
+    doc.setTextColor(kpiPct>=90?22:220, kpiPct>=90?163:38, kpiPct>=90?74:38);
+    doc.text(insentif>0?fmtR(insentif):"—", cols[10].x, y+5);
+
+    doc.setDrawColor(230,232,235); doc.setLineWidth(0.1);
+    doc.line(14,y+7,W-14,y+7);
+    y += 7;
+
+    // Page break
+    if(y > H-20){ doc.addPage(); y=20; }
+  });
+
+  // Footer
+  doc.setDrawColor(200,210,220); doc.setLineWidth(0.3);
+  doc.line(14,H-14,W-14,H-14);
+  doc.setTextColor(100,116,139); doc.setFontSize(7); doc.setFont("helvetica","normal");
+  doc.text("Senyum Inn — Laporan absensi digenerate otomatis",14,H-9);
+  doc.text("Hal. "+doc.internal.getCurrentPageInfo().pageNumber,W-14,H-9,{align:"right"});
+
+  doc.save("laporan-absensi-"+periodeLabel.replace(/\s/g,"-").toLowerCase()+".pdf");
+};
+
 export default function LaporanAbsensi({ user, globalData = {} }) {
   const {
     karyawanList  = [],
@@ -260,7 +380,7 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
           </button>
         </div>
       </div>
-    , document.body) : null;
+    ) : null;
   };
 
   // Trend 6 bulan untuk chart mini
@@ -315,8 +435,28 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
           <option value="all">Semua Karyawan</option>
           {aktif.map(k=><option key={k.id} value={k.id}>{k.nama}</option>)}
         </select>
-        <button className="la-btn ghost" onClick={()=>alert("Export CSV — coming soon!")}>⬇️ Export</button>
-        <button className="la-btn primary" onClick={()=>alert("Download PDF — coming soon!")}>📄 PDF</button>
+        <button className="la-btn ghost" onClick={()=>{
+          // Export CSV
+          const prefix = `${periode.tahun}-${String(periode.bulan).padStart(2,"0")}`;
+          const aktif = karyawanList.filter(k=>k.aktif!==false);
+          const rows  = aktif.map(k=>{
+            const entries = absensiList.filter(a=>a.karyawanId===k.id&&a.tanggal?.startsWith(prefix));
+            let masuk=0,libur=0,ijin=0,sakit=0,lembur=0;
+            entries.forEach(e=>{
+              if(["P","M","SM","IN"].includes(e.kode)) masuk++;
+              if(e.kode==="OFF") libur++;
+              if(e.kode==="IJ")  ijin++;
+              if(e.kode==="SKT") sakit++;
+              if(["L","LL","PL","LS"].includes(e.kode)) lembur++;
+            });
+            return [k.nama,k.jabatan,masuk,libur,ijin,sakit,lembur].join(",");
+          });
+          const csv = "Nama,Jabatan,Masuk,Libur,Ijin,Sakit,Lembur\n"+rows.join("\n");
+          const a=document.createElement("a");
+          a.href="data:text/csv;charset=utf-8,"+encodeURIComponent(csv);
+          a.download="absensi-"+prefix+".csv"; a.click();
+        }}>⬇️ Export CSV</button>
+        <button className="la-btn primary" onClick={()=>generateAbsensiPDF(karyawanList,absensiList,periode)}>📄 PDF</button>
       </div>
 
       {/* Tabs */}

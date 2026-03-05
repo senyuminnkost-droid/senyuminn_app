@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 
 // ============================================================
 // CSS
@@ -81,7 +80,7 @@ const val = (v, fallback="—") => v || fallback;
 // MODAL EDIT — generic
 // ============================================================
 function ModalEdit({ title, onClose, onSave, children, valid=true }) {
-  return createPortal(
+  return (
     <div className="pf-overlay" onClick={onClose}>
       <div className="pf-modal" onClick={e=>e.stopPropagation()}>
         <div className="pf-modal-head">
@@ -95,7 +94,7 @@ function ModalEdit({ title, onClose, onSave, children, valid=true }) {
         </div>
       </div>
     </div>
-  , document.body);
+  );
 }
 
 // ============================================================
@@ -105,7 +104,7 @@ function ModalRekening({ rek, onClose, onSave }) {
   const [form, setForm] = useState(rek || { namaBank:"", noRek:"", atasNama:"", keterangan:"", utama:false });
   const set = (k,v) => setForm(p=>({...p,[k]:v}));
   const valid = form.namaBank && form.noRek && form.atasNama;
-  return createPortal(
+  return (
     <div className="pf-overlay" onClick={onClose}>
       <div className="pf-modal" onClick={e=>e.stopPropagation()}>
         <div className="pf-modal-head">
@@ -149,7 +148,7 @@ function ModalRekening({ rek, onClose, onSave }) {
         </div>
       </div>
     </div>
-  , document.body);
+  );
 }
 
 // ============================================================

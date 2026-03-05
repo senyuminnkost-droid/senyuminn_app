@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from "react";
-import { createPortal } from "react-dom";
 
 // ============================================================
 // CSS
@@ -333,7 +332,7 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
     </div>
   );
 
-  return createPortal(
+  return (
     <div className="pg-overlay" onClick={onClose}>
       <div className="pg-modal" onClick={e=>e.stopPropagation()}>
         <div className="pg-modal-head">
@@ -515,7 +514,7 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
         </div>
       </div>
     </div>
-  , document.body);
+  );
 }
 
 // ============================================================

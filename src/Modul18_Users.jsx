@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 
 const CSS = `
   .us-wrap { display:flex; flex-direction:column; gap:16px; }
@@ -145,7 +144,7 @@ function ModalUser({ userObj, currentUser, onClose, onSave }) {
   const isOwnerEdit = userObj?.role === "owner";
   const canEditThisUser = currentUser?.role === "manajemen" || currentUser?.role === "owner";
 
-  return createPortal(
+  return (
     <div className="us-overlay" onClick={onClose}>
       <div className="us-modal" onClick={e=>e.stopPropagation()}>
         <div className="us-modal-head">
@@ -246,7 +245,7 @@ function ModalUser({ userObj, currentUser, onClose, onSave }) {
         </div>
       </div>
     </div>
-  , document.body);
+  );
 }
 
 // ─── Modal Reset Password ───
@@ -254,7 +253,7 @@ function ModalResetPW({ userObj, onClose, onSave }) {
   const [pw, setPw] = useState("");
   const [confirm, setConfirm] = useState("");
   const match = pw && pw===confirm;
-  return createPortal(
+  return (
     <div className="us-overlay" onClick={onClose}>
       <div className="us-modal" onClick={e=>e.stopPropagation()} style={{maxWidth:380}}>
         <div className="us-modal-head">
@@ -279,7 +278,7 @@ function ModalResetPW({ userObj, onClose, onSave }) {
         </div>
       </div>
     </div>
-  , document.body);
+  );
 }
 
 // ─── MAIN ───

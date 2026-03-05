@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 
 // ============================================================
 // CSS
@@ -341,7 +340,7 @@ function ModalBayar({ tagihan, onClose, onKonfirmasi }) {
     </>
   );
 
-  return createPortal(
+  return (
     <div className="tg-overlay-portal" onClick={onClose}>
       <div className="tg-modal" onClick={e => e.stopPropagation()}>
         <div className="tg-modal-head">
@@ -351,7 +350,7 @@ function ModalBayar({ tagihan, onClose, onKonfirmasi }) {
         {content}
       </div>
     </div>
-  , document.body);
+  );
 }
 
 // ============================================================
@@ -465,7 +464,7 @@ function ModalBayarRutin({ item, sakuConfig=[], rekeningList=[], onClose, onSave
   const set = (k,v) => setForm(p=>({...p,[k]:v}));
   const valid = form.nominalAsli && Number(form.nominalAsli)>0 && form.sakuSumber;
 
-  return createPortal(
+  return (
     <div className="tg-overlay-portal" onClick={onClose}>
       <div className="tg-modal" onClick={e=>e.stopPropagation()} style={{maxWidth:460}}>
         <div className="tg-modal-head">
@@ -556,7 +555,7 @@ function ModalBayarRutin({ item, sakuConfig=[], rekeningList=[], onClose, onSave
         </div>
       </div>
     </div>
-  , document.body);
+  );
 }
 
 // ============================================================
@@ -578,7 +577,7 @@ function ModalFormRutin({ item, onClose, onSave }) {
   const set = (k,v) => setForm(p=>({...p,[k]:v}));
   const valid = form.nama && form.tglBayar;
 
-  return createPortal(
+  return (
     <div className="tg-overlay-portal" onClick={onClose}>
       <div className="tg-modal" onClick={e=>e.stopPropagation()} style={{maxWidth:440}}>
         <div className="tg-modal-head">
@@ -641,7 +640,7 @@ function ModalFormRutin({ item, onClose, onSave }) {
         </div>
       </div>
     </div>
-  , document.body);
+  );
 }
 
 // ============================================================

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 
 // ============================================================
 // CSS
@@ -255,7 +254,7 @@ function ModalPerpanjang({ penyewa, kamarList, onClose, onSave }) {
     </>
   );
 
-  return createPortal(
+  return (
     <div className="co-overlay-portal" onClick={onClose}>
       <div className="co-modal" onClick={e => e.stopPropagation()}>
         <div className="co-modal-head">
@@ -265,7 +264,7 @@ function ModalPerpanjang({ penyewa, kamarList, onClose, onSave }) {
         {content}
       </div>
     </div>
-  , document.body);
+  );
 }
 
 // ============================================================
@@ -390,7 +389,7 @@ function ModalCheckout({ penyewa, kamarList, onClose, onCheckout }) {
     </>
   );
 
-  return createPortal(
+  return (
     <div className="co-overlay-portal" onClick={onClose}>
       <div className="co-modal" onClick={e => e.stopPropagation()}>
         <div className="co-modal-head">
@@ -400,7 +399,7 @@ function ModalCheckout({ penyewa, kamarList, onClose, onCheckout }) {
         {content}
       </div>
     </div>
-  , document.body);
+  );
 }
 
 // ============================================================

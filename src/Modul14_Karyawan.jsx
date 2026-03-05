@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 
 // ============================================================
 // CSS
@@ -207,7 +206,7 @@ function ModalKaryawan({ karyawan, onClose, onSave }) {
     { id:"rekening",label:"🏦 Rekening & Gaji" },
   ];
 
-  return createPortal(
+  return (
     <div className="kr-overlay" onClick={onClose}>
       <div className="kr-modal" onClick={e=>e.stopPropagation()}>
         <div className="kr-modal-head">
@@ -405,7 +404,7 @@ function ModalKaryawan({ karyawan, onClose, onSave }) {
         </div>
       </div>
     </div>
-  , document.body);
+  );
 }
 
 // ============================================================
@@ -418,7 +417,7 @@ function ModalCuti({ karyawan, onClose, onSave }) {
   const valid  = form.alasan && form.dari && form.sampai;
   const cutiSisa = (karyawan.cutiSisa ?? 3) - (karyawan.cutiTerpakai ?? 0);
 
-  return createPortal(
+  return (
     <div className="kr-overlay" onClick={onClose}>
       <div className="kr-modal" onClick={e=>e.stopPropagation()} style={{maxWidth:440}}>
         <div className="kr-modal-head">
@@ -479,7 +478,7 @@ function ModalCuti({ karyawan, onClose, onSave }) {
         </div>
       </div>
     </div>
-  , document.body);
+  );
 }
 
 // ============================================================

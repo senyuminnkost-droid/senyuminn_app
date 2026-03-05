@@ -8,6 +8,7 @@ const USERS = [
   // Data user awal — akan diganti setelah connect Supabase Auth
   // Tambah/edit user melalui menu Manajemen User
   { id: 1, username: "owner", password: "owner123", role: "owner", name: "Owner", jabatan: "Owner" },
+  { id: 2, username: "admin", password: "admin123", role: "manajemen", name: "Admin", jabatan: "Admin" },
 ];
 
 // Cek apakah user read-only (owner & direktur)
@@ -967,7 +968,7 @@ export default function App() {
   // (sudah masuk lewat pengaturanConfig.kpiItems, tidak perlu state terpisah)
 
   // Cuti list — dari Modul14 Karyawan
-  const [cutiList, setCutiList] = useState([]);ase:[]}]
+  const [cutiList, setCutiList] = useState([]);
 
   const [sakuConfig,   setSakuConfig]   = useState([
     { kode:"A", nama:"Petty Cash",      tipe:"pct",  nilai:5,       color:"#f97316" },

@@ -975,7 +975,7 @@ export default function App() {
   // Jadwal tagihan rutin bulanan (listrik, internet, dll)
   const [tagihanRutinList, setTagihanRutinList] = useState([]);
   // Log release budget per bulan (Budget Planning)
-  const [releaseBudgetLog, setReleaseBudgetLog] = useState([]);ase:[]}]
+  const [releaseBudgetLog, setReleaseBudgetLog] = useState([]);
 
   const [sakuConfig,   setSakuConfig]   = useState([
     { kode:"A", nama:"Petty Cash",      tipe:"pct",  nilai:5,       color:"#f97316" },

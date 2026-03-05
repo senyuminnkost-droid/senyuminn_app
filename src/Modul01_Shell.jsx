@@ -967,7 +967,7 @@ export default function App() {
   // (sudah masuk lewat pengaturanConfig.kpiItems, tidak perlu state terpisah)
 
   // Cuti list — dari Modul14 Karyawan
-  const [cutiList, setCutiList] = useState([]);
+  const [cutiList, setCutiList] = useState([]);ase:[]}]
 
   const [sakuConfig,   setSakuConfig]   = useState([
     { kode:"A", nama:"Petty Cash",      tipe:"pct",  nilai:5,       color:"#f97316" },

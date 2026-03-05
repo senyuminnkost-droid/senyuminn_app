@@ -45,8 +45,8 @@ const CSS = `
   .kal-modal-foot { padding:11px 18px; border-top:1px solid #f3f4f6; display:flex; gap:8px; }
   .kal-field { display:flex; flex-direction:column; gap:5px; }
   .kal-label { font-size:11px; font-weight:600; color:#374151; }
-  .kal-input { padding:8px 11px; border-radius:8px; border:1.5px solid #e5e7eb; font-size:12px; font-family:inherit; color:#1f2937; outline:none; width:100%; box-sizing:border-box; }
-  .kal-input:focus { border-color:#f97316; }
+  .kal-input { padding:8px 11px; border-radius:8px; border:1.5px solid #e5e7eb; font-size:12px; font-family:inherit; color:#1f2937; outline:none; width:100%; box-sizing:border-box; background:#fff; }
+  .kal-input:focus { border-color:#f97316; background:#fff; }
   .kal-select { padding:8px 10px; border-radius:8px; border:1.5px solid #e5e7eb; font-size:12px; font-family:inherit; color:#374151; outline:none; background:#fff; width:100%; box-sizing:border-box; }
   .kal-select:focus { border-color:#f97316; }
   @media(max-width:900px){ .kal-layout{grid-template-columns:1fr} .kal-stats{grid-template-columns:repeat(2,1fr)} }

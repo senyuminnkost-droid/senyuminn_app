@@ -133,6 +133,149 @@ const DEFAULT_SOP_KELUHAN = [
 // Inventaris default kosong — diisi oleh admin sesuai kondisi riil
 const DEFAULT_INVENTARIS = [];
 
+
+// ============================================================
+// SUB COMPONENTS (extracted from SOPStandar for React rules)
+// ============================================================
+
+// ─── Modal Tambah Checklist ─────────────────────────────
+const ModalChecklist = ({ which, onClose }) => {
+  const [text, setText] = useState("");
+  const [cat,  setCat]  = useState("Kebersihan");
+  const doSave = () => {
+    if (!text.trim()) return;
+    if (which === "weekly") addChecklist(weeklyList, setWeeklyList, text, cat);
+    else                    addChecklist(deepcleanList, setDCList, text, cat);
+    onClose();
+  };
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000}} onClick={onClose}>
+      <div style={{background:"#fff",borderRadius:16,padding:28,width:420,boxShadow:"0 20px 60px rgba(0,0,0,.18)"}} onClick={e=>e.stopPropagation()}>
+        <div style={{fontSize:16,fontWeight:800,color:"#111827",marginBottom:20}}>➕ Tambah Item Checklist</div>
+        <div style={{marginBottom:14}}>
+          <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase",letterSpacing:".4px"}}>Deskripsi Item</label>
+          <input className="sp-input" placeholder="Contoh: Bersihkan ventilasi udara..." value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==="Enter"&&doSave()} autoFocus />
+        </div>
+        <div style={{marginBottom:14}}>
+          <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase",letterSpacing:".4px"}}>Kategori</label>
+          <select className="sp-select" style={{width:"100%"}} value={cat} onChange={e=>setCat(e.target.value)}>
+            {cats.map(c=><option key={c} value={c}>{c}</option>)}
+          </select>
+        </div>
+        <div style={{display:"flex",gap:10,justifyContent:"flex-end",marginTop:20}}>
+          <button className="sp-btn ghost" onClick={onClose}>Batal</button>
+          <button className="sp-btn primary" disabled={!text.trim()} onClick={doSave}>Simpan</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ─── Modal Tambah / Edit Inventaris ────────────────────
+const ModalInventaris = ({ item, onClose }) => {
+  const [nama, setNama] = useState(item?.nama   || "");
+  const [qty,  setQty]  = useState(item?.qty    || 1);
+  const [sat,  setSat]  = useState(item?.satuan || "buah");
+  const doSave = () => {
+    if (!nama.trim()) return;
+    if (item) {
+      setInventaris(prev=>prev.map(i=>i.id===item.id ? {...i,nama:nama.trim(),qty,satuan:sat} : i));
+    } else {
+      setInventaris(prev=>[...prev,{id:Date.now(),nama:nama.trim(),qty,satuan:sat}]);
+    }
+    setDirty(true);
+    onClose();
+  };
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000}} onClick={onClose}>
+      <div style={{background:"#fff",borderRadius:16,padding:28,width:400,boxShadow:"0 20px 60px rgba(0,0,0,.18)"}} onClick={e=>e.stopPropagation()}>
+        <div style={{fontSize:16,fontWeight:800,color:"#111827",marginBottom:20}}>{item?"✏️ Edit Item":"➕ Tambah Item Inventaris"}</div>
+        <div style={{marginBottom:14}}>
+          <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase",letterSpacing:".4px"}}>Nama Fasilitas</label>
+          <input className="sp-input" placeholder="Contoh: Cermin, Kulkas, Dispenser..." value={nama} onChange={e=>setNama(e.target.value)} autoFocus />
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}}>
+          <div>
+            <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase",letterSpacing:".4px"}}>Jumlah</label>
+            <input className="sp-input" type="number" min={1} value={qty} onChange={e=>setQty(Math.max(1,parseInt(e.target.value)||1))} />
+          </div>
+          <div>
+            <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase",letterSpacing:".4px"}}>Satuan</label>
+            <select className="sp-select" style={{width:"100%"}} value={sat} onChange={e=>setSat(e.target.value)}>
+              {["buah","set","unit","lembar","pasang","botol","rol"].map(s=><option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+        </div>
+        <div style={{display:"flex",gap:10,justifyContent:"flex-end"}}>
+          <button className="sp-btn ghost" onClick={onClose}>Batal</button>
+          <button className="sp-btn primary" disabled={!nama.trim()} onClick={doSave}>{item?"Simpan":"Tambah"}</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ChecklistEditor = ({ list, setList, title, subtitle, which }) => (
+  <div className="sp-widget">
+    <div className="sp-widget-head">
+      <div>
+        <div className="sp-widget-title">{title}</div>
+        <div style={{fontSize:11,color:"#9ca3af",marginTop:2}}>{subtitle}</div>
+      </div>
+      <div style={{display:"flex",alignItems:"center",gap:10}}>
+        <span style={{fontSize:11,color:"#9ca3af"}}>{list.length} item</span>
+        {!isReadOnly && (
+          <button className="sp-btn primary" style={{padding:"6px 12px"}} onClick={()=>setShowChecklistModal(which)}>
+            ➕ Tambah Item
+          </button>
+        )}
+      </div>
+    </div>
+    <div className="sp-body">
+      {list.length === 0 && (
+        <div style={{textAlign:"center",padding:"24px 0",color:"#9ca3af"}}>
+          <div style={{fontSize:28,marginBottom:8}}>📋</div>
+          <div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Belum ada item checklist</div>
+          <div style={{fontSize:12,marginTop:4}}>Klik ➕ Tambah Item untuk mulai</div>
+        </div>
+      )}
+      {list.map((item,i)=>(
+        <div key={item.id} className="sp-checklist-item">
+          <div className="sp-cl-num">{i+1}</div>
+          <div className="sp-cl-text">{item.text}</div>
+          <span className="sp-cl-cat" style={{background:(CAT_COLORS[item.cat]||"#6b7280")+"22",color:CAT_COLORS[item.cat]||"#6b7280"}}>{item.cat}</span>
+          {!isReadOnly && (
+            <button style={{background:"none",border:"none",cursor:"pointer",color:"#dc2626",fontSize:14,padding:"0 4px",flexShrink:0}} onClick={()=>removeChecklist(list,setList,item.id)}>✕</button>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+);;
+
+const SOPView = ({ steps, title }) => (
+  <div className="sp-widget">
+    <div className="sp-widget-head">
+      <div className="sp-widget-title">{title}</div>
+      <span style={{fontSize:11,color:"#9ca3af"}}>{steps.length} langkah</span>
+    </div>
+    <div className="sp-body">
+      <div className="sp-warn-box">
+        📋 SOP ini adalah panduan standar. Edit detail sesuai kondisi operasional aktual Senyum Inn.
+      </div>
+      {steps.map((s,i)=>(
+        <div key={i} className="sp-sop-step">
+          <div className="sp-sop-num">{i+1}</div>
+          <div className="sp-sop-content">
+            <div className="sp-sop-title">{s.title}</div>
+            <div className="sp-sop-desc">{s.desc}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);;
+
 export default function SOPStandar({ user, globalData={} }) {
   const {
     pengaturanConfig={}, setPengaturanConfig=()=>{},
@@ -254,143 +397,6 @@ export default function SOPStandar({ user, globalData={} }) {
     setDirty(true);
   };
 
-  // ─── Modal Tambah Checklist ─────────────────────────────
-  const ModalChecklist = ({ which, onClose }) => {
-    const [text, setText] = useState("");
-    const [cat,  setCat]  = useState("Kebersihan");
-    const doSave = () => {
-      if (!text.trim()) return;
-      if (which === "weekly") addChecklist(weeklyList, setWeeklyList, text, cat);
-      else                    addChecklist(deepcleanList, setDCList, text, cat);
-      onClose();
-    };
-    return (
-      <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000}} onClick={onClose}>
-        <div style={{background:"#fff",borderRadius:16,padding:28,width:420,boxShadow:"0 20px 60px rgba(0,0,0,.18)"}} onClick={e=>e.stopPropagation()}>
-          <div style={{fontSize:16,fontWeight:800,color:"#111827",marginBottom:20}}>➕ Tambah Item Checklist</div>
-          <div style={{marginBottom:14}}>
-            <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase",letterSpacing:".4px"}}>Deskripsi Item</label>
-            <input className="sp-input" placeholder="Contoh: Bersihkan ventilasi udara..." value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==="Enter"&&doSave()} autoFocus />
-          </div>
-          <div style={{marginBottom:14}}>
-            <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase",letterSpacing:".4px"}}>Kategori</label>
-            <select className="sp-select" style={{width:"100%"}} value={cat} onChange={e=>setCat(e.target.value)}>
-              {cats.map(c=><option key={c} value={c}>{c}</option>)}
-            </select>
-          </div>
-          <div style={{display:"flex",gap:10,justifyContent:"flex-end",marginTop:20}}>
-            <button className="sp-btn ghost" onClick={onClose}>Batal</button>
-            <button className="sp-btn primary" disabled={!text.trim()} onClick={doSave}>Simpan</button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // ─── Modal Tambah / Edit Inventaris ────────────────────
-  const ModalInventaris = ({ item, onClose }) => {
-    const [nama, setNama] = useState(item?.nama   || "");
-    const [qty,  setQty]  = useState(item?.qty    || 1);
-    const [sat,  setSat]  = useState(item?.satuan || "buah");
-    const doSave = () => {
-      if (!nama.trim()) return;
-      if (item) {
-        setInventaris(prev=>prev.map(i=>i.id===item.id ? {...i,nama:nama.trim(),qty,satuan:sat} : i));
-      } else {
-        setInventaris(prev=>[...prev,{id:Date.now(),nama:nama.trim(),qty,satuan:sat}]);
-      }
-      setDirty(true);
-      onClose();
-    };
-    return (
-      <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000}} onClick={onClose}>
-        <div style={{background:"#fff",borderRadius:16,padding:28,width:400,boxShadow:"0 20px 60px rgba(0,0,0,.18)"}} onClick={e=>e.stopPropagation()}>
-          <div style={{fontSize:16,fontWeight:800,color:"#111827",marginBottom:20}}>{item?"✏️ Edit Item":"➕ Tambah Item Inventaris"}</div>
-          <div style={{marginBottom:14}}>
-            <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase",letterSpacing:".4px"}}>Nama Fasilitas</label>
-            <input className="sp-input" placeholder="Contoh: Cermin, Kulkas, Dispenser..." value={nama} onChange={e=>setNama(e.target.value)} autoFocus />
-          </div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}}>
-            <div>
-              <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase",letterSpacing:".4px"}}>Jumlah</label>
-              <input className="sp-input" type="number" min={1} value={qty} onChange={e=>setQty(Math.max(1,parseInt(e.target.value)||1))} />
-            </div>
-            <div>
-              <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase",letterSpacing:".4px"}}>Satuan</label>
-              <select className="sp-select" style={{width:"100%"}} value={sat} onChange={e=>setSat(e.target.value)}>
-                {["buah","set","unit","lembar","pasang","botol","rol"].map(s=><option key={s} value={s}>{s}</option>)}
-              </select>
-            </div>
-          </div>
-          <div style={{display:"flex",gap:10,justifyContent:"flex-end"}}>
-            <button className="sp-btn ghost" onClick={onClose}>Batal</button>
-            <button className="sp-btn primary" disabled={!nama.trim()} onClick={doSave}>{item?"Simpan":"Tambah"}</button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const ChecklistEditor = ({ list, setList, title, subtitle, which }) => (
-    <div className="sp-widget">
-      <div className="sp-widget-head">
-        <div>
-          <div className="sp-widget-title">{title}</div>
-          <div style={{fontSize:11,color:"#9ca3af",marginTop:2}}>{subtitle}</div>
-        </div>
-        <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <span style={{fontSize:11,color:"#9ca3af"}}>{list.length} item</span>
-          {!isReadOnly && (
-            <button className="sp-btn primary" style={{padding:"6px 12px"}} onClick={()=>setShowChecklistModal(which)}>
-              ➕ Tambah Item
-            </button>
-          )}
-        </div>
-      </div>
-      <div className="sp-body">
-        {list.length === 0 && (
-          <div style={{textAlign:"center",padding:"24px 0",color:"#9ca3af"}}>
-            <div style={{fontSize:28,marginBottom:8}}>📋</div>
-            <div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Belum ada item checklist</div>
-            <div style={{fontSize:12,marginTop:4}}>Klik ➕ Tambah Item untuk mulai</div>
-          </div>
-        )}
-        {list.map((item,i)=>(
-          <div key={item.id} className="sp-checklist-item">
-            <div className="sp-cl-num">{i+1}</div>
-            <div className="sp-cl-text">{item.text}</div>
-            <span className="sp-cl-cat" style={{background:(CAT_COLORS[item.cat]||"#6b7280")+"22",color:CAT_COLORS[item.cat]||"#6b7280"}}>{item.cat}</span>
-            {!isReadOnly && (
-              <button style={{background:"none",border:"none",cursor:"pointer",color:"#dc2626",fontSize:14,padding:"0 4px",flexShrink:0}} onClick={()=>removeChecklist(list,setList,item.id)}>✕</button>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const SOPView = ({ steps, title }) => (
-    <div className="sp-widget">
-      <div className="sp-widget-head">
-        <div className="sp-widget-title">{title}</div>
-        <span style={{fontSize:11,color:"#9ca3af"}}>{steps.length} langkah</span>
-      </div>
-      <div className="sp-body">
-        <div className="sp-warn-box">
-          📋 SOP ini adalah panduan standar. Edit detail sesuai kondisi operasional aktual Senyum Inn.
-        </div>
-        {steps.map((s,i)=>(
-          <div key={i} className="sp-sop-step">
-            <div className="sp-sop-num">{i+1}</div>
-            <div className="sp-sop-content">
-              <div className="sp-sop-title">{s.title}</div>
-              <div className="sp-sop-desc">{s.desc}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
 
   const TABS = [
     {id:"weekly",    label:"🧹 Weekly Service"},

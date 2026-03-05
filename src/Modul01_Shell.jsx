@@ -812,7 +812,6 @@ function LoadingFallback() {
       <div className="s-spinner" />
       <span style={{ fontSize: 12 }}>Memuat modul...</span>
     </div>
-  </div>
   );
 }
 

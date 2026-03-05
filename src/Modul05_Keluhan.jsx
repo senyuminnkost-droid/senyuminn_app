@@ -129,11 +129,11 @@ const CSS = `
   @keyframes klFade { from { opacity: 0; } to { opacity: 1; } }
   .kl-modal {
     background: #fff; border-radius: 16px; width: 100%; max-width: 500px;
-    max-height: 80vh; overflow-y: auto; display: flex; flex-direction: column;
+    max-height: 85vh; overflow: hidden; display: flex; flex-direction: column;
     box-shadow: 0 20px 60px rgba(0,0,0,0.15);
     animation: klSlide 0.22s cubic-bezier(0.4,0,0.2,1);
   }
-  .kl-modal-body { flex: 1; overflow-y: auto; padding: 0 16px 12px; }
+  .kl-modal-body { flex: 1; overflow-y: auto; padding: 0 16px 16px; min-height: 0; }
   @keyframes klSlide { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   .kl-modal-head {
     padding: 14px 18px 12px; border-bottom: 1px solid #f3f4f6;
@@ -167,6 +167,7 @@ const CSS = `
     cursor: pointer; text-align: center; transition: all 0.12s;
   }
   .kl-prioritas-opt.normal.selected { background: #f3f4f6; border-color: #9ca3af; }
+  .kl-prioritas-opt.medium.selected { background: #fff7ed; border-color: #fed7aa; }
   .kl-prioritas-opt.urgent.selected { background: #fee2e2; border-color: #fca5a5; }
   .kl-prioritas-icon { font-size: 20px; }
   .kl-prioritas-label { font-size: 11px; font-weight: 600; margin-top: 3px; }
@@ -207,6 +208,7 @@ const STATUS_CFG = {
 
 const PRIORITAS_CFG = {
   urgent: { label: "Urgent", color: "#dc2626", bg: "#fee2e2" },
+  medium: { label: "Medium", color: "#f97316", bg: "#fff7ed" },
   normal: { label: "Normal", color: "#6b7280", bg: "#f3f4f6" },
 };
 
@@ -229,13 +231,13 @@ const today = new Date().toISOString().slice(0, 10);
 // ============================================================
 function FormTiket({ onClose, onSave, kamarList }) {
   const [form, setForm] = useState({
-    lokasi: "Unit Kamar", kamar: "", kategori: "", prioritas: "normal",
+    lokasi: "Unit Kamar", kamar: "", lokasiDetail: "", kategori: "", prioritas: "normal",
     deskripsi: "", tanggal: today,
   });
 
   const set = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
 
-  const valid = form.kategori && form.deskripsi && (form.lokasi === "Fasilitas Umum" || form.kamar);
+  const valid = form.kategori && form.deskripsi && (form.lokasi === "Unit Kamar" ? !!form.kamar : !!form.lokasiDetail);
 
   const handleSave = () => {
     if (!valid) return;
@@ -292,6 +294,20 @@ function FormTiket({ onClose, onSave, kamarList }) {
             </div>
           )}
 
+          {/* Lokasi Detail (jika Fasilitas Umum) */}
+          {form.lokasi === "Fasilitas Umum" && (
+            <div className="kl-field">
+              <label className="kl-field-label">Lokasi Spesifik <span>*</span></label>
+              <input
+                className="kl-input"
+                value={form.lokasiDetail}
+                onChange={e => set("lokasiDetail", e.target.value)}
+                placeholder="Contoh: Parkiran, Kantor, Dapur, Koridor Lt 2, Kamar Mandi Umum..."
+              />
+              <div style={{fontSize:10,color:"#9ca3af",marginTop:3}}>Tulis lokasi secara spesifik</div>
+            </div>
+          )}
+
           <div className="kl-input-row">
             {/* Kategori */}
             <div className="kl-field">
@@ -316,6 +332,11 @@ function FormTiket({ onClose, onSave, kamarList }) {
                 <div className="kl-prioritas-icon">🔵</div>
                 <div className="kl-prioritas-label" style={{ color: "#6b7280" }}>Normal</div>
                 <div style={{ fontSize: 10, color: "#9ca3af" }}>Dijadwalkan PJ</div>
+              </div>
+              <div className={`kl-prioritas-opt medium ${form.prioritas === "medium" ? "selected" : ""}`} onClick={() => set("prioritas", "medium")}>
+                <div className="kl-prioritas-icon">🟠</div>
+                <div className="kl-prioritas-label" style={{ color: "#f97316" }}>Medium</div>
+                <div style={{ fontSize: 10, color: "#9ca3af" }}>Perlu segera</div>
               </div>
               <div className={`kl-prioritas-opt urgent ${form.prioritas === "urgent" ? "selected" : ""}`} onClick={() => set("prioritas", "urgent")}>
                 <div className="kl-prioritas-icon">🔴</div>

@@ -242,6 +242,130 @@ const CSS = `
     .m-drawer { width: 100%; max-width: 100%; }
     .m-filterbar { gap: 6px; }
   }
+
+  /* ─── FORM MODAL (FormKamar) ─────────────── */
+  .mf-overlay {
+    position: fixed; inset: 0; background: rgba(17,24,39,.5);
+    backdrop-filter: blur(3px); z-index: 500;
+    display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;
+  }
+  .mf-modal {
+    background: #fff; border-radius: 16px; width: 540px; max-width: 100%;
+    max-height: 88vh; display: flex; flex-direction: column;
+    box-shadow: 0 24px 60px rgba(0,0,0,.18);
+  }
+  .mf-head {
+    padding: 18px 22px 14px; border-bottom: 1px solid #f3f4f6;
+    display: flex; align-items: flex-start; justify-content: space-between; flex-shrink: 0;
+  }
+  .mf-head-title { font-size: 15px; font-weight: 800; color: #111827; }
+  .mf-head-sub   { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+  .mf-close {
+    width: 28px; height: 28px; border-radius: 7px; background: #f3f4f6;
+    border: none; cursor: pointer; font-size: 14px; color: #6b7280;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .mf-close:hover { background: #fee2e2; color: #dc2626; }
+
+  .mf-tabs { display: flex; border-bottom: 1px solid #f3f4f6; flex-shrink: 0; }
+  .mf-tab {
+    flex: 1; padding: 10px 8px; font-size: 11px; font-weight: 600; text-align: center;
+    cursor: pointer; color: #9ca3af; border-bottom: 2px solid transparent;
+    transition: all .12s; background: transparent;
+  }
+  .mf-tab:hover { color: #374151; background: #fafafa; }
+  .mf-tab.active { color: #ea580c; background: #fff7ed; border-bottom-color: #f97316; }
+
+  .mf-body { flex: 1; overflow-y: auto; padding: 18px 22px; display: flex; flex-direction: column; gap: 14px; }
+
+  .mf-field { display: flex; flex-direction: column; gap: 4px; }
+  .mf-label { font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .5px; }
+  .mf-input {
+    padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 8px;
+    font-size: 13px; font-family: inherit; outline: none; width: 100%; box-sizing: border-box;
+    transition: border-color .12s; color: #111827;
+  }
+  .mf-input:focus { border-color: #f97316; }
+  .mf-input:disabled { background: #f9fafb; color: #9ca3af; }
+  .mf-select {
+    padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 8px;
+    font-size: 13px; font-family: inherit; outline: none; width: 100%; box-sizing: border-box;
+    background: #fff; color: #111827; cursor: pointer; transition: border-color .12s;
+  }
+  .mf-select:focus { border-color: #f97316; }
+  .mf-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .mf-grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .mf-textarea {
+    padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 8px;
+    font-size: 12px; font-family: inherit; outline: none; width: 100%; box-sizing: border-box;
+    resize: vertical; min-height: 72px; color: #111827; transition: border-color .12s;
+  }
+  .mf-textarea:focus { border-color: #f97316; }
+
+  /* Spesifikasi item row */
+  .mf-spec-row {
+    background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 10px;
+    padding: 10px 13px; transition: all .12s;
+  }
+  .mf-spec-row.checked { background: #fff7ed; border-color: #fed7aa; }
+  .mf-spec-top { display: flex; align-items: center; gap: 10px; }
+  .mf-spec-cb {
+    width: 18px; height: 18px; border-radius: 5px; border: 2px solid #d1d5db;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0; transition: all .12s; background: #fff;
+  }
+  .mf-spec-cb.checked { background: #f97316; border-color: #f97316; }
+  .mf-spec-icon { font-size: 16px; flex-shrink: 0; }
+  .mf-spec-name { font-size: 13px; font-weight: 600; color: #111827; flex: 1; }
+  .mf-spec-detail { margin-top: 10px; padding-top: 10px; border-top: 1px solid #fed7aa; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .mf-spec-detail-label { font-size: 11px; color: #9ca3af; font-weight: 500; }
+  .mf-spec-input {
+    flex: 1; min-width: 80px; padding: 6px 10px; border: 1.5px solid #e5e7eb;
+    border-radius: 7px; font-size: 12px; font-family: inherit; outline: none;
+    transition: border-color .12s; color: #111827; background: #fff;
+  }
+  .mf-spec-input:focus { border-color: #f97316; }
+  .mf-spec-select {
+    flex: 1; min-width: 100px; padding: 6px 10px; border: 1.5px solid #e5e7eb;
+    border-radius: 7px; font-size: 12px; font-family: inherit; outline: none;
+    background: #fff; color: #111827; cursor: pointer;
+  }
+  .mf-spec-unit { font-size: 11px; color: #6b7280; font-weight: 500; white-space: nowrap; }
+
+  /* Inventaris */
+  .mf-inv-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px; background: #f9fafb; border-radius: 8px;
+    border: 1px solid #e5e7eb;
+  }
+  .mf-inv-name { flex: 1; font-size: 12px; color: #111827; font-weight: 500; }
+  .mf-inv-qty  { font-size: 12px; color: #6b7280; }
+  .mf-inv-del  { background: none; border: none; cursor: pointer; color: #dc2626; font-size: 14px; padding: 2px 4px; }
+  .mf-add-row  { display: grid; grid-template-columns: 1fr 60px 80px auto; gap: 6px; align-items: center; }
+
+  .mf-footer {
+    padding: 13px 22px; border-top: 1px solid #f3f4f6;
+    display: flex; gap: 8px; justify-content: flex-end; flex-shrink: 0;
+  }
+  .mf-btn-cancel {
+    padding: 9px 18px; background: #f3f4f6; border: none; border-radius: 8px;
+    font-size: 12px; font-weight: 600; color: #6b7280; cursor: pointer; font-family: inherit;
+  }
+  .mf-btn-save {
+    padding: 9px 22px; background: linear-gradient(135deg,#f97316,#ea580c); border: none;
+    border-radius: 8px; font-size: 12px; font-weight: 700; color: #fff;
+    cursor: pointer; font-family: inherit; box-shadow: 0 3px 10px rgba(249,115,22,.25);
+  }
+  .mf-btn-save:disabled { background: #d1d5db; box-shadow: none; cursor: not-allowed; }
+  .mf-btn-ghost {
+    padding: 7px 12px; background: #f3f4f6; border: none; border-radius: 7px;
+    font-size: 11px; font-weight: 600; color: #6b7280; cursor: pointer; font-family: inherit;
+  }
+  .mf-section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    color: #9ca3af; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+  }
+  .mf-section-label::after { content:''; flex:1; height:1px; background:#f3f4f6; }
 `;
 
 function StyleInjector() {
@@ -841,206 +965,364 @@ export default function MonitorKamar({ user, globalData = {} }) {
 // ============================================================
 // FORM KAMAR — Modal tambah / edit kamar + inventaris
 // ============================================================
+// ============================================================
+// FORM KAMAR — Info + Spesifikasi + Inventaris
+// ============================================================
 function FormKamar({ kamar, inventarisTemplate, onClose, onSave }) {
   const isEdit = !!kamar;
-  const [form, setForm] = useState({
-    nomor:       kamar?.id        || "",
-    tipe:        kamar?.tipe      || "Reguler",
-    lantai:      kamar?.lantai    || "2",
-    harga:       kamar?.harga     || 1800000,
-    fasilitas:   kamar?.fasilitas || [],
-    inventaris:  kamar?.inventaris || (inventarisTemplate.length > 0 ? inventarisTemplate.map(i => ({...i, id: Date.now()+Math.random()})) : []),
-    catatan:     kamar?.catatan   || "",
-  });
-  const [tab, setTab] = useState("info");
-  const [newInvNama, setNewInvNama] = useState("");
-  const [newInvQty,  setNewInvQty]  = useState(1);
-  const [newInvSat,  setNewInvSat]  = useState("buah");
 
-  const set = (k, v) => setForm(p => ({...p, [k]: v}));
+  // ── SPEC DEFAULT — item bawaan dengan toggle + detail
+  const DEFAULT_SPEC = [
+    { id:"ac",          icon:"❄️",  nama:"AC",           checked:false, tipe:"pk",     nilai:"",  satuan:"PK" },
+    { id:"tv",          icon:"📺",  nama:"TV",           checked:false, tipe:"inci",   nilai:"",  satuan:"inci" },
+    { id:"bed",         icon:"🛏️",  nama:"Kasur / Bed",  checked:false, tipe:"ukuran", nilai:"Single" },
+    { id:"lemari",      icon:"🗄️",  nama:"Lemari",       checked:false, tipe:"unit",   nilai:"1", satuan:"unit" },
+    { id:"kabinet",     icon:"🗃️",  nama:"Kabinet",      checked:false, tipe:"unit",   nilai:"1", satuan:"unit" },
+    { id:"meja",        icon:"🪑",  nama:"Meja Belajar", checked:false, tipe:"unit",   nilai:"1", satuan:"unit" },
+    { id:"kursi",       icon:"💺",  nama:"Kursi",        checked:false, tipe:"unit",   nilai:"1", satuan:"unit" },
+    { id:"waterheater", icon:"🚿",  nama:"Water Heater", checked:false, tipe:"toggle"             },
+    { id:"kulkas",      icon:"🧊",  nama:"Kulkas",       checked:false, tipe:"unit",   nilai:"1", satuan:"unit" },
+    { id:"sofa",        icon:"🛋️",  nama:"Sofa",         checked:false, tipe:"unit",   nilai:"1", satuan:"unit" },
+  ];
 
-  const FASILITAS_OPT = ["Kulkas","Meja Belajar","Sofa","TV","Water Heater","Kamar Mandi Dalam","Balkon","AC Extra"];
+  const BED_SIZES = ["Single", "Single XL", "Double", "Queen", "King"];
 
-  const toggleFasilitas = (f) => {
-    set("fasilitas", form.fasilitas.includes(f)
-      ? form.fasilitas.filter(x => x !== f)
-      : [...form.fasilitas, f]
-    );
+  // Init spesifikasi dari data kamar atau default
+  const initSpec = () => {
+    if (kamar?.spesifikasi && kamar.spesifikasi.length > 0) {
+      // Merge: default items + saved checked state
+      return DEFAULT_SPEC.map(def => {
+        const saved = kamar.spesifikasi.find(s => s.id === def.id);
+        return saved ? { ...def, ...saved } : def;
+      });
+    }
+    return DEFAULT_SPEC.map(d => ({ ...d }));
   };
 
+  const [form, setForm] = useState({
+    nomor:      kamar?.id       || "",
+    tipe:       kamar?.tipe     || "Reguler",
+    lantai:     kamar?.lantai   || "2",
+    harga:      kamar?.harga    || 1800000,
+    catatan:    kamar?.catatan  || "",
+    luas:       kamar?.luas     || "",
+  });
+  const [spec,      setSpec]      = useState(initSpec());
+  const [specCustom,setSpecCustom]= useState(kamar?.specCustom || []); // [{id, nama, nilai}]
+  const [inventaris,setInventaris]= useState(
+    kamar?.inventaris || (inventarisTemplate.length > 0
+      ? inventarisTemplate.map(i => ({ ...i, id: Date.now() + Math.random() }))
+      : [])
+  );
+  const [tab,        setTab]       = useState("info");
+  const [newInvNama, setNewInvNama]= useState("");
+  const [newInvQty,  setNewInvQty] = useState(1);
+  const [newInvSat,  setNewInvSat] = useState("buah");
+  const [newCustNama,setNewCustNama]=useState("");
+  const [newCustVal, setNewCustVal] =useState("");
+
+  const setF   = (k,v) => setForm(p => ({ ...p, [k]: v }));
+
+  // Toggle ceklis spec
+  const toggleSpec = (id) =>
+    setSpec(prev => prev.map(s => s.id === id ? { ...s, checked: !s.checked } : s));
+
+  // Update detail nilai spec
+  const updateSpec = (id, field, val) =>
+    setSpec(prev => prev.map(s => s.id === id ? { ...s, [field]: val } : s));
+
+  // Custom spec
+  const addCustomSpec = () => {
+    if (!newCustNama.trim()) return;
+    setSpecCustom(prev => [...prev, { id: Date.now(), nama: newCustNama.trim(), nilai: newCustVal.trim() }]);
+    setNewCustNama(""); setNewCustVal("");
+  };
+  const removeCustomSpec = (id) => setSpecCustom(prev => prev.filter(s => s.id !== id));
+
+  // Inventaris
   const addInv = () => {
     if (!newInvNama.trim()) return;
-    set("inventaris", [...form.inventaris, { id: Date.now(), nama: newInvNama.trim(), qty: newInvQty, satuan: newInvSat }]);
+    setInventaris(prev => [...prev, { id: Date.now(), nama: newInvNama.trim(), qty: Number(newInvQty), satuan: newInvSat }]);
     setNewInvNama(""); setNewInvQty(1);
   };
-
-  const removeInv = (id) => set("inventaris", form.inventaris.filter(i => i.id !== id));
+  const removeInv = (id) => setInventaris(prev => prev.filter(i => i.id !== id));
 
   const handleSave = () => {
     onSave({
-      id:         isEdit ? kamar.id : Number(form.nomor),
-      tipe:       form.tipe,
-      lantai:     form.lantai,
-      harga:      Number(form.harga),
-      fasilitas:  form.fasilitas,
-      inventaris: form.inventaris,
-      catatan:    form.catatan,
+      id:          isEdit ? kamar.id : Number(form.nomor),
+      tipe:        form.tipe,
+      lantai:      form.lantai,
+      harga:       Number(form.harga),
+      luas:        form.luas,
+      spesifikasi: spec,
+      specCustom:  specCustom,
+      inventaris:  inventaris,
+      catatan:     form.catatan,
     });
   };
 
   const valid = form.nomor && form.harga > 0;
 
   const TABS = [
-    {id:"info",      label:"📋 Info Kamar"},
-    {id:"fasilitas", label:"⚙️ Fasilitas"},
-    {id:"inventaris",label:"📦 Inventaris"},
+    { id:"info",   label:"📋 Info Kamar"  },
+    { id:"spec",   label:"⚙️ Spesifikasi" },
+    { id:"inv",    label:"📦 Inventaris"  },
   ];
 
   return (
-    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:500}} onClick={onClose}>
-      <div style={{background:"#fff",borderRadius:16,width:520,maxHeight:"85vh",display:"flex",flexDirection:"column",boxShadow:"0 20px 60px rgba(0,0,0,.2)"}} onClick={e=>e.stopPropagation()}>
+    <div className="mf-overlay" onClick={onClose}>
+      <div className="mf-modal" onClick={e => e.stopPropagation()}>
+
         {/* Header */}
-        <div style={{padding:"18px 22px 14px",borderBottom:"1px solid #f3f4f6",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
+        <div className="mf-head">
           <div>
-            <div style={{fontSize:16,fontWeight:800,color:"#111827"}}>{isEdit ? `✏️ Edit Kamar ${kamar.id}` : "＋ Tambah Kamar Baru"}</div>
-            <div style={{fontSize:11,color:"#9ca3af",marginTop:2}}>Isi data lengkap dan inventaris kamar</div>
+            <div className="mf-head-title">
+              {isEdit ? `✏️ Edit Kamar ${kamar.id}` : "＋ Tambah Kamar Baru"}
+            </div>
+            <div className="mf-head-sub">Isi data lengkap dan inventaris kamar</div>
           </div>
-          <button onClick={onClose} style={{background:"none",border:"none",cursor:"pointer",fontSize:18,color:"#9ca3af"}}>✕</button>
+          <button className="mf-close" onClick={onClose}>✕</button>
         </div>
 
         {/* Tabs */}
-        <div style={{display:"flex",borderBottom:"1px solid #f3f4f6",flexShrink:0}}>
-          {TABS.map(t=>(
-            <div key={t.id} onClick={()=>setTab(t.id)} style={{flex:1,padding:"10px 8px",fontSize:11,fontWeight:600,textAlign:"center",cursor:"pointer",color:tab===t.id?"#ea580c":"#9ca3af",borderBottom:tab===t.id?"2px solid #f97316":"2px solid transparent",background:tab===t.id?"#fff7ed":"transparent",transition:"all .12s"}}>
+        <div className="mf-tabs">
+          {TABS.map(t => (
+            <div key={t.id} className={`mf-tab${tab===t.id?" active":""}`} onClick={() => setTab(t.id)}>
               {t.label}
             </div>
           ))}
         </div>
 
         {/* Body */}
-        <div style={{flex:1,overflowY:"auto",padding:"18px 22px"}}>
+        <div className="mf-body">
 
-          {/* TAB INFO */}
-          {tab==="info" && (
-            <div style={{display:"flex",flexDirection:"column",gap:14}}>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-                <div>
-                  <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase"}}>Nomor Kamar *</label>
-                  <input
-                    style={{width:"100%",padding:"9px 12px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}
-                    type="number" min="1" value={form.nomor}
-                    onChange={e=>set("nomor",e.target.value)}
-                    disabled={isEdit}
-                    placeholder="Contoh: 13"
-                  />
+          {/* ═══ TAB INFO ═══ */}
+          {tab === "info" && (
+            <>
+              <div className="mf-grid2">
+                <div className="mf-field">
+                  <label className="mf-label">Nomor Kamar *</label>
+                  <input className="mf-input" type="number" min="1"
+                    value={form.nomor} onChange={e => setF("nomor", e.target.value)}
+                    disabled={isEdit} placeholder="Contoh: 13" />
                 </div>
-                <div>
-                  <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase"}}>Lantai</label>
-                  <select style={{width:"100%",padding:"9px 12px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:13,fontFamily:"inherit",outline:"none"}} value={form.lantai} onChange={e=>set("lantai",e.target.value)}>
+                <div className="mf-field">
+                  <label className="mf-label">Lantai</label>
+                  <select className="mf-select" value={form.lantai} onChange={e => setF("lantai", e.target.value)}>
                     <option value="1">Lantai 1</option>
                     <option value="2">Lantai 2</option>
                     <option value="3">Lantai 3</option>
                   </select>
                 </div>
               </div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-                <div>
-                  <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase"}}>Tipe Kamar</label>
-                  <select style={{width:"100%",padding:"9px 12px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:13,fontFamily:"inherit",outline:"none"}} value={form.tipe} onChange={e=>set("tipe",e.target.value)}>
+
+              <div className="mf-grid2">
+                <div className="mf-field">
+                  <label className="mf-label">Tipe Kamar</label>
+                  <select className="mf-select" value={form.tipe} onChange={e => setF("tipe", e.target.value)}>
                     <option value="Reguler">Reguler</option>
                     <option value="Premium">Premium</option>
                   </select>
                 </div>
-                <div>
-                  <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase"}}>Harga / Bulan *</label>
-                  <input
-                    style={{width:"100%",padding:"9px 12px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}
-                    type="number" min="0" value={form.harga}
-                    onChange={e=>set("harga",e.target.value)}
-                    placeholder="1800000"
-                  />
+                <div className="mf-field">
+                  <label className="mf-label">Harga / Bulan (Rp) *</label>
+                  <input className="mf-input" type="number" min="0"
+                    value={form.harga} onChange={e => setF("harga", e.target.value)}
+                    placeholder="1800000" />
                 </div>
               </div>
-              <div>
-                <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase"}}>Catatan</label>
-                <textarea
-                  style={{width:"100%",padding:"9px 12px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:13,fontFamily:"inherit",outline:"none",resize:"vertical",minHeight:60,boxSizing:"border-box"}}
-                  value={form.catatan}
-                  onChange={e=>set("catatan",e.target.value)}
-                  placeholder="Catatan khusus kamar ini..."
-                />
+
+              <div className="mf-field">
+                <label className="mf-label">Luas Kamar (m²)</label>
+                <input className="mf-input" type="number" min="1" step="0.5"
+                  value={form.luas} onChange={e => setF("luas", e.target.value)}
+                  placeholder="Contoh: 12" style={{width:"50%"}} />
               </div>
-            </div>
+
+              <div className="mf-field">
+                <label className="mf-label">Catatan Khusus</label>
+                <textarea className="mf-textarea"
+                  value={form.catatan} onChange={e => setF("catatan", e.target.value)}
+                  placeholder="Catatan khusus kamar ini..." />
+              </div>
+            </>
           )}
 
-          {/* TAB FASILITAS */}
-          {tab==="fasilitas" && (
-            <div>
-              <div style={{fontSize:12,color:"#6b7280",marginBottom:12}}>Centang fasilitas tambahan yang tersedia di kamar ini</div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-                {FASILITAS_OPT.map(f=>(
-                  <div key={f} onClick={()=>toggleFasilitas(f)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",border:`1.5px solid ${form.fasilitas.includes(f)?"#f97316":"#e5e7eb"}`,borderRadius:9,cursor:"pointer",background:form.fasilitas.includes(f)?"#fff7ed":"#fff",transition:"all .12s"}}>
-                    <div style={{width:18,height:18,borderRadius:5,border:`2px solid ${form.fasilitas.includes(f)?"#f97316":"#d1d5db"}`,background:form.fasilitas.includes(f)?"#f97316":"#fff",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                      {form.fasilitas.includes(f) && <span style={{color:"#fff",fontSize:11,fontWeight:900}}>✓</span>}
+          {/* ═══ TAB SPESIFIKASI ═══ */}
+          {tab === "spec" && (
+            <>
+              <div style={{fontSize:11,color:"#9ca3af",marginBottom:4}}>
+                Centang fasilitas yang tersedia di kamar ini, lalu isi detailnya.
+              </div>
+
+              {/* List spec bawaan */}
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {spec.map(s => (
+                  <div key={s.id} className={`mf-spec-row${s.checked?" checked":""}`}>
+                    {/* Row atas: checkbox + icon + nama */}
+                    <div className="mf-spec-top">
+                      <div className={`mf-spec-cb${s.checked?" checked":""}`} onClick={() => toggleSpec(s.id)}>
+                        {s.checked && <span style={{color:"#fff",fontSize:11,fontWeight:800,lineHeight:1}}>✓</span>}
+                      </div>
+                      <span className="mf-spec-icon">{s.icon}</span>
+                      <span className="mf-spec-name">{s.nama}</span>
+                      {s.checked && s.tipe !== "toggle" && (
+                        <span style={{fontSize:10,color:"#f97316",fontWeight:600}}>▼ detail</span>
+                      )}
                     </div>
-                    <span style={{fontSize:13,fontWeight:500,color:form.fasilitas.includes(f)?"#ea580c":"#374151"}}>{f}</span>
+
+                    {/* Row bawah: detail (muncul kalau checked & bukan toggle) */}
+                    {s.checked && s.tipe !== "toggle" && (
+                      <div className="mf-spec-detail">
+                        {s.tipe === "pk" && (
+                          <>
+                            <span className="mf-spec-detail-label">Kapasitas:</span>
+                            <input className="mf-spec-input" type="number" min="0.5" step="0.5"
+                              value={s.nilai} onChange={e => updateSpec(s.id,"nilai",e.target.value)}
+                              placeholder="1.5" style={{maxWidth:80}} />
+                            <span className="mf-spec-unit">PK</span>
+                          </>
+                        )}
+                        {s.tipe === "inci" && (
+                          <>
+                            <span className="mf-spec-detail-label">Ukuran:</span>
+                            <input className="mf-spec-input" type="number" min="14"
+                              value={s.nilai} onChange={e => updateSpec(s.id,"nilai",e.target.value)}
+                              placeholder="32" style={{maxWidth:80}} />
+                            <span className="mf-spec-unit">inci</span>
+                          </>
+                        )}
+                        {s.tipe === "ukuran" && (
+                          <>
+                            <span className="mf-spec-detail-label">Ukuran kasur:</span>
+                            <select className="mf-spec-select"
+                              value={s.nilai} onChange={e => updateSpec(s.id,"nilai",e.target.value)}>
+                              <option value="Single">Single (90×200 cm)</option>
+                              <option value="Single XL">Single XL (100×200 cm)</option>
+                              <option value="Double">Double (120×200 cm)</option>
+                              <option value="Queen">Queen (160×200 cm)</option>
+                              <option value="King">King (180×200 cm)</option>
+                            </select>
+                          </>
+                        )}
+                        {s.tipe === "unit" && (
+                          <>
+                            <span className="mf-spec-detail-label">Jumlah:</span>
+                            <input className="mf-spec-input" type="number" min="1"
+                              value={s.nilai} onChange={e => updateSpec(s.id,"nilai",e.target.value)}
+                              placeholder="1" style={{maxWidth:70}} />
+                            <span className="mf-spec-unit">{s.satuan}</span>
+                          </>
+                        )}
+                      </div>
+                    )}
+                    {s.checked && s.tipe === "toggle" && (
+                      <div className="mf-spec-detail">
+                        <span style={{fontSize:11,color:"#16a34a",fontWeight:600}}>✅ Tersedia di kamar ini</span>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
-            </div>
+
+              {/* Custom spec */}
+              {specCustom.length > 0 && (
+                <div style={{marginTop:4}}>
+                  <div className="mf-section-label">Spesifikasi Tambahan</div>
+                  <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                    {specCustom.map(s => (
+                      <div key={s.id} className="mf-spec-row checked" style={{padding:"8px 12px"}}>
+                        <div style={{display:"flex",alignItems:"center",gap:8}}>
+                          <span style={{fontSize:13,fontWeight:600,color:"#111827",flex:1}}>⚡ {s.nama}</span>
+                          {s.nilai && <span style={{fontSize:12,color:"#f97316",fontWeight:600}}>{s.nilai}</span>}
+                          <button onClick={() => removeCustomSpec(s.id)}
+                            style={{background:"none",border:"none",cursor:"pointer",color:"#dc2626",fontSize:14,padding:"0 2px"}}>✕</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Tambah custom */}
+              <div style={{marginTop:4}}>
+                <div className="mf-section-label">＋ Tambah Spesifikasi Lain</div>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr auto",gap:8,alignItems:"flex-end"}}>
+                  <div className="mf-field">
+                    <label className="mf-label">Nama Fasilitas</label>
+                    <input className="mf-input" value={newCustNama}
+                      onChange={e => setNewCustNama(e.target.value)}
+                      placeholder="Contoh: Dispenser, CCTV..." />
+                  </div>
+                  <div className="mf-field">
+                    <label className="mf-label">Detail / Nilai</label>
+                    <input className="mf-input" value={newCustVal}
+                      onChange={e => setNewCustVal(e.target.value)}
+                      placeholder="Contoh: 2 unit, 500W..." />
+                  </div>
+                  <button className="mf-btn-ghost" onClick={addCustomSpec}
+                    style={{height:38,padding:"0 14px"}}>＋ Tambah</button>
+                </div>
+              </div>
+            </>
           )}
 
-          {/* TAB INVENTARIS */}
-          {tab==="inventaris" && (
-            <div>
-              <div style={{fontSize:12,color:"#6b7280",marginBottom:12}}>
-                Inventaris spesifik kamar ini. {inventarisTemplate.length>0 && "Template dari SOP sudah di-load otomatis."}
+          {/* ═══ TAB INVENTARIS ═══ */}
+          {tab === "inv" && (
+            <>
+              <div style={{fontSize:11,color:"#9ca3af",marginBottom:4}}>
+                Data aset / barang yang ada di dalam kamar. Digunakan untuk serah terima saat check-out.
               </div>
-              {/* Form tambah */}
-              <div style={{display:"flex",gap:8,marginBottom:12}}>
-                <input style={{flex:1,padding:"8px 10px",border:"1.5px solid #e5e7eb",borderRadius:7,fontSize:12,fontFamily:"inherit",outline:"none"}} placeholder="Nama item..." value={newInvNama} onChange={e=>setNewInvNama(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addInv()} />
-                <input style={{width:60,padding:"8px 8px",border:"1.5px solid #e5e7eb",borderRadius:7,fontSize:12,fontFamily:"inherit",outline:"none",textAlign:"center"}} type="number" min={1} value={newInvQty} onChange={e=>setNewInvQty(Math.max(1,parseInt(e.target.value)||1))} />
-                <select style={{padding:"8px 8px",border:"1.5px solid #e5e7eb",borderRadius:7,fontSize:12,fontFamily:"inherit",outline:"none"}} value={newInvSat} onChange={e=>setNewInvSat(e.target.value)}>
-                  {["buah","set","unit","lembar","pasang","botol"].map(s=><option key={s} value={s}>{s}</option>)}
-                </select>
-                <button onClick={addInv} style={{padding:"8px 12px",background:"linear-gradient(135deg,#f97316,#ea580c)",color:"#fff",border:"none",borderRadius:7,fontSize:13,cursor:"pointer",fontWeight:700}}>＋</button>
-              </div>
-              {/* List inventaris */}
-              {form.inventaris.length===0 ? (
-                <div style={{textAlign:"center",padding:"24px 0",color:"#9ca3af"}}>
-                  <div style={{fontSize:24,marginBottom:6}}>📦</div>
-                  <div style={{fontSize:12}}>Belum ada item. Tambah di atas atau load dari template SOP.</div>
+
+              {inventaris.length === 0 ? (
+                <div style={{textAlign:"center",padding:"20px 0",color:"#9ca3af",fontSize:12}}>
+                  <div style={{fontSize:28,marginBottom:6}}>📦</div>
+                  Belum ada item inventaris
                 </div>
               ) : (
                 <div style={{display:"flex",flexDirection:"column",gap:6}}>
-                  {form.inventaris.map(item=>(
-                    <div key={item.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 12px",background:"#f9fafb",border:"1px solid #e5e7eb",borderRadius:8}}>
-                      <div style={{display:"flex",alignItems:"center",gap:8}}>
-                        <span style={{fontSize:16}}>📦</span>
-                        <div>
-                          <div style={{fontSize:12,fontWeight:600,color:"#1f2937"}}>{item.nama}</div>
-                          <div style={{fontSize:10,color:"#9ca3af"}}>{item.satuan}</div>
-                        </div>
-                      </div>
-                      <div style={{display:"flex",alignItems:"center",gap:8}}>
-                        <span style={{fontSize:13,fontWeight:700,color:"#f97316"}}>{item.qty}x</span>
-                        <button onClick={()=>removeInv(item.id)} style={{background:"none",border:"none",cursor:"pointer",color:"#dc2626",fontSize:14,padding:"0 4px"}}>✕</button>
-                      </div>
+                  {inventaris.map(item => (
+                    <div key={item.id} className="mf-inv-row">
+                      <span className="mf-inv-name">📌 {item.nama}</span>
+                      <span className="mf-inv-qty">{item.qty} {item.satuan}</span>
+                      <button className="mf-inv-del" onClick={() => removeInv(item.id)}>✕</button>
                     </div>
                   ))}
                 </div>
               )}
-            </div>
+
+              {/* Tambah inventaris */}
+              <div style={{marginTop:8}}>
+                <div className="mf-section-label">＋ Tambah Item</div>
+                <div className="mf-add-row">
+                  <input className="mf-input" value={newInvNama}
+                    onChange={e => setNewInvNama(e.target.value)}
+                    placeholder="Nama barang..." style={{fontSize:12}} />
+                  <input className="mf-input" type="number" min="1"
+                    value={newInvQty} onChange={e => setNewInvQty(e.target.value)}
+                    style={{textAlign:"center",fontSize:12}} />
+                  <select className="mf-select" value={newInvSat} onChange={e => setNewInvSat(e.target.value)} style={{fontSize:12}}>
+                    {["buah","unit","set","pasang","lembar","botol"].map(s =>
+                      <option key={s} value={s}>{s}</option>
+                    )}
+                  </select>
+                  <button className="mf-btn-ghost" onClick={addInv}
+                    style={{height:38,whiteSpace:"nowrap",padding:"0 12px"}}>＋ Add</button>
+                </div>
+              </div>
+            </>
           )}
+
         </div>
 
         {/* Footer */}
-        <div style={{padding:"14px 22px",borderTop:"1px solid #f3f4f6",display:"flex",gap:10,justifyContent:"flex-end",flexShrink:0}}>
-          <button onClick={onClose} style={{padding:"9px 18px",background:"#f3f4f6",border:"none",borderRadius:8,fontSize:13,fontWeight:600,cursor:"pointer",color:"#4b5563"}}>Batal</button>
-          <button onClick={handleSave} disabled={!valid} style={{padding:"9px 20px",background:valid?"linear-gradient(135deg,#f97316,#ea580c)":"#d1d5db",color:"#fff",border:"none",borderRadius:8,fontSize:13,fontWeight:700,cursor:valid?"pointer":"not-allowed"}}>
+        <div className="mf-footer">
+          <button className="mf-btn-cancel" onClick={onClose}>Batal</button>
+          <button className="mf-btn-save" disabled={!valid} onClick={handleSave}>
             {isEdit ? "✅ Simpan Perubahan" : "＋ Tambah Kamar"}
           </button>
         </div>
+
       </div>
     </div>
   );

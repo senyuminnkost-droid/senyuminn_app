@@ -85,7 +85,13 @@ const toDateStr = (y, m, d) =>
   `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
 
 export default function Kalender({ user, globalData = {} }) {
-  const { isReadOnly = false } = globalData;
+  const {
+    isReadOnly    = false,
+    tiketList     = [],
+    weeklyList    = [],
+    penyewaList   = [],
+    kamarList     = [],
+  } = globalData;
 
   const today    = new Date();
   const todayStr = toDateStr(today.getFullYear(), today.getMonth(), today.getDate());
@@ -94,10 +100,56 @@ export default function Kalender({ user, globalData = {} }) {
   const [month,        setMonth]        = useState(today.getMonth());
   const [selectedDate, setSelectedDate] = useState(todayStr);
   const [showModal,    setShowModal]    = useState(false);
-  const [eventList,    setEventList]    = useState([]);
+  const [manualEvents, setManualEvents] = useState([]); // event input manual
   const [form,         setForm]         = useState({ tanggal: todayStr, tipe:"weekly", label:"", catatan:"" });
 
   const canEdit = user?.role === "manajemen";
+
+  // ── Generate events otomatis dari data real ──
+  const autoEvents = [];
+
+  // Tiket keluhan → event di tanggal dibuat
+  tiketList.forEach(t => {
+    if (!t.tanggal) return;
+    autoEvents.push({
+      id:      `tiket-${t.id}`,
+      tanggal: t.tanggal,
+      tipe:    t.status === "selesai" ? "selesai" : t.prioritas === "urgent" ? "keluhan" : "keluhan",
+      label:   `${t.prioritas==="urgent"?"🔴":"🔧"} Tiket Kamar ${t.kamar} — ${t.kategori}`,
+      catatan: t.deskripsi,
+      sumber:  "auto",
+    });
+  });
+
+  // Weekly service → event di tanggal jadwal
+  weeklyList.forEach(w => {
+    if (!w.tanggal) return;
+    autoEvents.push({
+      id:      `weekly-${w.id||w.tanggal}`,
+      tanggal: w.tanggal,
+      tipe:    "weekly",
+      label:   `🧹 Weekly Service — Kamar ${Array.isArray(w.kamarIds)?w.kamarIds.join(", "):w.kamarId||""}`,
+      catatan: w.catatan || "",
+      sumber:  "auto",
+    });
+  });
+
+  // Kontrak penyewa — reminder H-30 & check-out
+  penyewaList.forEach(p => {
+    if (p.kontrakSelesai) {
+      autoEvents.push({
+        id:      `checkout-${p.id}`,
+        tanggal: p.kontrakSelesai,
+        tipe:    "checkout",
+        label:   `📦 Kontrak Selesai — ${p.namaPenyewa} (Kamar ${p.kamarId})`,
+        catatan: "Reminder perpanjangan atau check-out",
+        sumber:  "auto",
+      });
+    }
+  });
+
+  // Gabung auto + manual events
+  const eventList = [...autoEvents, ...manualEvents];
 
   // Build event map
   const eventMap = {};
@@ -135,7 +187,7 @@ export default function Kalender({ user, globalData = {} }) {
 
   const handleAdd = () => {
     if (!form.tanggal || !form.label.trim()) return;
-    setEventList(prev => [...prev, { id: Date.now(), ...form }]);
+    setManualEvents(prev => [...prev, { id: Date.now(), ...form, sumber:"manual" }]);
     setForm({ tanggal: selectedDate || todayStr, tipe:"weekly", label:"", catatan:"" });
     setShowModal(false);
   };
@@ -268,10 +320,10 @@ export default function Kalender({ user, globalData = {} }) {
                             <div style={{ fontSize:11, color:"#6b7280", marginTop:4 }}>{ev.catatan}</div>
                           )}
                         </div>
-                        {canEdit && (
+                        {canEdit && ev.sumber === "manual" && (
                           <button onClick={() => {
                             if (window.confirm("Hapus event ini?"))
-                              setEventList(prev => prev.filter(e => e.id !== ev.id));
+                              setManualEvents(prev => prev.filter(e => e.id !== ev.id));
                           }} style={{ background:"none", border:"none", cursor:"pointer", fontSize:11, color:"#9ca3af", padding:"0 2px", flexShrink:0 }}>
                             ✕
                           </button>

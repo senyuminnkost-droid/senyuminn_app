@@ -131,10 +131,10 @@ const getInisial = (nama) => {
 const AVATAR_COLORS = ["#f97316","#3b82f6","#8b5cf6","#16a34a","#ec4899","#06b6d4"];
 const getColor = (id) => AVATAR_COLORS[(id||0) % AVATAR_COLORS.length];
 
-// Default komponen gaji per karyawan
+// Default komponen gaji per karyawan — insentif ambil dari data karyawan
 const defaultGaji = (k) => ({
   gajiPokok:      Number(k?.gajiPokok) || 0,
-  insentif:       NOMINAL_INSENTIF,
+  insentif:       Number(k?.nominalInsentif) || 0,  // per karyawan, bukan global
   lemburShift:    0,      // jumlah shift lembur × LEMBUR_SHIFT
   lemburTambahan: 0,      // nominal langsung dari PJ
   potonganIjin:   0,      // jumlah hari ijin tidak sah × Rp 50.000
@@ -156,6 +156,142 @@ const hitungTotal = (g, cfg={}) => {
 // ============================================================
 // SLIP GAJI
 // ============================================================
+// ============================================================
+// PDF SLIP GAJI
+// ============================================================
+const loadJsPDF = () => new Promise((resolve, reject) => {
+  if (window.jspdf) return resolve(window.jspdf.jsPDF);
+  const s = document.createElement("script");
+  s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+  s.onload  = () => resolve(window.jspdf.jsPDF);
+  s.onerror = () => reject(new Error("Gagal load jsPDF"));
+  document.head.appendChild(s);
+});
+
+const generateSlipGaji = async (karyawan, gaji, periode, hitungFn) => {
+  const JsPDF = await loadJsPDF();
+  const doc   = new JsPDF({ orientation:"portrait", unit:"mm", format:"a4" });
+  const W = doc.internal.pageSize.getWidth();
+  const H = doc.internal.pageSize.getHeight();
+
+  const { pendapatan, potongan, netto } = hitungFn(gaji);
+  const fmtR = n => "Rp " + (n||0).toLocaleString("id-ID");
+
+  // ─── HEADER ────────────────────────────────────────────
+  doc.setFillColor(30,41,59);
+  doc.rect(0,0,W,38,"F");
+
+  // Logo circle
+  doc.setFillColor(249,115,22);
+  doc.circle(22,19,10,"F");
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(13); doc.setFont("helvetica","bold");
+  doc.text("S",22,23,{align:"center"});
+
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(15); doc.setFont("helvetica","bold");
+  doc.text("SENYUM INN",38,16);
+  doc.setFontSize(8); doc.setFont("helvetica","normal");
+  doc.setTextColor(148,163,184);
+  doc.text("EXCLUSIVE KOST",38,22);
+
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(11); doc.setFont("helvetica","bold");
+  doc.text("SLIP GAJI KARYAWAN",W-14,13,{align:"right"});
+  doc.setFontSize(8); doc.setFont("helvetica","normal");
+  doc.setTextColor(148,163,184);
+  doc.text("Periode: "+periode,W-14,20,{align:"right"});
+  doc.text("Dicetak: "+new Date().toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"}),W-14,26,{align:"right"});
+
+  // ─── INFO KARYAWAN ─────────────────────────────────────
+  let y = 46;
+  doc.setFillColor(241,245,249);
+  doc.roundedRect(14,y,W-28,24,3,3,"F");
+
+  doc.setTextColor(30,41,59);
+  doc.setFontSize(13); doc.setFont("helvetica","bold");
+  doc.text(karyawan.nama || "—",20,y+9);
+  doc.setFontSize(8); doc.setFont("helvetica","normal"); doc.setTextColor(100,116,139);
+  doc.text(karyawan.jabatan || "—",20,y+15);
+
+  doc.setFontSize(8); doc.setFont("helvetica","normal"); doc.setTextColor(100,116,139);
+  doc.text("Status: "+(gaji.status==="dibayar"?"✓ LUNAS":"BELUM DIBAYAR"),W-20,y+9,{align:"right"});
+  doc.text("Rekening: "+(karyawan.rekening||"—"),W-20,y+15,{align:"right"});
+
+  y += 30;
+
+  // ─── TABEL PENDAPATAN ──────────────────────────────────
+  const drawSectionHeader = (text, yy) => {
+    doc.setFillColor(249,115,22);
+    doc.rect(14,yy,W-28,7,"F");
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(8); doc.setFont("helvetica","bold");
+    doc.text(text,17,yy+5);
+    return yy+7;
+  };
+
+  const drawItem = (label, val, yy, {bold=false, color=[30,41,59]}={}) => {
+    doc.setFontSize(8); doc.setFont("helvetica", bold?"bold":"normal");
+    doc.setTextColor(...color);
+    doc.text(String(label),17,yy+5);
+    doc.text(String(val),W-16,yy+5,{align:"right"});
+    doc.setDrawColor(230,232,235); doc.setLineWidth(0.1);
+    doc.line(14,yy+7,W-14,yy+7);
+    return yy+7;
+  };
+
+  y = drawSectionHeader("PENDAPATAN",y);
+  const pendItems = [
+    ["Gaji Pokok",              gaji.gajiPokok],
+    ["Insentif / Tunjangan KPI",gaji.insentif],
+    ["Lembur",                  gaji.lembur],
+    ["Lembur Tambahan",         gaji.lemburTambahan],
+  ].filter(([,v])=>(v||0)>0);
+  pendItems.forEach(([k,v])=>{ y=drawItem(k,fmtR(v),y); });
+  y = drawItem("TOTAL PENDAPATAN",fmtR(pendapatan),y,{bold:true,color:[22,163,74]});
+
+  y += 4;
+  y = drawSectionHeader("POTONGAN",y);
+  const potItems = [
+    ["Potongan Ijin Tidak Sah",  gaji.potIjin],
+    ["Pinjaman Koperasi",        gaji.pinjamanKoperasi],
+    ["BPJS",                     gaji.bpjs],
+    ["Pajak",                    gaji.pajak],
+  ].filter(([,v])=>(v||0)>0);
+  if (potItems.length===0) y = drawItem("Tidak ada potongan","—",y);
+  else potItems.forEach(([k,v])=>{ y=drawItem(k,fmtR(v),y,{color:[220,38,38]}); });
+  y = drawItem("TOTAL POTONGAN",fmtR(potongan),y,{bold:true,color:[220,38,38]});
+
+  // ─── GAJI BERSIH ───────────────────────────────────────
+  y += 6;
+  doc.setFillColor(30,41,59);
+  doc.roundedRect(14,y,W-28,14,3,3,"F");
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(9); doc.setFont("helvetica","bold");
+  doc.text("GAJI BERSIH (TAKE HOME PAY)",20,y+6);
+  doc.setFontSize(14);
+  doc.text(fmtR(netto),W-20,y+9,{align:"right"});
+
+  // ─── FOOTER ────────────────────────────────────────────
+  y = H - 40;
+  doc.setDrawColor(230,232,235); doc.setLineWidth(0.3);
+  doc.line(14,y,W-14,y);
+  doc.setTextColor(100,116,139); doc.setFontSize(7); doc.setFont("helvetica","normal");
+  doc.text("Senyum Inn Exclusive Kost — Slip gaji digenerate otomatis oleh sistem",14,y+5);
+  doc.text("Dokumen ini sah tanpa tanda tangan jika digenerate dari sistem",14,y+10);
+
+  // Tanda tangan area
+  doc.setTextColor(30,41,59); doc.setFontSize(8); doc.setFont("helvetica","normal");
+  doc.text("Mengetahui,",W-60,y+8);
+  doc.text("Manajemen Senyum Inn",W-60,y+14);
+  doc.line(W-70,y+28,W-14,y+28);
+  doc.setFontSize(7); doc.setTextColor(100,116,139);
+  doc.text("(..................................................)",W-60,y+32);
+
+  const safeName = (karyawan.nama||"karyawan").replace(/\s+/g,"-").toLowerCase();
+  doc.save("slip-gaji-"+safeName+"-"+periode+".pdf");
+};
+
 function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) {
   const { pendapatan, potongan, netto } = hitungTotal(gaji);
   const [g, setG] = useState({...gaji});
@@ -372,7 +508,7 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
               ✅ Tandai Dibayar
             </button>
           )}
-          <button className="pg-btn ghost" onClick={()=>alert("PDF generation — coming soon!")}>
+          <button className="pg-btn ghost" onClick={()=>generateSlipGaji(karyawan, g, periode, hitungTotal)}>
             📄 Download PDF
           </button>
           <button className="pg-btn ghost" onClick={onClose}>Tutup</button>

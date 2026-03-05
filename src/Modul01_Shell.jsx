@@ -5,11 +5,9 @@ import { createPortal } from "react-dom";
 // USER CONFIG — ganti setelah connect Supabase
 // ============================================================
 const USERS = [
-  { id: 1, username: "owner",    password: "owner123",  role: "owner",     name: "Owner", jabatan: "Owner" },
-  { id: 2, username: "direktur", password: "dir123",    role: "direktur",  name: "Budi Santosa",        jabatan: "Direktur" },
-  { id: 3, username: "admin",    password: "admin123",  role: "manajemen", name: "Admin",      jabatan: "Super Admin" },
-  { id: 4, username: "staff1",   password: "staff123",  role: "staff",     name: "Staff Pagi",   jabatan: "Clean & Service" },
-  { id: 5, username: "staff2",   password: "staff123",  role: "staff",     name: "Staff Malam", jabatan: "Staf Penjaga Malam" },
+  // Data user awal — akan diganti setelah connect Supabase Auth
+  // Tambah/edit user melalui menu Manajemen User
+  { id: 1, username: "owner", password: "owner123", role: "owner", name: "Owner", jabatan: "Owner" },
 ];
 
 // Cek apakah user read-only (owner & direktur)
@@ -963,7 +961,13 @@ export default function App() {
   // [{id, penyewaId, kamarId, nominal, status:"aktif"|"dikembalikan"|"dipotong", tglMasuk, tglKeluar, keterangan}]
 
   const [sewaDimukaList,   setSewaDimukaList]   = useState([]);
-  // [{id, penyewaId, kamarId, totalBayar, perBulan, periodeStart, periodeEnd, sudahRelease:[]}]
+  // [{id, penyewaId, kamarId, totalBayar, perBulan, periodeStart, periodeEnd, sudahRele
+
+  // KPI Items — dari Modul19 SOP, disimpan di pengaturanConfig
+  // (sudah masuk lewat pengaturanConfig.kpiItems, tidak perlu state terpisah)
+
+  // Cuti list — dari Modul14 Karyawan
+  const [cutiList, setCutiList] = useState([]);ase:[]}]
 
   const [sakuConfig,   setSakuConfig]   = useState([
     { kode:"A", nama:"Petty Cash",      tipe:"pct",  nilai:5,       color:"#f97316" },
@@ -992,6 +996,7 @@ export default function App() {
     pengaturanConfig,  setPengaturanConfig,
     depositList,       setDepositList,
     sewaDimukaList,    setSewaDimukaList,
+    cutiList,          setCutiList,
     isReadOnly:        isReadOnly(user),
   };
 

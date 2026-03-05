@@ -214,13 +214,39 @@ const TIKET_CFG = {
 // ============================================================
 // DASHBOARD
 // ============================================================
-export default function Dashboard({ user }) {
-  // Semua data kosong — akan diisi dari modul lain setelah Supabase connect
-  const kamarList    = [];   // dari Modul03_Monitor / Supabase
-  const tiketList    = [];   // dari Modul05_Keluhan / Supabase
-  const tagihanList  = [];   // dari Modul11_Tagihan / Supabase
-  const rutinList    = [];   // dari Modul17_Profil  / Supabase
-  const kasData      = { masuk: 0, keluar: 0 };
+export default function Dashboard({ user, globalData = {} }) {
+  const {
+    kamarList     = [],
+    tiketList     = [],
+    tagihanList   = [],
+    kasJurnal     = [],
+    weeklyList    = [],
+    karyawanList  = [],
+    absensiList   = [],
+    pengaturanConfig = {},
+  } = globalData;
+
+  // ── Periode bulan ini ──
+  const now = new Date();
+  const thisMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
+
+  // ── Kas bulan ini dari kasJurnal ──
+  const kasData = {
+    masuk:  kasJurnal.filter(t => t.tipe==="pemasukan"  && t.tanggal?.startsWith(thisMonth) && !t.isLiabilitas).reduce((s,t)=>s+(t.nominal||0),0),
+    keluar: kasJurnal.filter(t => t.tipe==="pengeluaran" && t.tanggal?.startsWith(thisMonth) && !t.isLiabilitas).reduce((s,t)=>s+(t.nominal||0),0),
+  };
+
+  // ── Agenda Pembayaran Rutin — tagihan belum lunas, upcoming 30 hari ──
+  const rutinList = tagihanList
+    .filter(t => t.status !== "lunas")
+    .sort((a,b) => (a.jatuhTempo||"").localeCompare(b.jatuhTempo||""))
+    .slice(0,6)
+    .map(t => ({
+      nama:       t.namaPenyewa || `Kamar ${t.kamarId}`,
+      jatuhTempo: t.jatuhTempo  || "—",
+      jumlah:     t.jumlah      || 0,
+      status:     t.status,
+    }));
 
   // ── Hitung stats dari data ──
   const totalKamar   = kamarList.length || 0;

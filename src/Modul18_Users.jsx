@@ -287,11 +287,7 @@ export default function ManajemenUsers({ user, globalData={} }) {
   const { isReadOnly=false } = globalData;
 
   const [users, setUsers] = useState([
-    { id:1, nama:"Yusuf Vindra Asmara", jabatan:"Owner",       username:"owner",    password:"owner123",  role:"owner",     aktif:true, permissions:{...DEFAULT_PERMISSIONS["owner"]}     },
-    { id:2, nama:"Budi Santosa",        jabatan:"Direktur",    username:"direktur", password:"dir123",    role:"direktur",  aktif:true, permissions:{...DEFAULT_PERMISSIONS["direktur"]}  },
-    { id:3, nama:"Rina Manajemen",      jabatan:"Super Admin", username:"admin",    password:"admin123",  role:"manajemen", aktif:true, permissions:{...DEFAULT_PERMISSIONS["manajemen"]} },
-    { id:4, nama:"Muh. Krisna Mukti",   jabatan:"Clean & Service", username:"staff1", password:"staff123", role:"staff",   aktif:true, permissions:{...DEFAULT_PERMISSIONS["staff"]}     },
-    { id:5, nama:"Gurit Yudho Anggoro", jabatan:"Staf Jaga Malam", username:"staff2", password:"staff123", role:"staff",   aktif:true, permissions:{...DEFAULT_PERMISSIONS["staff"]}     },
+    { id:1, nama:"Owner", jabatan:"Owner", username:"owner", password:"owner123", role:"owner", aktif:true, permissions:{...DEFAULT_PERMISSIONS["owner"]} },
   ]);
   const [selected,    setSelected]    = useState(null);
   const [showModal,   setShowModal]   = useState(false);
@@ -418,6 +414,16 @@ export default function ManajemenUsers({ user, globalData={} }) {
                   {canManage && (
                     <button className="us-btn primary" style={{padding:"5px 10px",fontSize:11}} onClick={()=>{ setEditData(selected); setShowModal(true); }}>
                       ✏️ Edit
+                    </button>
+                  )}
+                  {canManage && selected.role!=="owner" && (
+                    <button className="us-btn" style={{padding:"5px 10px",fontSize:11,background:"#fee2e2",color:"#dc2626",border:"none",borderRadius:7,cursor:"pointer",fontWeight:600,fontFamily:"inherit"}} onClick={()=>{
+                      if(window.confirm(`Hapus user "${selected.nama}"? Data tidak bisa dikembalikan.`)){
+                        setUsers(prev=>prev.filter(u=>u.id!==selected.id));
+                        setSelected(null);
+                      }
+                    }}>
+                      🗑️ Hapus
                     </button>
                   )}
                 </div>

@@ -192,7 +192,7 @@ function ModalKaryawan({ karyawan, onClose, onSave }) {
     nama:"", nik:"", tglLahir:"", jenisKelamin:"L", agama:"Islam",
     statusNikah:"Belum Menikah", noHP:"", noDarurat:"", alamat:"",
     jabatan:"", shift:SHIFT_LIST[0], tglMulai:"", rekeningBank:"",
-    rekeningNo:"", gajiPokok:"", catatan:"", aktif:true,
+    rekeningNo:"", gajiPokok:"", nominalInsentif:"", catatan:"", aktif:true,
     cutiSisa: 3, cutiTerpakai: 0,
   });
   const set = (k,v) => setForm(p=>({...p,[k]:v}));
@@ -383,8 +383,14 @@ function ModalKaryawan({ karyawan, onClose, onSave }) {
                 <input type="number" className="kr-input" value={form.gajiPokok} onChange={e=>set("gajiPokok",e.target.value)} placeholder="0" style={{fontFamily:"JetBrains Mono,monospace"}} />
               </div>
 
+              <div className="kr-field">
+                <label className="kr-field-label">Nominal Insentif / Bulan (Rp)</label>
+                <input type="number" className="kr-input" value={form.nominalInsentif||""} onChange={e=>set("nominalInsentif",e.target.value)} placeholder="0" style={{fontFamily:"JetBrains Mono,monospace"}} />
+                <div style={{fontSize:11,color:"#9ca3af",marginTop:3}}>Diberikan jika KPI bulan ini terpenuhi. Nominal berbeda per karyawan.</div>
+              </div>
+
               <div style={{background:"#f0fdf4",border:"1px solid #86efac",borderRadius:8,padding:"10px 12px",fontSize:11,color:"#15803d"}}>
-                ℹ️ Insentif, lembur, dan potongan diatur di modul <b>Penggajian</b> setiap bulan.
+                ℹ️ Lembur dan potongan diatur per bulan di modul <b>Penggajian</b> setiap bulan.
                 BPJS & Pajak dicatat manual di slip gaji.
               </div>
             </>

@@ -192,7 +192,7 @@ function ModalPerpanjang({ penyewa, kamarList, onClose, onSave }) {
           Tagihan baru telah dibuat otomatis.
         </div>
         <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-          <button className="co-btn primary" style={{ maxWidth: 180 }} onClick={() => alert("Generate surat perpanjangan...")}>📄 Surat Perpanjangan</button>
+          <button className="co-btn primary" style={{ maxWidth: 180 }} onClick={() => generateSuratPerpanjangan(penyewa, pengaturanConfig)}>📄 Surat Perpanjangan</button>
           <button className="co-btn ghost"   style={{ maxWidth: 100 }} onClick={onClose}>Tutup</button>
         </div>
       </div>
@@ -217,9 +217,12 @@ function ModalPerpanjang({ penyewa, kamarList, onClose, onSave }) {
           <div className="co-field">
             <label className="co-field-label">Durasi</label>
             <select className="co-input" value={durasi} onChange={e => setDurasi(e.target.value)}>
-              <option value="3">3 bulan</option>
-              <option value="6">6 bulan</option>
-              <option value="12">12 bulan</option>
+              <option value="1">1 bulan</option>
+          <option value="3">3 bulan</option>
+          <option value="6">6 bulan</option>
+          <option value="12">12 bulan</option>
+          <option value="18">18 bulan</option>
+          <option value="24">24 bulan</option>
             </select>
           </div>
         </div>
@@ -495,6 +498,95 @@ function ActionPanel({ penyewa, kamarList, onPerpanjang, onCheckout, onClose }) 
 // ============================================================
 // MAIN
 // ============================================================
+// ============================================================
+// PDF SURAT PERPANJANGAN
+// ============================================================
+const loadJsPDFCO = () => new Promise((res,rej) => {
+  if (window.jspdf) return res(window.jspdf.jsPDF);
+  const s = document.createElement("script");
+  s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+  s.onload = () => res(window.jspdf.jsPDF); s.onerror = rej;
+  document.head.appendChild(s);
+});
+
+const generateSuratPerpanjangan = async (penyewa, pengaturanConfig={}) => {
+  const JsPDF = await loadJsPDFCO();
+  const doc   = new JsPDF({ orientation:"portrait", unit:"mm", format:"a4" });
+  const W = doc.internal.pageSize.getWidth();
+  const fmtR = n => "Rp "+(n||0).toLocaleString("id-ID");
+  const namaKost = pengaturanConfig.namaKost || "Senyum Inn Exclusive Kost";
+  const direktur = pengaturanConfig.namaDirektur || "Pimpinan";
+
+  // Header
+  doc.setFillColor(30,41,59); doc.rect(0,0,W,32,"F");
+  doc.setFillColor(249,115,22); doc.circle(20,16,10,"F");
+  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont("helvetica","bold");
+  doc.text("S",20,19.5,{align:"center"});
+  doc.setTextColor(255,255,255); doc.setFontSize(14); doc.setFont("helvetica","bold");
+  doc.text(namaKost.toUpperCase(),35,14);
+  doc.setFontSize(8); doc.setFont("helvetica","normal"); doc.setTextColor(148,163,184);
+  doc.text("Surat Tagihan & Perpanjangan Kontrak",35,21);
+
+  let y = 44;
+  doc.setTextColor(30,41,59); doc.setFontSize(13); doc.setFont("helvetica","bold");
+  doc.text("SURAT TAGIHAN PERPANJANGAN KONTRAK",W/2,y,{align:"center"});
+  y += 8;
+  doc.setDrawColor(249,115,22); doc.setLineWidth(0.8); doc.line(14,y,W-14,y); y+=10;
+
+  // Info penyewa
+  doc.setFillColor(249,245,240); doc.rect(14,y,W-28,30,"F");
+  const rows=[
+    ["Kepada Yth.", penyewa.nama||"—"],
+    ["Kamar No.",   String(penyewa.kamarId||"?")],
+    ["Tanggal",     new Date().toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"})],
+  ];
+  rows.forEach((r,i)=>{
+    doc.setFontSize(9); doc.setFont("helvetica","normal"); doc.setTextColor(30,41,59);
+    doc.text(r[0],20,y+8+i*8);
+    doc.text(": "+r[1],65,y+8+i*8);
+  });
+  y+=36;
+
+  // Body surat
+  const body = `Dengan hormat,
+
+Bersama surat ini kami informasikan bahwa masa sewa Kamar No. ${penyewa.kamarId||"?"} atas nama ${penyewa.nama||"Penyewa"} akan berakhir pada tanggal ${penyewa.kontrakSelesai||"—"}.
+
+Oleh karena itu, kami mengundang Saudara/i untuk melakukan perpanjangan kontrak sewa. Adapun rincian tagihan adalah sebagai berikut:`;
+  const bodyLines = doc.splitTextToSize(body, W-28);
+  doc.setFontSize(9); doc.setFont("helvetica","normal"); doc.setTextColor(30,41,59);
+  doc.text(bodyLines,14,y); y += bodyLines.length*5+8;
+
+  // Rincian tagihan
+  doc.setFillColor(241,245,249); doc.rect(14,y,W-28,28,"F");
+  doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.setTextColor(249,115,22);
+  doc.text("RINCIAN TAGIHAN",17,y+7);
+  [
+    ["Harga Sewa per Bulan", fmtR(penyewa.hargaKamar||0)],
+    ["Pilihan Durasi",       "3 / 6 / 12 Bulan"],
+    ["Batas Pembayaran",     "Tanggal 25 bulan berjalan"],
+  ].forEach((r,i)=>{
+    doc.setTextColor(30,41,59); doc.setFontSize(8); doc.setFont("helvetica","normal");
+    doc.text(r[0],20,y+14+i*6); doc.text(": "+r[1],80,y+14+i*6);
+  });
+  y+=34;
+
+  // Penutup
+  const close = "Demikian surat tagihan ini kami sampaikan. Untuk konfirmasi dan pembayaran, silakan menghubungi pengelola. Atas perhatian dan kepercayaan Saudara/i, kami ucapkan terima kasih.";
+  const closeLines = doc.splitTextToSize(close,W-28);
+  doc.setFontSize(9); doc.setFont("helvetica","normal"); doc.setTextColor(30,41,59);
+  doc.text(closeLines,14,y); y+=closeLines.length*5+12;
+
+  // TTD
+  doc.text("Hormat kami,",14,y); y+=5;
+  doc.text(namaKost,14,y); y+=18;
+  doc.line(14,y,60,y); y+=5;
+  doc.setFontSize(8); doc.setTextColor(100,116,139);
+  doc.text("("+direktur+")",14,y);
+
+  doc.save("tagihan-perpanjangan-kamar"+(penyewa.kamarId||"")+"-"+(penyewa.nama||"").replace(/\s/g,"-")+".pdf");
+};
+
 export default function Checkout({ user, globalData = {} }) {
   const {
     penyewaList        = [], setPenyewaList  = () => {},

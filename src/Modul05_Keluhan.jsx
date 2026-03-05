@@ -128,14 +128,15 @@ const CSS = `
   }
   @keyframes klFade { from { opacity: 0; } to { opacity: 1; } }
   .kl-modal {
-    background: #fff; border-radius: 16px; width: 100%; max-width: 520px;
-    max-height: 90vh; overflow-y: auto;
+    background: #fff; border-radius: 16px; width: 100%; max-width: 500px;
+    max-height: 80vh; overflow-y: auto; display: flex; flex-direction: column;
     box-shadow: 0 20px 60px rgba(0,0,0,0.15);
     animation: klSlide 0.22s cubic-bezier(0.4,0,0.2,1);
   }
+  .kl-modal-body { flex: 1; overflow-y: auto; padding: 0 16px 12px; }
   @keyframes klSlide { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   .kl-modal-head {
-    padding: 18px 20px 14px; border-bottom: 1px solid #f3f4f6;
+    padding: 14px 18px 12px; border-bottom: 1px solid #f3f4f6;
     display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: #fff; z-index: 1;
   }
   .kl-modal-title { font-size: 15px; font-weight: 700; color: #111827; }
@@ -148,7 +149,7 @@ const CSS = `
   .kl-modal-body { padding: 18px 20px; }
   .kl-modal-foot { padding: 12px 20px; border-top: 1px solid #f3f4f6; display: flex; gap: 8px; }
 
-  .kl-field { margin-bottom: 14px; }
+  .kl-field { margin-bottom: 10px; }
   .kl-field-label { font-size: 11px; font-weight: 600; color: #374151; margin-bottom: 5px; display: block; }
   .kl-field-label span { color: #ef4444; }
   .kl-input {

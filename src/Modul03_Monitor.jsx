@@ -360,7 +360,7 @@ function KamarCard({ kamar, onClick }) {
 // ============================================================
 // DETAIL DRAWER
 // ============================================================
-function DetailDrawer({ kamar, tiketList, onClose }) {
+function DetailDrawer({ kamar, tiketList, onClose, onEdit, onDelete }) {
   const [tab, setTab] = useState("info");
   const cfg         = STATUS_CFG[kamar.status] || STATUS_CFG.tersedia;
   const sisa        = hariSisa(kamar.kontrakSelesai);
@@ -397,7 +397,19 @@ function DetailDrawer({ kamar, tiketList, onClose }) {
                 Lt. {kamar.lantai || "—"} · {kamar.luas ? `${kamar.luas} m²` : "—"} · {fmt(kamar.harga)}/bulan
               </div>
             </div>
-            <button className="m-close" onClick={onClose}>✕</button>
+            <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+              {onEdit && (
+                <button onClick={() => onEdit(kamar)} style={{ padding:"6px 12px", background:"#f3f4f6", border:"none", borderRadius:7, fontSize:12, fontWeight:600, cursor:"pointer", color:"#374151" }}>
+                  ✏️ Edit
+                </button>
+              )}
+              {onDelete && (
+                <button onClick={() => onDelete(kamar.id)} style={{ padding:"6px 10px", background:"#fee2e2", border:"none", borderRadius:7, fontSize:12, fontWeight:600, cursor:"pointer", color:"#dc2626" }}>
+                  🗑️
+                </button>
+              )}
+              <button className="m-close" onClick={onClose}>✕</button>
+            </div>
           </div>
           <div className="m-tabs">
             {TABS.map(t => (
@@ -647,16 +659,50 @@ function DetailDrawer({ kamar, tiketList, onClose }) {
 // ============================================================
 // MONITOR KAMAR — MAIN
 // ============================================================
-export default function MonitorKamar() {
+export default function MonitorKamar({ user, globalData = {} }) {
+  const {
+    kamarList    = [], setKamarList    = () => {},
+    tiketList    = [],
+    pengaturanConfig = {},
+    isReadOnly   = false,
+  } = globalData;
+
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterTipe,   setFilterTipe]   = useState("all");
   const [filterLantai, setFilterLantai] = useState("all");
   const [search,       setSearch]       = useState("");
   const [selected,     setSelected]     = useState(null);
+  const [showForm,     setShowForm]     = useState(false);
+  const [editKamar,    setEditKamar]    = useState(null); // null = tambah baru
 
-  // Data dari Supabase nanti — kosong dulu
-  const kamarList = [];
-  const tiketList = [];
+  const isAdmin = user?.role === "manajemen";
+
+  // ─── Handle tambah / edit kamar ─────────────────────────
+  const handleSaveKamar = (data) => {
+    if (editKamar) {
+      setKamarList(prev => prev.map(k => k.id === editKamar.id ? { ...k, ...data } : k));
+    } else {
+      const newId = kamarList.length > 0 ? Math.max(...kamarList.map(k => k.id)) + 1 : 1;
+      setKamarList(prev => [...prev, {
+        id: newId,
+        status: "tersedia",
+        penghuni: null,
+        partner: [],
+        kontrakMulai: null,
+        kontrakSelesai: null,
+        tiketAktif: 0,
+        ...data,
+      }]);
+    }
+    setShowForm(false);
+    setEditKamar(null);
+  };
+
+  const handleDeleteKamar = (id) => {
+    if (!window.confirm("Hapus kamar ini? Data tidak bisa dikembalikan.")) return;
+    setKamarList(prev => prev.filter(k => k.id !== id));
+    setSelected(null);
+  };
 
   const summary = Object.keys(STATUS_CFG).reduce((acc, key) => {
     acc[key] = kamarList.filter(k => k.status === key).length;
@@ -737,6 +783,14 @@ export default function MonitorKamar() {
           ))}
         </div>
         <div className="m-count">{filtered.length} kamar</div>
+        {!isReadOnly && (
+          <button
+            onClick={() => { setEditKamar(null); setShowForm(true); }}
+            style={{ display:"flex", alignItems:"center", gap:6, padding:"7px 14px", background:"linear-gradient(135deg,#f97316,#ea580c)", color:"#fff", border:"none", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", marginLeft:8 }}
+          >
+            ＋ Tambah Kamar
+          </button>
+        )}
       </div>
 
       {/* Grid */}
@@ -766,8 +820,228 @@ export default function MonitorKamar() {
           kamar={selected}
           tiketList={tiketList}
           onClose={() => setSelected(null)}
+          onEdit={!isReadOnly ? (k) => { setEditKamar(k); setShowForm(true); setSelected(null); } : null}
+          onDelete={!isReadOnly ? handleDeleteKamar : null}
         />
       )}
+
+      {/* Modal Form Kamar */}
+      {showForm && (
+        <FormKamar
+          kamar={editKamar}
+          inventarisTemplate={pengaturanConfig.inventarisKamar || []}
+          onClose={() => { setShowForm(false); setEditKamar(null); }}
+          onSave={handleSaveKamar}
+        />
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// FORM KAMAR — Modal tambah / edit kamar + inventaris
+// ============================================================
+function FormKamar({ kamar, inventarisTemplate, onClose, onSave }) {
+  const isEdit = !!kamar;
+  const [form, setForm] = useState({
+    nomor:       kamar?.id        || "",
+    tipe:        kamar?.tipe      || "Reguler",
+    lantai:      kamar?.lantai    || "2",
+    harga:       kamar?.harga     || 1800000,
+    fasilitas:   kamar?.fasilitas || [],
+    inventaris:  kamar?.inventaris || (inventarisTemplate.length > 0 ? inventarisTemplate.map(i => ({...i, id: Date.now()+Math.random()})) : []),
+    catatan:     kamar?.catatan   || "",
+  });
+  const [tab, setTab] = useState("info");
+  const [newInvNama, setNewInvNama] = useState("");
+  const [newInvQty,  setNewInvQty]  = useState(1);
+  const [newInvSat,  setNewInvSat]  = useState("buah");
+
+  const set = (k, v) => setForm(p => ({...p, [k]: v}));
+
+  const FASILITAS_OPT = ["Kulkas","Meja Belajar","Sofa","TV","Water Heater","Kamar Mandi Dalam","Balkon","AC Extra"];
+
+  const toggleFasilitas = (f) => {
+    set("fasilitas", form.fasilitas.includes(f)
+      ? form.fasilitas.filter(x => x !== f)
+      : [...form.fasilitas, f]
+    );
+  };
+
+  const addInv = () => {
+    if (!newInvNama.trim()) return;
+    set("inventaris", [...form.inventaris, { id: Date.now(), nama: newInvNama.trim(), qty: newInvQty, satuan: newInvSat }]);
+    setNewInvNama(""); setNewInvQty(1);
+  };
+
+  const removeInv = (id) => set("inventaris", form.inventaris.filter(i => i.id !== id));
+
+  const handleSave = () => {
+    onSave({
+      id:         isEdit ? kamar.id : Number(form.nomor),
+      tipe:       form.tipe,
+      lantai:     form.lantai,
+      harga:      Number(form.harga),
+      fasilitas:  form.fasilitas,
+      inventaris: form.inventaris,
+      catatan:    form.catatan,
+    });
+  };
+
+  const valid = form.nomor && form.harga > 0;
+
+  const TABS = [
+    {id:"info",      label:"📋 Info Kamar"},
+    {id:"fasilitas", label:"⚙️ Fasilitas"},
+    {id:"inventaris",label:"📦 Inventaris"},
+  ];
+
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:500}} onClick={onClose}>
+      <div style={{background:"#fff",borderRadius:16,width:520,maxHeight:"85vh",display:"flex",flexDirection:"column",boxShadow:"0 20px 60px rgba(0,0,0,.2)"}} onClick={e=>e.stopPropagation()}>
+        {/* Header */}
+        <div style={{padding:"18px 22px 14px",borderBottom:"1px solid #f3f4f6",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
+          <div>
+            <div style={{fontSize:16,fontWeight:800,color:"#111827"}}>{isEdit ? `✏️ Edit Kamar ${kamar.id}` : "＋ Tambah Kamar Baru"}</div>
+            <div style={{fontSize:11,color:"#9ca3af",marginTop:2}}>Isi data lengkap dan inventaris kamar</div>
+          </div>
+          <button onClick={onClose} style={{background:"none",border:"none",cursor:"pointer",fontSize:18,color:"#9ca3af"}}>✕</button>
+        </div>
+
+        {/* Tabs */}
+        <div style={{display:"flex",borderBottom:"1px solid #f3f4f6",flexShrink:0}}>
+          {TABS.map(t=>(
+            <div key={t.id} onClick={()=>setTab(t.id)} style={{flex:1,padding:"10px 8px",fontSize:11,fontWeight:600,textAlign:"center",cursor:"pointer",color:tab===t.id?"#ea580c":"#9ca3af",borderBottom:tab===t.id?"2px solid #f97316":"2px solid transparent",background:tab===t.id?"#fff7ed":"transparent",transition:"all .12s"}}>
+              {t.label}
+            </div>
+          ))}
+        </div>
+
+        {/* Body */}
+        <div style={{flex:1,overflowY:"auto",padding:"18px 22px"}}>
+
+          {/* TAB INFO */}
+          {tab==="info" && (
+            <div style={{display:"flex",flexDirection:"column",gap:14}}>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+                <div>
+                  <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase"}}>Nomor Kamar *</label>
+                  <input
+                    style={{width:"100%",padding:"9px 12px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}
+                    type="number" min="1" value={form.nomor}
+                    onChange={e=>set("nomor",e.target.value)}
+                    disabled={isEdit}
+                    placeholder="Contoh: 13"
+                  />
+                </div>
+                <div>
+                  <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase"}}>Lantai</label>
+                  <select style={{width:"100%",padding:"9px 12px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:13,fontFamily:"inherit",outline:"none"}} value={form.lantai} onChange={e=>set("lantai",e.target.value)}>
+                    <option value="1">Lantai 1</option>
+                    <option value="2">Lantai 2</option>
+                    <option value="3">Lantai 3</option>
+                  </select>
+                </div>
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+                <div>
+                  <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase"}}>Tipe Kamar</label>
+                  <select style={{width:"100%",padding:"9px 12px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:13,fontFamily:"inherit",outline:"none"}} value={form.tipe} onChange={e=>set("tipe",e.target.value)}>
+                    <option value="Reguler">Reguler</option>
+                    <option value="Premium">Premium</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase"}}>Harga / Bulan *</label>
+                  <input
+                    style={{width:"100%",padding:"9px 12px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}
+                    type="number" min="0" value={form.harga}
+                    onChange={e=>set("harga",e.target.value)}
+                    placeholder="1800000"
+                  />
+                </div>
+              </div>
+              <div>
+                <label style={{fontSize:11,fontWeight:600,color:"#6b7280",display:"block",marginBottom:4,textTransform:"uppercase"}}>Catatan</label>
+                <textarea
+                  style={{width:"100%",padding:"9px 12px",border:"1.5px solid #e5e7eb",borderRadius:8,fontSize:13,fontFamily:"inherit",outline:"none",resize:"vertical",minHeight:60,boxSizing:"border-box"}}
+                  value={form.catatan}
+                  onChange={e=>set("catatan",e.target.value)}
+                  placeholder="Catatan khusus kamar ini..."
+                />
+              </div>
+            </div>
+          )}
+
+          {/* TAB FASILITAS */}
+          {tab==="fasilitas" && (
+            <div>
+              <div style={{fontSize:12,color:"#6b7280",marginBottom:12}}>Centang fasilitas tambahan yang tersedia di kamar ini</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                {FASILITAS_OPT.map(f=>(
+                  <div key={f} onClick={()=>toggleFasilitas(f)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",border:`1.5px solid ${form.fasilitas.includes(f)?"#f97316":"#e5e7eb"}`,borderRadius:9,cursor:"pointer",background:form.fasilitas.includes(f)?"#fff7ed":"#fff",transition:"all .12s"}}>
+                    <div style={{width:18,height:18,borderRadius:5,border:`2px solid ${form.fasilitas.includes(f)?"#f97316":"#d1d5db"}`,background:form.fasilitas.includes(f)?"#f97316":"#fff",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                      {form.fasilitas.includes(f) && <span style={{color:"#fff",fontSize:11,fontWeight:900}}>✓</span>}
+                    </div>
+                    <span style={{fontSize:13,fontWeight:500,color:form.fasilitas.includes(f)?"#ea580c":"#374151"}}>{f}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB INVENTARIS */}
+          {tab==="inventaris" && (
+            <div>
+              <div style={{fontSize:12,color:"#6b7280",marginBottom:12}}>
+                Inventaris spesifik kamar ini. {inventarisTemplate.length>0 && "Template dari SOP sudah di-load otomatis."}
+              </div>
+              {/* Form tambah */}
+              <div style={{display:"flex",gap:8,marginBottom:12}}>
+                <input style={{flex:1,padding:"8px 10px",border:"1.5px solid #e5e7eb",borderRadius:7,fontSize:12,fontFamily:"inherit",outline:"none"}} placeholder="Nama item..." value={newInvNama} onChange={e=>setNewInvNama(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addInv()} />
+                <input style={{width:60,padding:"8px 8px",border:"1.5px solid #e5e7eb",borderRadius:7,fontSize:12,fontFamily:"inherit",outline:"none",textAlign:"center"}} type="number" min={1} value={newInvQty} onChange={e=>setNewInvQty(Math.max(1,parseInt(e.target.value)||1))} />
+                <select style={{padding:"8px 8px",border:"1.5px solid #e5e7eb",borderRadius:7,fontSize:12,fontFamily:"inherit",outline:"none"}} value={newInvSat} onChange={e=>setNewInvSat(e.target.value)}>
+                  {["buah","set","unit","lembar","pasang","botol"].map(s=><option key={s} value={s}>{s}</option>)}
+                </select>
+                <button onClick={addInv} style={{padding:"8px 12px",background:"linear-gradient(135deg,#f97316,#ea580c)",color:"#fff",border:"none",borderRadius:7,fontSize:13,cursor:"pointer",fontWeight:700}}>＋</button>
+              </div>
+              {/* List inventaris */}
+              {form.inventaris.length===0 ? (
+                <div style={{textAlign:"center",padding:"24px 0",color:"#9ca3af"}}>
+                  <div style={{fontSize:24,marginBottom:6}}>📦</div>
+                  <div style={{fontSize:12}}>Belum ada item. Tambah di atas atau load dari template SOP.</div>
+                </div>
+              ) : (
+                <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                  {form.inventaris.map(item=>(
+                    <div key={item.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 12px",background:"#f9fafb",border:"1px solid #e5e7eb",borderRadius:8}}>
+                      <div style={{display:"flex",alignItems:"center",gap:8}}>
+                        <span style={{fontSize:16}}>📦</span>
+                        <div>
+                          <div style={{fontSize:12,fontWeight:600,color:"#1f2937"}}>{item.nama}</div>
+                          <div style={{fontSize:10,color:"#9ca3af"}}>{item.satuan}</div>
+                        </div>
+                      </div>
+                      <div style={{display:"flex",alignItems:"center",gap:8}}>
+                        <span style={{fontSize:13,fontWeight:700,color:"#f97316"}}>{item.qty}x</span>
+                        <button onClick={()=>removeInv(item.id)} style={{background:"none",border:"none",cursor:"pointer",color:"#dc2626",fontSize:14,padding:"0 4px"}}>✕</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div style={{padding:"14px 22px",borderTop:"1px solid #f3f4f6",display:"flex",gap:10,justifyContent:"flex-end",flexShrink:0}}>
+          <button onClick={onClose} style={{padding:"9px 18px",background:"#f3f4f6",border:"none",borderRadius:8,fontSize:13,fontWeight:600,cursor:"pointer",color:"#4b5563"}}>Batal</button>
+          <button onClick={handleSave} disabled={!valid} style={{padding:"9px 20px",background:valid?"linear-gradient(135deg,#f97316,#ea580c)":"#d1d5db",color:"#fff",border:"none",borderRadius:8,fontSize:13,fontWeight:700,cursor:valid?"pointer":"not-allowed"}}>
+            {isEdit ? "✅ Simpan Perubahan" : "＋ Tambah Kamar"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

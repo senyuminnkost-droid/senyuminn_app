@@ -138,7 +138,38 @@ const CSS = `
   @media(max-width:1024px){ .ks-layout{grid-template-columns:1fr} }
   @media(max-width:768px) { .ks-cards{grid-template-columns:repeat(2,1fr)} .ks-saku-grid{grid-template-columns:1fr} .ks-saldo-grid{grid-template-columns:1fr} }
   @media(max-width:480px) { .ks-cards{grid-template-columns:repeat(2,1fr);gap:8px} .ks-input-row{grid-template-columns:1fr} }
-`;
+
+  /* ── TAB PENGATURAN ── */
+  .ks-peng-section { margin-bottom:20px; }
+  .ks-peng-title { font-size:12px; font-weight:700; color:#374151; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+  .ks-peng-card { background:#f9fafb; border:1px solid #e5e7eb; border-radius:10px; padding:14px 16px; margin-bottom:8px; display:flex; align-items:center; gap:12px; }
+  .ks-peng-icon { width:36px; height:36px; border-radius:8px; background:#fff; border:1px solid #e5e7eb; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+  .ks-peng-info { flex:1; min-width:0; }
+  .ks-peng-name { font-size:13px; font-weight:600; color:#111827; }
+  .ks-peng-sub  { font-size:11px; color:#9ca3af; margin-top:1px; }
+  .ks-peng-actions { display:flex; gap:6px; }
+  .ks-peng-btn { padding:5px 10px; border-radius:6px; border:1px solid #e5e7eb; background:#fff; font-size:11px; font-weight:600; cursor:pointer; color:#374151; }
+  .ks-peng-btn:hover { background:#f3f4f6; }
+  .ks-peng-btn.danger { color:#dc2626; border-color:#fecaca; }
+  .ks-peng-btn.danger:hover { background:#fef2f2; }
+  .ks-peng-add { display:flex; align-items:center; gap:6px; padding:8px 14px; border:1.5px dashed #d1d5db; border-radius:8px; background:transparent; font-size:12px; font-weight:600; color:#6b7280; cursor:pointer; width:100%; margin-top:4px; }
+  .ks-peng-add:hover { border-color:#f97316; color:#f97316; background:#fff7ed; }
+  .ks-kat-chip { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; background:#f3f4f6; border-radius:20px; font-size:11px; font-weight:500; color:#374151; margin:3px; }
+  .ks-kat-chip button { background:none; border:none; cursor:pointer; color:#9ca3af; font-size:12px; padding:0; line-height:1; }
+  .ks-kat-chip button:hover { color:#dc2626; }
+  .ks-kat-add-row { display:flex; gap:6px; margin-top:6px; }
+  /* ── RELEASE BUDGET ── */
+  .ks-release-bar { background:linear-gradient(135deg,#fff7ed,#ffedd5); border:1px solid #fed7aa; border-radius:12px; padding:14px 16px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .ks-release-info { flex:1; }
+  .ks-release-title { font-size:13px; font-weight:700; color:#9a3412; }
+  .ks-release-sub   { font-size:11px; color:#c2410c; margin-top:2px; }
+  .ks-release-btn { padding:8px 16px; background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; border:none; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; }
+  /* ── MODAL RELEASE ── */
+  .ks-rel-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #f3f4f6; }
+  .ks-rel-label { flex:1; font-size:12px; font-weight:600; color:#374151; }
+  .ks-rel-auto { font-size:12px; color:#9ca3af; min-width:90px; text-align:right; }
+  .ks-rel-input { width:110px; padding:5px 8px; border:1.5px solid #e5e7eb; border-radius:6px; font-size:12px; text-align:right; background:#fff; }
+  .ks-rel-input:focus { border-color:#f97316; outline:none; }`;
 
 function StyleInjector() {
   useEffect(() => {
@@ -188,16 +219,17 @@ const KATEGORI_PENGELUARAN = ["Management Fee","Gaji & Insentif","Peralatan","Li
 // ============================================================
 // MODAL TAMBAH TRANSAKSI
 // ============================================================
-function ModalTransaksi({ onClose, onSave, rekeningList }) {
+function ModalTransaksi({ onClose, onSave, rekeningList, sakuConfig=[] }) {
   const [form, setForm] = useState({
     tipe:"pemasukan", tanggal:todayStr, keterangan:"",
     kategori:"", nominal:"", rekening: rekeningList[0]?.id || "",
-    catatan:"",
+    sakuSumber:"", catatan:"",
   });
   const set = (k,v) => setForm(p=>({...p,[k]:v}));
 
   const kategoriList = form.tipe==="pemasukan" ? KATEGORI_PEMASUKAN : KATEGORI_PENGELUARAN;
-  const valid = form.keterangan && form.kategori && form.nominal && Number(form.nominal)>0;
+  const valid = form.keterangan && form.kategori && form.nominal && Number(form.nominal)>0
+    && (form.tipe==="pemasukan" || !sakuConfig.length || form.sakuSumber);
 
   return createPortal(
     <div className="ks-overlay" onClick={onClose}>
@@ -254,6 +286,18 @@ function ModalTransaksi({ onClose, onSave, rekeningList }) {
             </div>
           </div>
 
+          {/* Sumber Saku - hanya untuk pengeluaran */}
+          {form.tipe==="pengeluaran" && sakuConfig.length>0 && (
+            <div className="ks-field">
+              <label className="ks-field-label">⚪ Sumber Saku <span style={{color:"#dc2626"}}>*</span></label>
+              <select className="ks-input" value={form.sakuSumber} onChange={e=>set("sakuSumber",e.target.value)}>
+                <option value="">Pilih sumber saku...</option>
+                {sakuConfig.map(s=>(
+                  <option key={s.kode} value={s.kode}>{s.kode} — {s.nama}</option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="ks-field">
             <label className="ks-field-label">Catatan (opsional)</label>
             <textarea className="ks-input" rows={2} placeholder="Nomor bukti, referensi, dll..." value={form.catatan} onChange={e=>set("catatan",e.target.value)} style={{resize:"none"}} />
@@ -417,14 +461,13 @@ function ModalAset({ onClose, onSave }) {
           <button className="ks-btn ghost" onClick={onClose}>Batal</button>
         </div>
       </div>
-    </div>
   , document.body);
 }
 
 // ============================================================
 // TAB: JURNAL
 // ============================================================
-function TabJurnal({ kasJurnal, setKasJurnal, rekeningList, depositList=[], sewaDimukaList=[], isReadOnly=false }) {
+function TabJurnal({ kasJurnal, setKasJurnal, rekeningList, depositList=[], sewaDimukaList=[], isReadOnly=false, sakuConfig=[] }) {
   const [search,    setSearch]  = useState("");
   const [filterTipe,setFT]      = useState("all");
   const [filterKat, setFK]      = useState("semua");
@@ -699,12 +742,138 @@ function ModalEditSaku({ sakuConfig, onClose, onSave }) {
 }
 
 // ============================================================
+// MODAL RELEASE BUDGET
+// ============================================================
+function ModalReleaseBudget({ sakuConfig, inBln, releaseBudgetLog, setReleaseBudgetLog, kasJurnal, setKasJurnal, onClose }) {
+  const autoAlokasi = sakuConfig.map(s => ({
+    kode: s.kode,
+    nama: s.nama,
+    auto: s.tipe==="flat" ? s.nilai : Math.round(inBln*(s.nilai/100)),
+    nilai: s.tipe==="flat" ? s.nilai : Math.round(inBln*(s.nilai/100)),
+  }));
+
+  const [rows, setRows] = useState(autoAlokasi);
+  const [catatan, setCatatan] = useState("");
+  const totalAlokasi = rows.reduce((s,r)=>s+(Number(r.nilai)||0),0);
+  const sisaPendapatan = inBln - totalAlokasi;
+  const setRow = (kode, v) => setRows(p=>p.map(r=>r.kode===kode?{...r,nilai:v}:r));
+
+  const handleConfirm = () => {
+    const bulan = thisMonth;
+    const log = {
+      id: Date.now(),
+      bulan,
+      tanggal: todayStr,
+      totalPendapatan: inBln,
+      totalAlokasi,
+      rows: rows.map(r=>({...r})),
+      catatan,
+    };
+    setReleaseBudgetLog(p=>[...p.filter(l=>l.bulan!==bulan), log]);
+    // Catat sebagai transaksi internal alokasi di kasJurnal
+    const trxAlokasi = {
+      id: Date.now()+1,
+      tipe: "internal",
+      tanggal: todayStr,
+      keterangan: `Release Budget ${bulan} — Alokasi Saku`,
+      kategori: "Release Budget",
+      nominal: totalAlokasi,
+      catatan: catatan || `Alokasi otomatis ${bulan}`,
+      isAlokasi: true,
+      detail: rows.map(r=>({...r})),
+    };
+    setKasJurnal(p=>[trxAlokasi, ...p]);
+    onClose();
+  };
+
+  return createPortal(
+    <div className="ks-overlay" onClick={onClose}>
+      <div className="ks-modal" onClick={e=>e.stopPropagation()} style={{maxWidth:480}}>
+        <div className="ks-modal-head">
+          <div className="ks-modal-title">🏦 Release Budget — {thisMonth}</div>
+          <button className="ks-modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="ks-modal-body">
+          {/* Info pendapatan */}
+          <div style={{background:"#f0fdf4",border:"1px solid #86efac",borderRadius:8,padding:"10px 14px",marginBottom:14}}>
+            <div style={{fontSize:11,color:"#166534",fontWeight:700,marginBottom:2}}>TOTAL PENDAPATAN BULAN INI</div>
+            <div style={{fontSize:20,fontWeight:800,color:"#15803d"}}>{fmtRp(inBln)}</div>
+          </div>
+
+          <div style={{fontSize:12,fontWeight:700,color:"#374151",marginBottom:8}}>
+            ALOKASI KE SAKU
+            <span style={{fontSize:10,fontWeight:400,color:"#9ca3af",marginLeft:8}}>
+              Otomatis dari % saku — bisa diedit
+            </span>
+          </div>
+
+          {rows.map(r=>(
+            <div key={r.kode} className="ks-rel-row">
+              <div className="ks-rel-label">
+                <span style={{fontWeight:700,color:"#f97316",marginRight:6}}>{r.kode}</span>
+                {r.nama}
+              </div>
+              <div className="ks-rel-auto">Auto: {fmtRp(r.auto)}</div>
+              <input
+                type="number"
+                className="ks-rel-input"
+                value={r.nilai}
+                onChange={e=>setRow(r.kode, Number(e.target.value))}
+                placeholder="0"
+              />
+            </div>
+          ))}
+
+          {/* Summary */}
+          <div style={{background:"#f9fafb",borderRadius:8,padding:"10px 14px",marginTop:12,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <div>
+              <div style={{fontSize:11,color:"#9ca3af"}}>Total Alokasi</div>
+              <div style={{fontSize:14,fontWeight:700,color:totalAlokasi<=inBln?"#f97316":"#dc2626"}}>{fmtRp(totalAlokasi)}</div>
+            </div>
+            <div style={{textAlign:"right"}}>
+              <div style={{fontSize:11,color:"#9ca3af"}}>Sisa Tidak Dialokasi</div>
+              <div style={{fontSize:14,fontWeight:700,color:sisaPendapatan>=0?"#16a34a":"#dc2626"}}>{fmtRp(sisaPendapatan)}</div>
+            </div>
+          </div>
+
+          {totalAlokasi > inBln && (
+            <div style={{background:"#fef2f2",border:"1px solid #fecaca",borderRadius:8,padding:"8px 12px",marginTop:8,fontSize:12,color:"#dc2626",fontWeight:600}}>
+              ⚠️ Total alokasi melebihi pendapatan — periksa kembali
+            </div>
+          )}
+
+          <div className="ks-field" style={{marginTop:12}}>
+            <label className="ks-field-label">Catatan Release</label>
+            <input className="ks-input" placeholder="Catatan opsional..." value={catatan} onChange={e=>setCatatan(e.target.value)} />
+          </div>
+        </div>
+        <div className="ks-modal-foot">
+          <button
+            className="ks-btn primary"
+            disabled={totalAlokasi > inBln}
+            onClick={handleConfirm}
+          >
+            ✅ Konfirmasi Release Budget
+          </button>
+          <button className="ks-btn ghost" onClick={onClose}>Batal</button>
+        </div>
+      </div>
+    </div>
+  , document.body);
+}
+
+// ============================================================
 // TAB: BUDGET PLANNING
 // ============================================================
-function TabBudget({ kasJurnal, sakuConfig, setSakuConfig, inBln=0, saldoMengendap=0, carryOverBln={}, isReadOnly=false }) {
+function TabBudget({ kasJurnal, sakuConfig, setSakuConfig, inBln=0, saldoMengendap=0, carryOverBln={}, isReadOnly=false, releaseBudgetLog=[], setReleaseBudgetLog=()=>{}, setKasJurnal=()=>{} }) {
   const totalPemasukan = kasJurnal.filter(t=>t.tipe==="pemasukan"&&t.tanggal?.startsWith(thisMonth)).reduce((s,t)=>s+t.nominal,0);
 
-  const [showEditSaku, setShowEditSaku] = useState(false);
+  const [showEditSaku,  setShowEditSaku]  = useState(false);
+  const [showRelease,  setShowRelease]  = useState(false);
+
+  // Cek apakah release bulan ini sudah dilakukan
+  const releaseLog = releaseBudgetLog.find(l=>l.bulan===thisMonth);
+  const sudahRelease = !!releaseLog;
 
   const saku = sakuConfig.map(s=>{
     const alokasi = s.tipe==="flat" ? s.nilai : Math.round(totalPemasukan*(s.nilai/100));
@@ -723,6 +892,30 @@ function TabBudget({ kasJurnal, sakuConfig, setSakuConfig, inBln=0, saldoMengend
 
   return (
     <div style={{display:"flex",flexDirection:"column",gap:16}}>
+
+      {/* Release Budget Banner */}
+      {!sudahRelease ? (
+        <div className="ks-release-bar">
+          <div className="ks-release-info">
+            <div className="ks-release-title">💰 Release Budget {thisMonth}</div>
+            <div className="ks-release-sub">Alokasikan pendapatan bulan ini ke saku-saku anggaran</div>
+          </div>
+          <button className="ks-release-btn" onClick={()=>setShowRelease(true)}>
+            🚀 Release Budget
+          </button>
+        </div>
+      ) : (
+        <div style={{background:"#f0fdf4",border:"1px solid #86efac",borderRadius:12,padding:"12px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div>
+            <div style={{fontSize:12,fontWeight:700,color:"#166534"}}>✅ Budget {thisMonth} Sudah Dirilis</div>
+            <div style={{fontSize:11,color:"#16a34a",marginTop:1}}>Total dialokasi: {fmtRp(releaseLog.totalAlokasi)} · {releaseLog.tanggal}</div>
+          </div>
+          <button style={{fontSize:11,color:"#16a34a",background:"none",border:"1px solid #86efac",borderRadius:6,padding:"4px 10px",cursor:"pointer"}} onClick={()=>setShowRelease(true)}>
+            📝 Lihat / Edit
+          </button>
+        </div>
+      )}
+
       {/* Summary */}
       <div className="ks-widget">
         <div className="ks-widget-head">
@@ -797,6 +990,8 @@ function TabBudget({ kasJurnal, sakuConfig, setSakuConfig, inBln=0, saldoMengend
         </div>
       </div>
     </div>
+    </div>
+  </div>
   );
 }
 
@@ -1051,6 +1246,147 @@ function TabAset({ asetList, setAsetList }) {
       {showModal    && <ModalAset       onClose={()=>setShow(false)}     onSave={a=>setAsetList(p=>[...p,a])} />}
       {showDataAwal && <ModalDataAwalAset onClose={()=>setDataAwal(false)} existing={asetList} onSave={result=>setAsetList(result)} />}
     </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// TAB: PENGATURAN KEUANGAN
+// ============================================================
+function TabPengaturan({ sakuConfig, setSakuConfig, pengaturanConfig, setPengaturanConfig }) {
+  const rekeningList  = pengaturanConfig.rekeningList  || [];
+  const setRekeningList = (fn) => setPengaturanConfig(p=>({...p, rekeningList: typeof fn==="function" ? fn(p.rekeningList||[]) : fn }));
+
+  const kategoriIn    = pengaturanConfig.kategoriIn    || ["Sewa Kamar","Denda Keterlambatan","Lain-lain"];
+  const kategoriOut   = pengaturanConfig.kategoriOut   || ["Management Fee","Gaji & Insentif","Peralatan","Listrik/Internet/Air","Maintenance","Akomodasi/Op","Perlengkapan","THR","Prive/Dividen","Lain-lain"];
+  const setKatIn  = (fn) => setPengaturanConfig(p=>({...p, kategoriIn:  typeof fn==="function" ? fn(p.kategoriIn||[])  : fn }));
+  const setKatOut = (fn) => setPengaturanConfig(p=>({...p, kategoriOut: typeof fn==="function" ? fn(p.kategoriOut||[]) : fn }));
+
+  const [newKatIn,  setNewKatIn]  = useState("");
+  const [newKatOut, setNewKatOut] = useState("");
+  const [showAddRek, setShowAddRek] = useState(false);
+  const [showEditSaku, setShowEditSaku] = useState(false);
+  const [rekForm, setRekForm] = useState({ bank:"", nama:"", norek:"", atas:"" });
+
+  const addRekening = () => {
+    if (!rekForm.bank || !rekForm.norek) return;
+    setRekeningList(p=>[...p, { id:Date.now(), ...rekForm }]);
+    setRekForm({ bank:"", nama:"", norek:"", atas:"" });
+    setShowAddRek(false);
+  };
+  const delRekening = (id) => setRekeningList(p=>p.filter(r=>r.id!==id));
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:20}}>
+
+      {/* SAKU */}
+      <div className="ks-peng-section">
+        <div className="ks-peng-title">🗂️ Konfigurasi Saku Budget</div>
+        {sakuConfig.map(s=>(
+          <div key={s.kode} className="ks-peng-card">
+            <div className="ks-peng-icon">{s.kode}</div>
+            <div className="ks-peng-info">
+              <div className="ks-peng-name">{s.nama}</div>
+              <div className="ks-peng-sub">
+                {s.tipe==="pct" ? `${s.nilai}% dari pendapatan` : `Rp ${Number(s.nilai).toLocaleString("id-ID")} (flat)`}
+              </div>
+            </div>
+            <div className="ks-peng-actions">
+              <button className="ks-peng-btn" onClick={()=>setShowEditSaku(true)}>✏️ Edit</button>
+            </div>
+          </div>
+        ))}
+        <button className="ks-peng-add" onClick={()=>setShowEditSaku(true)}>
+          ⚙️ Kelola Semua Saku
+        </button>
+        {showEditSaku && <ModalEditSaku sakuConfig={sakuConfig} onClose={()=>setShowEditSaku(false)} onSave={cfg=>{setSakuConfig(cfg);setShowEditSaku(false);}} />}
+      </div>
+
+      {/* REKENING */}
+      <div className="ks-peng-section">
+        <div className="ks-peng-title">🏦 Rekening Bank</div>
+        {rekeningList.length===0 && (
+          <div style={{fontSize:12,color:"#9ca3af",padding:"8px 0"}}>Belum ada rekening. Tambah rekening untuk pencatatan kas.</div>
+        )}
+        {rekeningList.map(r=>(
+          <div key={r.id} className="ks-peng-card">
+            <div className="ks-peng-icon">🏦</div>
+            <div className="ks-peng-info">
+              <div className="ks-peng-name">{r.bank} — {r.nama}</div>
+              <div className="ks-peng-sub">No. {r.norek} · a/n {r.atas}</div>
+            </div>
+            <div className="ks-peng-actions">
+              <button className="ks-peng-btn danger" onClick={()=>delRekening(r.id)}>🗑️</button>
+            </div>
+          </div>
+        ))}
+        {showAddRek ? (
+          <div style={{background:"#f9fafb",border:"1px solid #e5e7eb",borderRadius:10,padding:14,marginTop:4}}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:8}}>
+              <div className="ks-field">
+                <label className="ks-field-label">Bank</label>
+                <input className="ks-input" placeholder="BCA, Mandiri..." value={rekForm.bank} onChange={e=>setRekForm(p=>({...p,bank:e.target.value}))} />
+              </div>
+              <div className="ks-field">
+                <label className="ks-field-label">Nama Rekening</label>
+                <input className="ks-input" placeholder="Senyum Inn Operasional" value={rekForm.nama} onChange={e=>setRekForm(p=>({...p,nama:e.target.value}))} />
+              </div>
+              <div className="ks-field">
+                <label className="ks-field-label">No. Rekening</label>
+                <input className="ks-input" placeholder="1234567890" value={rekForm.norek} onChange={e=>setRekForm(p=>({...p,norek:e.target.value}))} />
+              </div>
+              <div className="ks-field">
+                <label className="ks-field-label">Atas Nama</label>
+                <input className="ks-input" placeholder="CV Senyum Inn" value={rekForm.atas} onChange={e=>setRekForm(p=>({...p,atas:e.target.value}))} />
+              </div>
+            </div>
+            <div style={{display:"flex",gap:8}}>
+              <button className="ks-btn primary" style={{fontSize:12,padding:"6px 14px"}} onClick={addRekening}>✅ Simpan</button>
+              <button className="ks-btn ghost"   style={{fontSize:12,padding:"6px 14px"}} onClick={()=>setShowAddRek(false)}>Batal</button>
+            </div>
+          </div>
+        ) : (
+          <button className="ks-peng-add" onClick={()=>setShowAddRek(true)}>+ Tambah Rekening</button>
+        )}
+      </div>
+
+      {/* KATEGORI PEMASUKAN */}
+      <div className="ks-peng-section">
+        <div className="ks-peng-title">⬆️ Kategori Pemasukan</div>
+        <div style={{marginBottom:6}}>
+          {kategoriIn.map((k,i)=>(
+            <span key={i} className="ks-kat-chip">
+              {k}
+              <button onClick={()=>setKatIn(p=>p.filter((_,j)=>j!==i))}>×</button>
+            </span>
+          ))}
+        </div>
+        <div className="ks-kat-add-row">
+          <input className="ks-input" placeholder="Tambah kategori..." style={{flex:1}} value={newKatIn} onChange={e=>setNewKatIn(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&newKatIn.trim()){setKatIn(p=>[...p,newKatIn.trim()]);setNewKatIn("");}}} />
+          <button className="ks-btn primary" style={{fontSize:12,padding:"6px 12px",whiteSpace:"nowrap"}} onClick={()=>{if(newKatIn.trim()){setKatIn(p=>[...p,newKatIn.trim()]);setNewKatIn("");}}}> + Tambah</button>
+        </div>
+      </div>
+
+      {/* KATEGORI PENGELUARAN */}
+      <div className="ks-peng-section">
+        <div className="ks-peng-title">⬇️ Kategori Pengeluaran</div>
+        <div style={{marginBottom:6}}>
+          {kategoriOut.map((k,i)=>(
+            <span key={i} className="ks-kat-chip">
+              {k}
+              <button onClick={()=>setKatOut(p=>p.filter((_,j)=>j!==i))}>×</button>
+            </span>
+          ))}
+        </div>
+        <div className="ks-kat-add-row">
+          <input className="ks-input" placeholder="Tambah kategori..." style={{flex:1}} value={newKatOut} onChange={e=>setNewKatOut(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&newKatOut.trim()){setKatOut(p=>[...p,newKatOut.trim()]);setNewKatOut("");}}} />
+          <button className="ks-btn primary" style={{fontSize:12,padding:"6px 12px",whiteSpace:"nowrap"}} onClick={()=>{if(newKatOut.trim()){setKatOut(p=>[...p,newKatOut.trim()]);setNewKatOut("");}}}> + Tambah</button>
+        </div>
+      </div>
+
+    </div>
   );
 }
 
@@ -1068,6 +1404,7 @@ export default function Kas({ user, globalData = {} }) {
     depositList    = [],
     sewaDimukaList = [],
     pengaturanConfig = {}, setPengaturanConfig = ()=>{},
+    releaseBudgetLog = [], setReleaseBudgetLog = ()=>{},
     isReadOnly     = false,
   } = globalData;
 
@@ -1131,9 +1468,10 @@ export default function Kas({ user, globalData = {} }) {
       {/* Tabs */}
       <div className="ks-tabs">
         {[
-          {id:"jurnal",  label:"📒 Jurnal & Transaksi"},
-          {id:"budget",  label:"💰 Budget Planning"},
-          {id:"aset",    label:"🏷️ Aset & Depresiasi"},
+          {id:"jurnal",     label:"📒 Jurnal & Transaksi"},
+          {id:"budget",     label:"💰 Budget Planning"},
+          {id:"aset",       label:"🏷️ Aset & Depresiasi"},
+          {id:"pengaturan", label:"⚙️ Pengaturan"},
         ].map(t=>(
           <div key={t.id} className={`ks-tab ${activeTab===t.id?"active":""}`} onClick={()=>setActiveTab(t.id)}>
             {t.label}
@@ -1142,10 +1480,17 @@ export default function Kas({ user, globalData = {} }) {
       </div>
 
       {/* Content */}
-      {activeTab==="jurnal"  && <TabJurnal  kasJurnal={kasJurnal} setKasJurnal={setKasJurnal} rekeningList={rekeningList} depositList={depositList} sewaDimukaList={sewaDimukaList} isReadOnly={isReadOnly} />}
-      {activeTab==="budget"  && <TabBudget  kasJurnal={kasJurnal} sakuConfig={sakuConfig} setSakuConfig={setSakuConfig} inBln={inBln} saldoMengendap={saldoMengendap} carryOverBln={carryOverBln} isReadOnly={isReadOnly} />}
+      {activeTab==="jurnal"  && <TabJurnal  kasJurnal={kasJurnal} setKasJurnal={setKasJurnal} rekeningList={rekeningList} depositList={depositList} sewaDimukaList={sewaDimukaList} isReadOnly={isReadOnly} sakuConfig={sakuConfig} />}
+      {activeTab==="budget"  && <TabBudget  kasJurnal={kasJurnal} setKasJurnal={setKasJurnal} sakuConfig={sakuConfig} setSakuConfig={setSakuConfig} inBln={inBln} saldoMengendap={saldoMengendap} carryOverBln={carryOverBln} isReadOnly={isReadOnly} releaseBudgetLog={releaseBudgetLog} setReleaseBudgetLog={setReleaseBudgetLog} />}
       {activeTab==="aset"    && <TabAset    asetList={asetList} setAsetList={setAsetList} />}
+      {activeTab==="pengaturan" && <TabPengaturan
+        sakuConfig={sakuConfig}
+        setSakuConfig={setSakuConfig}
+        pengaturanConfig={pengaturanConfig}
+        setPengaturanConfig={setPengaturanConfig}
+      />}
 
     </div>
+  </div>
   );
 }

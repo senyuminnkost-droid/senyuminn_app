@@ -8,7 +8,6 @@ const USERS = [
   // Data user awal — akan diganti setelah connect Supabase Auth
   // Tambah/edit user melalui menu Manajemen User
   { id: 1, username: "owner", password: "owner123", role: "owner", name: "Owner", jabatan: "Owner" },
-  { id: 2, username: "admin", password: "admin123", role: "manajemen", name: "Admin", jabatan: "Admin" },
 ];
 
 // Cek apakah user read-only (owner & direktur)
@@ -813,6 +812,7 @@ function LoadingFallback() {
       <div className="s-spinner" />
       <span style={{ fontSize: 12 }}>Memuat modul...</span>
     </div>
+  </div>
   );
 }
 
@@ -970,6 +970,14 @@ export default function App() {
   // Cuti list — dari Modul14 Karyawan
   const [cutiList, setCutiList] = useState([]);
 
+  // ── KEUANGAN TERINTEGRASI ──────────────────────────────
+  // Pengajuan anggaran dari staff (Kalender → Tagihan)
+  const [anggaranList,     setAnggaranList]     = useState([]);
+  // Jadwal tagihan rutin bulanan (listrik, internet, dll)
+  const [tagihanRutinList, setTagihanRutinList] = useState([]);
+  // Log release budget per bulan (Budget Planning)
+  const [releaseBudgetLog, setReleaseBudgetLog] = useState([]);ase:[]}]
+
   const [sakuConfig,   setSakuConfig]   = useState([
     { kode:"A", nama:"Petty Cash",      tipe:"pct",  nilai:5,       color:"#f97316" },
     { kode:"B", nama:"General Saving",  tipe:"pct",  nilai:23,      color:"#3b82f6" },
@@ -998,6 +1006,9 @@ export default function App() {
     depositList,       setDepositList,
     sewaDimukaList,    setSewaDimukaList,
     cutiList,          setCutiList,
+    anggaranList,      setAnggaranList,
+    tagihanRutinList,  setTagihanRutinList,
+    releaseBudgetLog,  setReleaseBudgetLog,
     isReadOnly:        isReadOnly(user),
   };
 

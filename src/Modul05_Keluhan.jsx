@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 
 // ============================================================
 // CSS
@@ -124,7 +123,7 @@ const CSS = `
   .kl-overlay {
     position: fixed; inset: 0; background: rgba(17,24,39,0.45);
     backdrop-filter: blur(3px); z-index: 200; display: flex;
-    align-items: flex-start; justify-content: center; padding: 80px 16px 16px;
+    align-items: center; justify-content: center; padding: 16px;
     animation: klFade 0.18s ease;
   }
   @keyframes klFade { from { opacity: 0; } to { opacity: 1; } }
@@ -252,7 +251,7 @@ function FormTiket({ onClose, onSave, kamarList }) {
     onClose();
   };
 
-  return createPortal(
+  return (
     <div className="kl-overlay" onClick={onClose}>
       <div className="kl-modal" onClick={e => e.stopPropagation()}>
         <div className="kl-modal-head">
@@ -375,7 +374,7 @@ function FormTiket({ onClose, onSave, kamarList }) {
         </div>
       </div>
     </div>
-  , document.body);
+  );
 }
 
 // ============================================================

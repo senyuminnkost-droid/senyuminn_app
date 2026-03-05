@@ -50,6 +50,13 @@ const CSS = `
   .kal-select { padding:8px 10px; border-radius:8px; border:1.5px solid #e5e7eb; font-size:12px; font-family:inherit; color:#374151; outline:none; background:#fff; width:100%; box-sizing:border-box; }
   .kal-select:focus { border-color:#f97316; }
   @media(max-width:900px){ .kal-layout{grid-template-columns:1fr} .kal-stats{grid-template-columns:repeat(2,1fr)} }
+
+  /* ── PENGAJUAN ANGGARAN ── */
+  .kal-angg-bar { background:linear-gradient(135deg,#eff6ff,#dbeafe); border:1px solid #bfdbfe; border-radius:10px; padding:12px 14px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  
+    
+  .kal-angg-form { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:14px 16px; margin-bottom:12px; }
+  .kal-angg-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
 `;
 
 function StyleInjector() {
@@ -91,6 +98,7 @@ export default function Kalender({ user, globalData = {} }) {
     weeklyList    = [],
     penyewaList   = [],
     kamarList     = [],
+    anggaranList  = [], setAnggaranList = ()=>{},
   } = globalData;
 
   const today    = new Date();
@@ -99,6 +107,8 @@ export default function Kalender({ user, globalData = {} }) {
   const [year,         setYear]         = useState(today.getFullYear());
   const [month,        setMonth]        = useState(today.getMonth());
   const [selectedDate, setSelectedDate] = useState(todayStr);
+  const [showAnggForm, setShowAnggForm] = useState(false);
+  const [anggForm, setAnggForm] = useState({ judul:"", tanggal:"", nominal:"", kategori:"Peralatan", keterangan:"" });
   const [showModal,    setShowModal]    = useState(false);
   const [manualEvents, setManualEvents] = useState([]); // event input manual
   const [form,         setForm]         = useState({ tanggal: todayStr, tipe:"weekly", label:"", catatan:"" });
@@ -195,6 +205,74 @@ export default function Kalender({ user, globalData = {} }) {
   return (
     <div className="kal-wrap">
       <StyleInjector />
+
+      {/* Pengajuan Anggaran Banner */}
+      <div className="kal-angg-bar">
+        <div>
+          <div style={{fontSize:13,fontWeight:700,color:"#1d4ed8"}}>📋 Pengajuan Anggaran Belanja</div>
+          <div style={{fontSize:11,color:"#3b82f6",marginTop:1}}>
+            {anggaranList.filter(a=>a.status==="pending").length} pengajuan menunggu approval
+          </div>
+        </div>
+        <button
+          style={{padding:"7px 14px",background:"linear-gradient(135deg,#3b82f6,#2563eb)",color:"#fff",border:"none",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer"}}
+          onClick={()=>setShowAnggForm(s=>!s)}>
+          + Ajukan Anggaran
+        </button>
+      </div>
+
+      {/* Form Pengajuan Anggaran */}
+      {showAnggForm && (
+        <div className="kal-angg-form">
+          <div style={{fontSize:13,fontWeight:700,color:"#111827",marginBottom:10}}>📋 Form Pengajuan Anggaran</div>
+          <div className="kal-angg-grid">
+            <div>
+              <label className="kal-label">Judul Kebutuhan *</label>
+              <input className="kal-input" placeholder="Beli sapu, cat tembok..." value={anggForm.judul} onChange={e=>setAnggForm(p=>({...p,judul:e.target.value}))} />
+            </div>
+            <div>
+              <label className="kal-label">Kategori</label>
+              <select className="kal-select" value={anggForm.kategori} onChange={e=>setAnggForm(p=>({...p,kategori:e.target.value}))}>
+                {["Peralatan","Perlengkapan","Maintenance","Akomodasi/Op","Lain-lain"].map(k=><option key={k}>{k}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="kal-label">Tanggal Butuh</label>
+              <input type="date" className="kal-input" value={anggForm.tanggal} onChange={e=>setAnggForm(p=>({...p,tanggal:e.target.value}))} />
+            </div>
+            <div>
+              <label className="kal-label">Nominal Estimasi (Rp)</label>
+              <input type="number" className="kal-input" placeholder="0" value={anggForm.nominal} onChange={e=>setAnggForm(p=>({...p,nominal:e.target.value}))} />
+            </div>
+          </div>
+          <div style={{marginBottom:8}}>
+            <label className="kal-label">Keterangan</label>
+            <input className="kal-input" placeholder="Kenapa dibutuhkan..." value={anggForm.keterangan} onChange={e=>setAnggForm(p=>({...p,keterangan:e.target.value}))} />
+          </div>
+          <div style={{display:"flex",gap:8}}>
+            <button
+              style={{padding:"7px 14px",background:"linear-gradient(135deg,#f97316,#ea580c)",color:"#fff",border:"none",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer"}}
+              disabled={!anggForm.judul}
+              onClick={()=>{
+                if (!anggForm.judul) return;
+                setAnggaranList(p=>[...p, {
+                  id: Date.now(),
+                  ...anggForm,
+                  nominal: Number(anggForm.nominal)||0,
+                  status: "pending",
+                  pengaju: "Staff",
+                  createdAt: todayStr,
+                  tanggal: anggForm.tanggal || todayStr,
+                }]);
+                setAnggForm({ judul:"", tanggal:"", nominal:"", kategori:"Peralatan", keterangan:"" });
+                setShowAnggForm(false);
+              }}>
+              ✅ Ajukan
+            </button>
+            <button style={{padding:"7px 14px",background:"#f3f4f6",border:"none",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer",color:"#374151"}} onClick={()=>setShowAnggForm(false)}>Batal</button>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="kal-stats">
@@ -400,6 +478,8 @@ export default function Kalender({ user, globalData = {} }) {
           </div>
         </div>
       )}
+    </div>
+  </div>
     </div>
   );
 }

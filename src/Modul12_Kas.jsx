@@ -417,7 +417,6 @@ function ModalAset({ onClose, onSave }) {
           <button className="ks-btn ghost" onClick={onClose}>Batal</button>
         </div>
       </div>
-    </div>
   , document.body);
 }
 
@@ -797,6 +796,8 @@ function TabBudget({ kasJurnal, sakuConfig, setSakuConfig, inBln=0, saldoMengend
         </div>
       </div>
     </div>
+    </div>
+  </div>
   );
 }
 
@@ -1051,6 +1052,9 @@ function TabAset({ asetList, setAsetList }) {
       {showModal    && <ModalAset       onClose={()=>setShow(false)}     onSave={a=>setAsetList(p=>[...p,a])} />}
       {showDataAwal && <ModalDataAwalAset onClose={()=>setDataAwal(false)} existing={asetList} onSave={result=>setAsetList(result)} />}
     </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -1068,6 +1072,7 @@ export default function Kas({ user, globalData = {} }) {
     depositList    = [],
     sewaDimukaList = [],
     pengaturanConfig = {}, setPengaturanConfig = ()=>{},
+    isReadOnly     = false,
   } = globalData;
 
   const [activeTab,  setActiveTab]  = useState("jurnal");
@@ -1146,5 +1151,6 @@ export default function Kas({ user, globalData = {} }) {
       {activeTab==="aset"    && <TabAset    asetList={asetList} setAsetList={setAsetList} />}
 
     </div>
+  </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 // ============================================================
 // CSS
@@ -251,7 +252,7 @@ function FormTiket({ onClose, onSave, kamarList }) {
     onClose();
   };
 
-  return (
+  return createPortal(
     <div className="kl-overlay" onClick={onClose}>
       <div className="kl-modal" onClick={e => e.stopPropagation()}>
         <div className="kl-modal-head">
@@ -374,7 +375,7 @@ function FormTiket({ onClose, onSave, kamarList }) {
         </div>
       </div>
     </div>
-  );
+  , document.body);
 }
 
 // ============================================================

@@ -205,6 +205,169 @@ const hitungKeuangan = (kasJurnal, asetList, penyewaList, karyawanList, periode,
 };
 
 // ============================================================
+// PDF GENERATOR
+// ============================================================
+const loadJsPDF = () => new Promise((resolve, reject) => {
+  if (window.jspdf) return resolve(window.jspdf.jsPDF);
+  const s = document.createElement("script");
+  s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+  s.onload  = () => resolve(window.jspdf.jsPDF);
+  s.onerror = () => reject(new Error("Gagal load jsPDF"));
+  document.head.appendChild(s);
+});
+
+const fmtR = (n) => "Rp " + (n||0).toLocaleString("id-ID");
+
+const generateLaporanPDF = async (data, activeReport, label, kasJurnal, periode) => {
+  const JsPDF = await loadJsPDF();
+  const doc   = new JsPDF({ orientation:"portrait", unit:"mm", format:"a4" });
+  const W     = doc.internal.pageSize.getWidth();
+  const ORANGE = [249,115,22], DARK=[30,41,59], GRAY=[100,116,139], LIGHT=[241,245,249], WHITE=[255,255,255];
+
+  const drawHeader = (title, sub) => {
+    doc.setFillColor(...ORANGE); doc.rect(0,0,W,28,"F");
+    doc.setFillColor(...WHITE); doc.circle(18,14,9,"F");
+    doc.setTextColor(...ORANGE); doc.setFontSize(11); doc.setFont("helvetica","bold");
+    doc.text("S",18,17.5,{align:"center"});
+    doc.setTextColor(...WHITE); doc.setFontSize(13); doc.setFont("helvetica","bold");
+    doc.text("SENYUM INN",32,11);
+    doc.setFontSize(7); doc.setFont("helvetica","normal"); doc.text("EXCLUSIVE KOST",32,16);
+    doc.setFontSize(12); doc.setFont("helvetica","bold"); doc.text(title,W-14,11,{align:"right"});
+    if(sub){ doc.setFontSize(8); doc.setFont("helvetica","normal"); doc.text(sub,W-14,17,{align:"right"}); }
+    doc.setTextColor(...GRAY); doc.setFontSize(7);
+    doc.text("Dicetak: "+new Date().toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"}),W-14,23,{align:"right"});
+    return 35;
+  };
+
+  const drawFooter = () => {
+    const H=doc.internal.pageSize.getHeight();
+    doc.setDrawColor(230,232,235); doc.setLineWidth(0.3); doc.line(14,H-12,W-14,H-12);
+    doc.setTextColor(...GRAY); doc.setFontSize(7); doc.setFont("helvetica","normal");
+    doc.text("Senyum Inn — Dokumen digenerate otomatis",14,H-7);
+    doc.text("Hal. "+doc.internal.getCurrentPageInfo().pageNumber,W-14,H-7,{align:"right"});
+  };
+
+  const checkPB = (y) => {
+    if(y>265){ drawFooter(); doc.addPage(); return 20; } return y;
+  };
+
+  const drawSection = (text,y) => {
+    doc.setFillColor(...LIGHT); doc.rect(14,y-4,W-28,8,"F");
+    doc.setTextColor(...DARK); doc.setFontSize(8); doc.setFont("helvetica","bold");
+    doc.text(text,17,y+1); return y+10;
+  };
+
+  const drawRow = (label,val,y,{bold=false,indent=0,color=null,total=false}={}) => {
+    if(total){ doc.setFillColor(30,41,59); doc.rect(14,y,W-28,7,"F"); doc.setTextColor(...WHITE); }
+    else { doc.setTextColor(color||DARK); }
+    doc.setFontSize(bold||total?8:7.5); doc.setFont("helvetica",bold||total?"bold":"normal");
+    doc.text(String(label),17+indent,y+5);
+    doc.text(String(val),W-16,y+5,{align:"right"});
+    doc.setDrawColor(230,232,235); doc.setLineWidth(0.1); doc.line(14,y+7,W-14,y+7);
+    return y+7;
+  };
+
+  // ─── LABA RUGI ───────────────────────────────────────────
+  if(activeReport==="laba-rugi"){
+    let y = drawHeader("LAPORAN LABA RUGI", "Periode: "+label);
+    y = drawSection("PENDAPATAN",y);
+    y = drawRow("Pendapatan Sewa Kamar",fmtR(data.pendapatanSewa),y,{indent:4});
+    y = drawRow("Pendapatan Lain-lain",fmtR(data.pendapatanLain),y,{indent:4});
+    y = drawRow("TOTAL PENDAPATAN",fmtR(data.totalPendapatan),y,{bold:true});
+    y += 4; y = checkPB(y);
+    y = drawSection("BEBAN OPERASIONAL",y);
+    Object.entries(data.beban||{}).filter(([,v])=>v>0).forEach(([k,v])=>{
+      y = drawRow(k,fmtR(v),y,{indent:4}); y=checkPB(y);
+    });
+    y = drawRow("Depresiasi",fmtR(data.totalDepresiasi),y,{indent:4});
+    y = drawRow("TOTAL BEBAN",fmtR(data.totalBeban+data.totalDepresiasi),y,{bold:true});
+    y += 4;
+    y = drawRow("LABA BERSIH",fmtR(data.labaBersih),y,{total:true});
+  }
+
+  // ─── NERACA ──────────────────────────────────────────────
+  else if(activeReport==="neraca"){
+    let y = drawHeader("NERACA (BALANCE SHEET)", "Per: "+label);
+    const kas  = (data.kasIn||0)-(data.kasOut||0);
+    const tAL  = Math.max(0,kas)+Math.max(0,data.piutangUsaha||0);
+    const tAT  = (data.nilaiTanah||0)+(data.nilaiBukuAset||0);
+    const tA   = tAL+tAT;
+    const tL   = data.totalLiabilitas||0;
+    const tM   = tA-tL;
+
+    y=drawSection("ASET",y);
+    y=drawRow("Aset Lancar",    "",y,{bold:true});
+    y=drawRow("Kas & Setara Kas",fmtR(Math.max(0,kas)),y,{indent:6});
+    y=drawRow("Piutang Usaha",  fmtR(Math.max(0,data.piutangUsaha||0)),y,{indent:6});
+    y=drawRow("Total Aset Lancar",fmtR(tAL),y,{bold:true,indent:2});
+    y+=3;
+    y=drawRow("Aset Tetap",     "",y,{bold:true});
+    y=drawRow("Tanah & Bangunan",fmtR(data.nilaiTanah||0),y,{indent:6});
+    y=drawRow("Peralatan (Nilai Buku)",fmtR(data.nilaiBukuAset||0),y,{indent:6});
+    y=drawRow("Total Aset Tetap",fmtR(tAT),y,{bold:true,indent:2});
+    y=drawRow("TOTAL ASET",     fmtR(tA),y,{total:true});
+    y+=4; y=checkPB(y);
+    y=drawSection("LIABILITAS",y);
+    y=drawRow("Deposit Penyewa",fmtR(data.totalDepositAktif||0),y,{indent:4,color:[220,38,38]});
+    y=drawRow("Sewa Diterima Dimuka",fmtR(data.totalSewaDimuka||0),y,{indent:4,color:[220,38,38]});
+    y=drawRow("TOTAL LIABILITAS",fmtR(tL),y,{bold:true});
+    y+=4;
+    y=drawSection("MODAL",y);
+    y=drawRow("Modal Pemilik",  fmtR(Math.max(0,tA-tL-data.labaBersih)),y,{indent:4});
+    y=drawRow("Laba Bersih Periode",fmtR(data.labaBersih||0),y,{indent:4,color:[22,163,74]});
+    y=drawRow("Mgmt Fee Terutang","("+fmtR(data.mgmtFee||0)+")",y,{indent:4,color:[220,38,38]});
+    y=drawRow("TOTAL LIABILITAS + MODAL",fmtR(tA),y,{total:true});
+  }
+
+  // ─── ARUS KAS ─────────────────────────────────────────────
+  else if(activeReport==="arus-kas"){
+    let y = drawHeader("LAPORAN ARUS KAS", "Periode: "+label);
+    const { dari, sampai } = periode;
+    const tx = kasJurnal.filter(t=>t.tanggal>=dari&&t.tanggal<=sampai);
+    const opIn  = tx.filter(t=>t.tipe==="pemasukan"  &&!t.isLiabilitas&&t.kategori!=="Peralatan");
+    const opOut = tx.filter(t=>t.tipe==="pengeluaran"&&!t.isLiabilitas&&t.kategori!=="Peralatan"&&t.kategori!=="Prive/Dividen");
+    const invOut= tx.filter(t=>t.tipe==="pengeluaran"&&t.kategori==="Peralatan");
+    const finTx = tx.filter(t=>t.isLiabilitas||t.kategori==="Prive/Dividen");
+    const netOp = opIn.reduce((s,t)=>s+t.nominal,0)-opOut.reduce((s,t)=>s+t.nominal,0);
+    const netInv= -invOut.reduce((s,t)=>s+t.nominal,0);
+    const netFin= finTx.reduce((s,t)=>t.tipe==="pemasukan"?s+t.nominal:s-t.nominal,0);
+
+    y=drawSection("AKTIVITAS OPERASI",y);
+    const opInGrp={}, opOutGrp={};
+    opIn.forEach(t=>opInGrp[t.kategori]=(opInGrp[t.kategori]||0)+t.nominal);
+    opOut.forEach(t=>opOutGrp[t.kategori]=(opOutGrp[t.kategori]||0)+t.nominal);
+    Object.entries(opInGrp).forEach(([k,v])=>{ y=drawRow(k,fmtR(v),y,{indent:4,color:[22,163,74]}); y=checkPB(y); });
+    Object.entries(opOutGrp).forEach(([k,v])=>{ y=drawRow(k,"("+fmtR(v)+")",y,{indent:4,color:[220,38,38]}); y=checkPB(y); });
+    y=drawRow("Net Arus Operasi", (netOp<0?"("+fmtR(Math.abs(netOp))+")":fmtR(netOp)),y,{bold:true,color:netOp>=0?[22,163,74]:[220,38,38]});
+    y+=4; y=checkPB(y);
+
+    y=drawSection("AKTIVITAS INVESTASI",y);
+    if(invOut.length===0) y=drawRow("Tidak ada pembelian aset","—",y,{indent:4});
+    else invOut.forEach(t=>{ y=drawRow(t.keterangan||t.kategori,"("+fmtR(t.nominal)+")",y,{indent:4,color:[220,38,38]}); });
+    y=drawRow("Net Arus Investasi",(netInv<0?"("+fmtR(Math.abs(netInv))+")":fmtR(netInv)),y,{bold:true,color:netInv>=0?[22,163,74]:[220,38,38]});
+    y+=4; y=checkPB(y);
+
+    y=drawSection("AKTIVITAS PENDANAAN",y);
+    if(finTx.length===0) y=drawRow("Tidak ada aktivitas pendanaan","—",y,{indent:4});
+    else finTx.forEach(t=>{ const v=t.tipe==="pemasukan"?t.nominal:-t.nominal; y=drawRow(t.keterangan||t.kategori,(v<0?"("+fmtR(Math.abs(v))+")":fmtR(v)),y,{indent:4,color:v>=0?[22,163,74]:[220,38,38]}); });
+    y=drawRow("Net Arus Pendanaan",(netFin<0?"("+fmtR(Math.abs(netFin))+")":fmtR(netFin)),y,{bold:true,color:netFin>=0?[22,163,74]:[220,38,38]});
+    y+=6;
+    y=drawRow("KENAIKAN (PENURUNAN) KAS",((netOp+netInv+netFin)<0?"("+fmtR(Math.abs(netOp+netInv+netFin))+")":fmtR(netOp+netInv+netFin)),y,{total:true});
+  }
+
+  // ─── LABA RUGI + PERUBAHAN MODAL (fallback) ──────────────
+  else {
+    let y = drawHeader("LAPORAN KEUANGAN", "Periode: "+label);
+    y = drawRow("Laporan ini tersedia dalam format individual.","-",y,{});
+    y = drawRow("Pilih: Laba Rugi, Arus Kas, atau Neraca.","-",y,{});
+  }
+
+  drawFooter();
+  const titles = {"laba-rugi":"laba-rugi","neraca":"neraca","arus-kas":"arus-kas","modal":"modal","rasio":"rasio"};
+  doc.save(\`senyuminn-laporan-\${titles[activeReport]||activeReport}-\${label.replace(/\s/g,"-")}.pdf\`);
+};
+
+// ============================================================
 // PERIOD SELECTOR
 // ============================================================
 function PeriodSelector({ periodeTipe, setPeriodeTipe, periodeVal, setPeriodeVal }) {
@@ -534,6 +697,8 @@ function PerformanceRatio({ data, kasJurnal, asetList, periodeVal, periodeTipe }
         </div>
       </div>
     </div>
+    </div>
+    </div>
   );
 }
 
@@ -743,7 +908,7 @@ export default function Laporan({ user, globalData = {} }) {
             <button className="lk-csv-btn" onClick={()=>downloadCSV(data,kasJurnal,periode,activeReport,label)}>
               ⬇️ Export CSV
             </button>
-            <button className="lk-pdf-btn" onClick={()=>alert("PDF generation — coming soon!\nIntegrasi jsPDF akan diimplementasikan bersama semua modul.")}>
+            <button className="lk-pdf-btn" onClick={()=>generateLaporanPDF(data, activeReport, label, kasJurnal, periode)}>
               📄 Download PDF
             </button>
           </div>

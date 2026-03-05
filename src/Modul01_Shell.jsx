@@ -662,7 +662,6 @@ function Sidebar({ user, active, onSelect, onLogout, minimized, isMobile, mobile
             <div className="s-user-role">{user.jabatan}</div>
           </div>
           <button className="s-logout" onClick={onLogout} title="Keluar">⏻</button>
-        </div>
       </aside>
     </>
   );

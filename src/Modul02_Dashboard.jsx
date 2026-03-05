@@ -572,5 +572,6 @@ export default function Dashboard({ user, globalData = {} }) {
       )}
 
     </div>
+    </div>
   );
 }

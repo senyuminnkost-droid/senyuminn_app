@@ -610,6 +610,7 @@ function DetailPanel({ k, onEdit, onCuti, isReadOnly }) {
 
       </div>
     </div>
+    </div>
   );
 }
 

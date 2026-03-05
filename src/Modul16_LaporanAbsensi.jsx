@@ -178,7 +178,6 @@ function KalenderAbsensi({ karyawanId, absensiData, bulan, tahun, onInputKode, i
           );
         })}
       </div>
-    </div>
   );
 }
 

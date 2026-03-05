@@ -910,8 +910,6 @@ function TabKalenderKeuangan({ tagihanRutinList, setTagihanRutinList, tagihanLis
         />
       )}
     </div>
-  </div>
-    </div>
   );
 }
 
@@ -1317,6 +1315,5 @@ export default function Tagihan({ user, globalData = {} }) {
         />
       )}
     </div>
-  </div>
   );
 }

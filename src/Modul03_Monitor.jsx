@@ -936,7 +936,6 @@ export default function MonitorKamar({ user, globalData = {} }) {
             <KamarCard key={k.id} kamar={k} onClick={() => setSelected(k)} />
           ))
         )}
-      </div>
 
       {/* Detail Drawer */}
       {selected && (
@@ -958,7 +957,6 @@ export default function MonitorKamar({ user, globalData = {} }) {
           onSave={handleSaveKamar}
         />
       )}
-    </div>
   );
 }
 

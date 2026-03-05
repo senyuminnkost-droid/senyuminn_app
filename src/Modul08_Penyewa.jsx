@@ -474,8 +474,6 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
             </button>
           )}
         </div>
-      </div>
-    </div>
   );
 }
 

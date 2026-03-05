@@ -647,6 +647,7 @@ function TabBudget({ kasJurnal, sakuConfig, setSakuConfig, isReadOnly, releaseBu
         </div>
       </div>
     </div>
+    </div>
   );
 }
 

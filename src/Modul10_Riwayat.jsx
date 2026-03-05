@@ -264,7 +264,6 @@ function ModalCheckinUlang({ penyewa, kamarList, onClose, onCheckin }) {
           <button className="rw-btn ghost" onClick={onClose}>Batal</button>
         </div>
       </div>
-    </div>
   );
 }
 

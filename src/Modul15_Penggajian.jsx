@@ -132,7 +132,7 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
               <div>
                 <div className="pg-slip-name">{karyawan.nama}</div>
                 <div className="pg-slip-jabatan">{karyawan.jabatan} - {karyawan.shift}</div>
-                <div style={{fontSize:10,color:"#9ca3af",marginTop:1,fontFamily:"JetBrains Mono,monospace"}}>
+                <div style={{fontSize:10,color:"#9ca3af",marginTop:1,fontFamily:"monospace"}}>
                   {karyawan.rekeningBank} - {karyawan.rekeningNo || "—"}
                 </div>
               </div>

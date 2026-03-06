@@ -268,7 +268,7 @@ export default function App() {
   };
 
   return (
-    <div style={{ display: "flex", height: "100vh", fontFamily: "'Segoe UI',system-ui,sans-serif", background: "#f8fafc", overflow: "hidden" }}>
+    <div style={{ display: "flex", height: "100vh", fontFamily:"sans-serif", background: "#f8fafc", overflow: "hidden" }}>
       <Sidebar user={user} active={activeMenu} onChange={setActiveMenu} onLogout={() => setUser(null)} />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         <Header title={TITLES[activeMenu] || ""} />

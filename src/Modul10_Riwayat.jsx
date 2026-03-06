@@ -189,7 +189,7 @@ function DetailPanel({ penyewa, kamarList, onCheckinUlang, onClose }) {
           <div className="rw-section-label">Kontrak Terakhir</div>
           <div style={{ background: "#f9fafb", borderRadius: 10, padding: "12px 14px", border: "1px solid #e5e7eb" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#374151", fontFamily: "JetBrains Mono, monospace" }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#374151", fontFamily:"monospace" }}>
                 {penyewa.kontrakMulai || "—"} → {penyewa.kontrakSelesai || "—"}
               </span>
               <span className="rw-badge" style={{ background: "#f3f4f6", color: "#6b7280" }}>{hitungDurasi(penyewa.kontrakMulai, penyewa.kontrakSelesai)}</span>

@@ -85,7 +85,7 @@ function ModalUser({ userObj, currentUser, onClose, onSave }) {
             </div>
             <div className="us-field">
               <label className="us-label">Username *</label>
-              <input className="us-input" value={form.username} onChange={e=>set("username",e.target.value)} placeholder="username..." style={{fontFamily:"JetBrains Mono,monospace"}} />
+              <input className="us-input" value={form.username} onChange={e=>set("username",e.target.value)} placeholder="username..." style={{fontFamily:"monospace"}} />
             </div>
             <div className="us-field">
               <label className="us-label">{isEdit?"Password Baru (kosongkan jika tidak diubah)":"Password *"}</label>
@@ -354,7 +354,7 @@ export default function Modul18_Users({ user, globalData={} }) {
                       <span className="us-badge" style={{color:selected.aktif?"#15803d":"#9ca3af",background:selected.aktif?"#dcfce7":"#f3f4f6"}}>
                         {selected.aktif?"● Aktif":"● Nonaktif"}
                       </span>
-                      <span className="us-badge" style={{color:"#6b7280",background:"#f3f4f6",fontFamily:"JetBrains Mono,monospace"}}>
+                      <span className="us-badge" style={{color:"#6b7280",background:"#f3f4f6",fontFamily:"monospace"}}>
                         @{selected.username}
                       </span>
                     </div>

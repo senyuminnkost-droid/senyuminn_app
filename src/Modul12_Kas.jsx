@@ -285,7 +285,7 @@ function TabJurnal({ kasJurnal, setKasJurnal, rekeningList }) {
           ].map((s,i)=>(
             <div key={i} style={{flex:1,padding:"10px 16px",background:s.bg,borderRight:i<2?"1px solid #f3f4f6":"none"}}>
               <div style={{fontSize:9,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",letterSpacing:.8,marginBottom:2}}>{s.label}</div>
-              <div style={{fontSize:13,fontWeight:700,color:s.color,fontFamily:"JetBrains Mono,monospace"}}>{s.val}</div>
+              <div style={{fontSize:13,fontWeight:700,color:s.color,fontFamily:"monospace"}}>{s.val}</div>
             </div>
           ))}
         </div>
@@ -354,7 +354,7 @@ function TabJurnal({ kasJurnal, setKasJurnal, rekeningList }) {
             ].map((r,i)=>(
               <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:i<2?"1px solid #f3f4f6":"none"}}>
                 <span style={{fontSize:11,color:"#6b7280"}}>{r.k}</span>
-                <span style={{fontSize:12,fontWeight:700,color:r.c,fontFamily:"JetBrains Mono,monospace"}}>{r.v}</span>
+                <span style={{fontSize:12,fontWeight:700,color:r.c,fontFamily:"monospace"}}>{r.v}</span>
               </div>
             ))}
           </div>
@@ -407,7 +407,7 @@ function TabBudget({ kasJurnal }) {
             ].map((r,i)=>(
               <div key={i} style={{background:"#f9fafb",borderRadius:10,padding:"12px 14px"}}>
                 <div style={{fontSize:10,color:"#9ca3af",fontWeight:600,textTransform:"uppercase",letterSpacing:.8,marginBottom:4}}>{r.k}</div>
-                <div style={{fontSize:16,fontWeight:700,color:r.c,fontFamily:"JetBrains Mono,monospace"}}>{r.v}</div>
+                <div style={{fontSize:16,fontWeight:700,color:r.c,fontFamily:"monospace"}}>{r.v}</div>
               </div>
             ))}
           </div>
@@ -450,7 +450,7 @@ function TabBudget({ kasJurnal }) {
                 <div style={{flex:1}}>
                   <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
                     <span style={{fontSize:12,fontWeight:500,color:"#374151"}}>{kat}</span>
-                    <span style={{fontSize:12,fontWeight:700,color:"#dc2626",fontFamily:"JetBrains Mono,monospace"}}>{fmtRp(total)}</span>
+                    <span style={{fontSize:12,fontWeight:700,color:"#dc2626",fontFamily:"monospace"}}>{fmtRp(total)}</span>
                   </div>
                   <div style={{height:4,background:"#f3f4f6",borderRadius:2,overflow:"hidden"}}>
                     <div style={{height:"100%",width:`${pct}%`,background:"#f97316",borderRadius:2}} />
@@ -531,7 +531,7 @@ function TabAset({ asetList, setAsetList }) {
                       </div>
                     </div>
                     <div style={{textAlign:"right"}}>
-                      <div style={{fontSize:13,fontWeight:700,color:"#3b82f6",fontFamily:"JetBrains Mono,monospace"}}>{fmtRp(nb)}</div>
+                      <div style={{fontSize:13,fontWeight:700,color:"#3b82f6",fontFamily:"monospace"}}>{fmtRp(nb)}</div>
                       <div style={{fontSize:10,color:"#9ca3af"}}>Nilai buku ({pct}%)</div>
                     </div>
                   </div>

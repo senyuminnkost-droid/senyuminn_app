@@ -389,6 +389,12 @@ function TabBudget({ kasJurnal }) {
   const totalTerpakai= saku.reduce((s,k)=>s+k.terpakai,0);
   const pengeluaranBulanIni = kasJurnal.filter(t=>t.tipe==="pengeluaran" && t.tanggal && t.tanggal.startsWith(thisMonth));
   const noPengeluaran = pengeluaranBulanIni.length === 0;
+  const breakdownKategori = KATEGORI_PENGELUARAN.map(kat=>{
+    const total = pengeluaranBulanIni.filter(t=>t.kategori===kat).reduce((s,t)=>s+t.nominal,0);
+    if (!total) return null;
+    const pct = totalAlokasi>0 ? Math.round((total/totalAlokasi)*100) : 0;
+    return { kat, total, pct };
+  }).filter(Boolean);
 
   return (
     <div style={{display:"flex",flexDirection:"column",gap:16}}>
@@ -421,11 +427,11 @@ function TabBudget({ kasJurnal }) {
                     <span className="ks-saku-name">{s.nama}</span>
                   </div>
                   <span className="ks-saku-pct">
-                    {s.flat>0 ? fmtRpShort(s.flat)+" flat" : `${s.pct}%`}
+                    {s.flat>0 ? fmtRpShort(s.flat)+" flat" : s.pct+"%"}
                   </span>
                 </div>
                 <div className="ks-saku-bar">
-                  <div className="ks-saku-fill" style={{width:`${s.pct_used}%`,background:s.pct_used>90?"#ef4444":s.pct_used>70?"#f97316":s.color}} />
+                  <div className="ks-saku-fill" style={{width:s.pct_used+"%",background:s.pct_used>90?"#ef4444":s.pct_used>70?"#f97316":s.color}} />
                 </div>
                 <div className="ks-saku-vals">
                   <span className="ks-saku-used">{fmtRp(s.terpakai)}</span>
@@ -441,25 +447,20 @@ function TabBudget({ kasJurnal }) {
       <div className="ks-widget">
         <div className="ks-widget-head"><div className="ks-widget-title">📊 Breakdown Pengeluaran {thisMonth}</div></div>
         <div className="ks-widget-body">
-          {KATEGORI_PENGELUARAN.map(kat=>{
-            const total = kasJurnal.filter(t=>t.tipe==="pengeluaran"&&t.tanggal && t.tanggal.startsWith(thisMonth)&&t.kategori===kat).reduce((s,t)=>s+t.nominal,0);
-            if (!total) return null;
-            const pct = totalAlokasi>0 ? Math.round((total/totalAlokasi)*100) : 0;
-            return (
-              <div key={kat} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid #f3f4f6"}}>
-                <div style={{flex:1}}>
-                  <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-                    <span style={{fontSize:12,fontWeight:500,color:"#374151"}}>{kat}</span>
-                    <span style={{fontSize:12,fontWeight:700,color:"#dc2626",fontFamily:"monospace"}}>{fmtRp(total)}</span>
-                  </div>
-                  <div style={{height:4,background:"#f3f4f6",borderRadius:2,overflow:"hidden"}}>
-                    <div style={{height:"100%",width:`${pct}%`,background:"#f97316",borderRadius:2}} />
-                  </div>
+          {breakdownKategori.map(item=>(
+            <div key={item.kat} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid #f3f4f6"}}>
+              <div style={{flex:1}}>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
+                  <span style={{fontSize:12,fontWeight:500,color:"#374151"}}>{item.kat}</span>
+                  <span style={{fontSize:12,fontWeight:700,color:"#dc2626",fontFamily:"monospace"}}>{fmtRp(item.total)}</span>
                 </div>
-                <span style={{fontSize:10,color:"#9ca3af",width:30,textAlign:"right"}}>{pct}%</span>
+                <div style={{height:4,background:"#f3f4f6",borderRadius:2,overflow:"hidden"}}>
+                  <div style={{height:"100%",width:item.pct+"%",background:"#f97316",borderRadius:2}} />
+                </div>
               </div>
-            );
-          }).filter(Boolean)}
+              <span style={{fontSize:10,color:"#9ca3af",width:30,textAlign:"right"}}>{item.pct}%</span>
+            </div>
+          ))}
           {noPengeluaran && (
             <div style={{textAlign:"center",color:"#9ca3af",padding:"20px 0",fontSize:12}}>Belum ada pengeluaran bulan ini</div>
           )}
@@ -536,7 +537,7 @@ function TabAset({ asetList, setAsetList }) {
                     </div>
                   </div>
                   <div style={{height:5,background:"#f3f4f6",borderRadius:3,overflow:"hidden",marginBottom:4}}>
-                    <div style={{height:"100%",width:`${pct}%`,background:pct>50?"#3b82f6":pct>25?"#f97316":"#ef4444",borderRadius:3,transition:"width .4s"}} />
+                    <div style={{height:"100%",width:pct+"%",background:pct>50?"#3b82f6":pct>25?"#f97316":"#ef4444",borderRadius:3,transition:"width .4s"}} />
                   </div>
                   <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:"#9ca3af"}}>
                     <span>Harga beli: {fmtRp(a.nilaiPerolehan)}</span>

@@ -123,7 +123,7 @@ function KontrakCard({ k }) {
         <span style={{ fontSize:11, fontWeight:600, color: warn ? "#fbbf24" : "#e2e8f0" }}>{k.tglSelesai || "—"}</span>
       </div>
       <div style={{ height:4, background:"#475569", borderRadius:2, overflow:"hidden", marginBottom:4 }}>
-        <div style={{ height:"100%", width:`${prog}%`, background:"linear-gradient(90deg,#f97316,#ea580c)", borderRadius:2 }} />
+        <div style={{ height:"100%", width:prog+"%", background:"linear-gradient(90deg,#f97316,#ea580c)", borderRadius:2 }} />
       </div>
       <div style={{ display:"flex", justifyContent:"space-between" }}>
         <span style={{ fontSize:10, color:"#64748b" }}>{prog}% berjalan</span>

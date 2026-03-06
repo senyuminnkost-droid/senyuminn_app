@@ -220,7 +220,7 @@ export default function Modul16_LaporanAbsensi({ user, globalData = {} }) {
       <div className="la-cards">
         {[
           {label:"Total Masuk",     val:stats.totalMasuk,  color:"#16a34a", sub:`${BULAN_FULL[periode.bulan-1]} ${periode.tahun}`},
-          {label:"KPI Rata-rata",   val:`${stats.avgKPI}%`,color:"#f97316", sub:"Kehadiran periode ini"},
+          {label:"KPI Rata-rata",   val:stats.avgKPI+"%",color:"#f97316", sub:"Kehadiran periode ini"},
           {label:"Ijin Tidak Sah",  val:stats.totalITS,    color:"#ef4444", sub:"Potongan aktif"},
           {label:"Lembur",          val:stats.totalLembur, color:"#3b82f6", sub:"Shift lembur"},
         ].map((c,i)=>(
@@ -316,7 +316,7 @@ export default function Modul16_LaporanAbsensi({ user, globalData = {} }) {
                         <td style={{minWidth:120}}>
                           <div style={{display:"flex",alignItems:"center",gap:8}}>
                             <div className="la-kpi-bar" style={{flex:1}}>
-                              <div className="la-kpi-fill" style={{width:`${r.kpiAbsensi}%`,background:r.kpiAbsensi>=90?"#16a34a":r.kpiAbsensi>=70?"#f97316":"#ef4444"}} />
+                              <div className="la-kpi-fill" style={{width:r.kpiAbsensi+"%",background:r.kpiAbsensi>=90?"#16a34a":r.kpiAbsensi>=70?"#f97316":"#ef4444"}} />
                             </div>
                             <span style={{fontSize:11,fontWeight:700,color:r.kpiAbsensi>=90?"#16a34a":r.kpiAbsensi>=70?"#f97316":"#ef4444",minWidth:32}}>
                               {r.kpiAbsensi}%
@@ -431,7 +431,7 @@ export default function Modul16_LaporanAbsensi({ user, globalData = {} }) {
                     </div>
                   </div>
                   <div className="la-kpi-bar">
-                    <div className="la-kpi-fill" style={{width:`${r.kpiAbsensi}%`,background:kpiColor}} />
+                    <div className="la-kpi-fill" style={{width:r.kpiAbsensi+"%",background:kpiColor}} />
                   </div>
                 </div>
               );
@@ -445,18 +445,22 @@ export default function Modul16_LaporanAbsensi({ user, globalData = {} }) {
             </div>
             <div style={{padding:"16px 16px 8px"}}>
               <div style={{display:"flex",alignItems:"flex-end",gap:8,height:100}}>
-                {trendData.map((t,i)=>(
+                {trendData.map((t,i)=>{
+                  const barH = Math.max(4, maxTrend>0 ? Math.round((t.pct/maxTrend)*80) : 4);
+                  const barColor = t.pct>=90?"#16a34a":t.pct>=70?"#f97316":"#ef4444";
+                  return (
                   <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
                     <div style={{fontSize:9,color:"#374151",fontWeight:600}}>{t.pct}%</div>
                     <div style={{
                       width:"100%",borderRadius:"4px 4px 0 0",
-                      height:`${Math.max(4,(t.pct/maxTrend)*80)}px`,
-                      background:t.pct>=90?"#16a34a":t.pct>=70?"#f97316":"#ef4444",
+                      height:barH+"px",
+                      background:barColor,
                       transition:"height .4s"
                     }} />
                     <div style={{fontSize:9,color:"#9ca3af",fontWeight:600}}>{t.label}</div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
             {/* Legenda kode absensi */}

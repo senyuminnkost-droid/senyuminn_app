@@ -304,7 +304,7 @@ export default function Modul06_Weekly({ user }) {
                       {total > 0 ? (
                         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                           <div style={{ width:60, height:6, background:"#e5e7eb", borderRadius:3, overflow:"hidden" }}>
-                            <div style={{ width:`${pct}%`, height:"100%", background: pct===100 ? "#22c55e" : "#f97316", borderRadius:3 }}></div>
+                            <div style={{ width:pct+"%", height:"100%", background: pct===100 ? "#22c55e" : "#f97316", borderRadius:3 }}></div>
                           </div>
                           <span style={{ fontSize:12, color:"#6b7280" }}>{pct}%</span>
                         </div>

@@ -336,10 +336,10 @@ function PerformanceRatio({ data, kasJurnal, asetList, periodeVal, periodeTipe }
         <div className="lk-chart">
           {trend.map((t,i)=>(
             <div key={i} className="lk-chart-col">
-              <div className="lk-chart-val" style={{fontSize:8}}>{t.inc>0?`+${Math.round(t.inc/1000)}rb`:""}</div>
+              <div className="lk-chart-val" style={{fontSize:8}}>{t.inc>0?"+" + Math.round(t.inc/1000) + "rb":""}</div>
               <div className="lk-chart-bar-wrap">
-                <div className="lk-chart-bar" style={{height:`${maxVal>0?(t.inc/maxVal)*100:0}%`,background:"#86efac"}} />
-                <div className="lk-chart-bar" style={{height:`${maxVal>0?(t.out/maxVal)*100:0}%`,background:"#fca5a5"}} />
+                <div className="lk-chart-bar" style={{height:(maxVal>0?(t.inc/maxVal)*100:0)+"%",background:"#86efac"}} />
+                <div className="lk-chart-bar" style={{height:(maxVal>0?(t.out/maxVal)*100:0)+"%",background:"#fca5a5"}} />
               </div>
               <div className="lk-chart-label">{t.label}</div>
             </div>

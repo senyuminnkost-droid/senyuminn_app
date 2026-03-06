@@ -298,7 +298,7 @@ function ActionPanel({ penyewa, kamarList, onPerpanjang, onCheckout, onClose }) 
               <span style={{ color: "#f97316" }}>→</span>
               <span style={{ color: sisa !== null && sisa <= 30 ? "#dc2626" : "#374151" }}>{penyewa.kontrakSelesai || "—"}</span>
             </div>
-            <div className="co-progress"><div className="co-progress-fill" style={{ width: `${progres}%` }} /></div>
+            <div className="co-progress"><div className="co-progress-fill" style={{ width: progres+"%" }} /></div>
             <div style={{ fontSize: 11, fontWeight: 600, color: sisa <= 0 ? "#dc2626" : sisa <= 7 ? "#dc2626" : sisa <= 30 ? "#d97706" : "#16a34a" }}>
               {sisa === null ? "—" : sisa <= 0 ? `⚠️ ${Math.abs(sisa)} hari melewati kontrak!` : sisa <= 7 ? `🔴 ${sisa} hari lagi — segera tindak` : sisa <= 30 ? `⚠️ ${sisa} hari lagi` : `✅ ${sisa} hari tersisa`}
             </div>

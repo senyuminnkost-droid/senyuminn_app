@@ -179,7 +179,7 @@ export default function Modul17_Profil({ user, globalData = {} }) {
           <Row label="Toleransi"       value={cfg.toleransiHari ? `${cfg.toleransiHari} hari` : "—"} />
           <Row label="Denda Terlambat" value={cfg.dendaPerHari ? fmtRp(cfg.dendaPerHari)+"/hari" : "—"} orange />
           <Row label="Sewa Harian"     value={cfg.sewaHarian ? fmtRp(cfg.sewaHarian)+"/hari" : "—"} orange />
-          <Row label="Mgmt Fee"        value={cfg.mgmtFeePct ? `${cfg.mgmtFeePct}%` : "—"} />
+          <Row label="Mgmt Fee"        value={cfg.mgmtFeePct ? cfg.mgmtFeePct+"%" : "—"} />
           <Row label="Deposit Jaminan" value={cfg.depositJaminan ? fmtRp(cfg.depositJaminan) : "Belum diaktifkan"} />
         </Section>
 

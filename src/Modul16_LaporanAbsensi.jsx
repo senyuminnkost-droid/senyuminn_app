@@ -177,6 +177,7 @@ function KalenderAbsensi({ karyawanId, absensiData, bulan, tahun, onInputKode, i
           );
         })}
       </div>
+  </div>
   );
 }
 
@@ -551,5 +552,7 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
         />
       )}
     </div>
+  </div>
+  </div>
   );
 }

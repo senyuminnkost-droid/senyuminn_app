@@ -203,6 +203,7 @@ function ModalChecklist({ jadwal, onClose }) {
           <Btn variant="secondary" style={{ flex:1, justifyContent:"center" }} onClick={onClose}>Tutup</Btn>
         </div>
       </div>
+  </div>
   );
 }
 

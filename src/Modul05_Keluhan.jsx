@@ -288,6 +288,7 @@ function ModalJadwal({ kamarList, bulanJadwal, onClose, onSave }) {
           <button className="ws-btn ghost" onClick={onClose}>Batal</button>
         </div>
       </div>
+  </div>
   );
 }
 

@@ -220,5 +220,9 @@ export default function Modul03_Monitor() {
                 Tutup
               </button>
       )}
+  </div>
+  </div>
+  </div>
+  </div>
   );
 }

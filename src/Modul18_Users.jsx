@@ -244,6 +244,7 @@ function ModalUser({ userObj, currentUser, onClose, onSave }) {
           <button className="us-btn ghost" onClick={onClose}>Batal</button>
         </div>
       </div>
+  </div>
   );
 }
 

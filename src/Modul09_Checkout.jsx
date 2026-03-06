@@ -20,13 +20,13 @@ const CSS = `
   .co-widget-title { font-size: 12px; font-weight: 600; color: #111827; display: flex; align-items: center; gap: 6px; }
   .co-widget-body { padding: 0; flex: 1; }
 
-  /* \u2500\u2500\u2500 TABS \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── TABS ───────────────────────────────── */
   .co-tabs { display: flex; gap: 2px; padding: 10px 14px 0; border-bottom: 1px solid #f3f4f6; }
   .co-tab { padding: 7px 14px; font-size: 11px; font-weight: 600; color: #9ca3af; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.12s; white-space: nowrap; }
   .co-tab:hover { color: #374151; }
   .co-tab.active { color: #f97316; border-bottom-color: #f97316; }
 
-  /* \u2500\u2500\u2500 PENYEWA ITEM \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── PENYEWA ITEM ───────────────────────── */
   .co-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #f3f4f6; cursor: pointer; transition: background 0.1s; }
   .co-item:last-child { border-bottom: none; }
   .co-item:hover { background: #fafafa; }
@@ -41,7 +41,7 @@ const CSS = `
 
   .co-badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
 
-  /* \u2500\u2500\u2500 ACTION PANEL \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── ACTION PANEL ───────────────────────── */
   .co-panel { padding: 16px; overflow-y: auto; max-height: calc(100vh - 220px); }
   .co-panel-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
   .co-panel-avatar { width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0; background: linear-gradient(135deg, #f97316, #ea580c); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; }
@@ -75,7 +75,7 @@ const CSS = `
   .co-action-btn.danger .co-action-btn-label { color: #dc2626; }
   .co-action-btn-sub { font-size: 10px; color: #9ca3af; margin-top: 2px; }
 
-  /* \u2500\u2500\u2500 MODAL \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── MODAL ───────────────────────────────── */
   .co-overlay-portal { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(17,24,39,0.65) !important; backdrop-filter: blur(4px) !important; z-index: 9999 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 16px !important; box-sizing: border-box !important; animation: coFade 0.18s ease; }
   @keyframes coFade { from { opacity: 0; } to { opacity: 1; } }
   .co-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.18); animation: coSlide 0.2s cubic-bezier(0.4,0,0.2,1); }
@@ -145,7 +145,7 @@ function StyleInjector() {
 // ============================================================
 const padD = (n) => String(n).padStart(2, "0");
 const todayStr = (() => { const d = new Date(); return `${d.getFullYear()}-${padD(d.getMonth()+1)}-${padD(d.getDate())}`; })();
-const fmtRp = (n) => n ? "Rp " + Number(n).toLocaleString("id-ID") : "\u2014";
+const fmtRp = (n) => n ? "Rp " + Number(n).toLocaleString("id-ID") : "—";
 const hariSisa = (tgl) => tgl ? Math.ceil((new Date(tgl) - new Date()) / 86400000) : null;
 const progressKontrak = (mulai, selesai) => {
   if (!mulai || !selesai) return 0;
@@ -183,15 +183,15 @@ function ModalPerpanjang({ penyewa, kamarList, onClose, onSave }) {
   const content = done ? (
     <div className="co-modal-body">
       <div className="co-success">
-        <div className="co-success-icon">\u2705</div>
+        <div className="co-success-icon">✅</div>
         <div className="co-success-title">Kontrak Diperpanjang!</div>
         <div className="co-success-sub">
           Kontrak <b>{penyewa.nama}</b> berhasil diperpanjang.<br />
-          Periode baru: <b>{mulai} \u2192 {selesai}</b>.<br />
+          Periode baru: <b>{mulai} → {selesai}</b>.<br />
           Tagihan baru telah dibuat otomatis.
         </div>
         <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-          <button className="co-btn primary" style={{ maxWidth: 180 }} onClick={() => alert("Generate surat perpanjangan...")}>\ud83d\udcc4 Surat Perpanjangan</button>
+          <button className="co-btn primary" style={{ maxWidth: 180 }} onClick={() => alert("Generate surat perpanjangan...")}>📄 Surat Perpanjangan</button>
           <button className="co-btn ghost"   style={{ maxWidth: 100 }} onClick={onClose}>Tutup</button>
         </div>
       </div>
@@ -200,10 +200,10 @@ function ModalPerpanjang({ penyewa, kamarList, onClose, onSave }) {
     <>
       <div className="co-modal-body">
         <div style={{ display: "flex", gap: 10, alignItems: "center", background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 10, padding: "10px 14px", marginBottom: 16 }}>
-          <div style={{ fontSize: 24 }}>\ud83c\udfe0</div>
+          <div style={{ fontSize: 24 }}>🏠</div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>{penyewa.nama} \u2014 Kamar {penyewa.kamarId}</div>
-            <div style={{ fontSize: 11, color: "#9a3412" }}>Kontrak lama: {penyewa.kontrakMulai} \u2192 {penyewa.kontrakSelesai}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>{penyewa.nama} — Kamar {penyewa.kamarId}</div>
+            <div style={{ fontSize: 11, color: "#9a3412" }}>Kontrak lama: {penyewa.kontrakMulai} → {penyewa.kontrakSelesai}</div>
           </div>
         </div>
 
@@ -225,7 +225,7 @@ function ModalPerpanjang({ penyewa, kamarList, onClose, onSave }) {
 
         {selesai && (
           <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#15803d", marginBottom: 14 }}>
-            \u2705 Kontrak baru berakhir: <b>{selesai}</b>
+            ✅ Kontrak baru berakhir: <b>{selesai}</b>
           </div>
         )}
 
@@ -234,7 +234,7 @@ function ModalPerpanjang({ penyewa, kamarList, onClose, onSave }) {
           {[
             { k: "Harga/bulan",  v: fmtRp(harga) },
             { k: "Durasi",       v: `${durasi} bulan` },
-            { k: "Periode",      v: `${mulai} \u2192 ${selesai}` },
+            { k: "Periode",      v: `${mulai} → ${selesai}` },
             { k: "Total Tagihan",v: fmtRp(total), cls: "orange" },
           ].map((r, i) => (
             <div key={i} className="co-summary-row">
@@ -245,7 +245,7 @@ function ModalPerpanjang({ penyewa, kamarList, onClose, onSave }) {
         </div>
       </div>
       <div className="co-modal-foot">
-        <button className="co-btn success" onClick={handleSave}>\u2705 Konfirmasi Perpanjang</button>
+        <button className="co-btn success" onClick={handleSave}>✅ Konfirmasi Perpanjang</button>
         <button className="co-btn ghost"   onClick={onClose}>Batal</button>
       </div>
     </>
@@ -255,8 +255,8 @@ function ModalPerpanjang({ penyewa, kamarList, onClose, onSave }) {
     <div className="co-overlay-portal" onClick={onClose}>
       <div className="co-modal" onClick={e => e.stopPropagation()}>
         <div className="co-modal-head">
-          <div className="co-modal-title">\ud83d\udccb Perpanjang Kontrak</div>
-          <button className="co-modal-close" onClick={onClose}>\u2715</button>
+          <div className="co-modal-title">📋 Perpanjang Kontrak</div>
+          <button className="co-modal-close" onClick={onClose}>✕</button>
         </div>
         {content}
       </div>
@@ -282,7 +282,7 @@ function ModalCheckout({ penyewa, kamarList, onClose, onCheckout }) {
 
   // Hitung denda sewa harian jika check-out setelah kontrak habis
   const hariTerlambat = sisa !== null && sisa < 0 ? Math.abs(sisa) : 0;
-  const dendaHarian   = 250000; // Rp 250.000/hari \u2014 dari Pengaturan nanti
+  const dendaHarian   = 250000; // Rp 250.000/hari — dari Pengaturan nanti
   const totalDendaSewa = hariTerlambat * dendaHarian;
 
   const totalTagihan = totalDendaSewa + Number(form.dendaKerusakan || 0);
@@ -295,11 +295,11 @@ function ModalCheckout({ penyewa, kamarList, onClose, onCheckout }) {
   const content = done ? (
     <div className="co-modal-body">
       <div className="co-success">
-        <div className="co-success-icon">\ud83d\udeaa</div>
+        <div className="co-success-icon">🚪</div>
         <div className="co-success-title">Check-out Berhasil!</div>
         <div className="co-success-sub">
           <b>{penyewa.nama}</b> telah check-out dari Kamar {penyewa.kamarId}.<br />
-          Status kamar diperbarui \u2192 <b>Deep Clean</b>.<br />
+          Status kamar diperbarui → <b>Deep Clean</b>.<br />
           Notifikasi dikirim ke staff pagi.
         </div>
         <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
@@ -312,12 +312,12 @@ function ModalCheckout({ penyewa, kamarList, onClose, onCheckout }) {
       <div className="co-modal-body">
         {/* Info penyewa */}
         <div style={{ display: "flex", gap: 10, alignItems: "center", background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 10, padding: "10px 14px", marginBottom: 16 }}>
-          <div style={{ fontSize: 24 }}>\ud83d\udeaa</div>
+          <div style={{ fontSize: 24 }}>🚪</div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>{penyewa.nama} \u2014 Kamar {penyewa.kamarId}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>{penyewa.nama} — Kamar {penyewa.kamarId}</div>
             <div style={{ fontSize: 11, color: "#9a3412" }}>
-              Kontrak: {penyewa.kontrakMulai} \u2192 {penyewa.kontrakSelesai}
-              {sisa !== null && sisa < 0 && <span style={{ color: "#dc2626", fontWeight: 700 }}> \u00b7 {Math.abs(sisa)} hari melewati kontrak!</span>}
+              Kontrak: {penyewa.kontrakMulai} → {penyewa.kontrakSelesai}
+              {sisa !== null && sisa < 0 && <span style={{ color: "#dc2626", fontWeight: 700 }}> · {Math.abs(sisa)} hari melewati kontrak!</span>}
             </div>
           </div>
         </div>
@@ -330,7 +330,7 @@ function ModalCheckout({ penyewa, kamarList, onClose, onCheckout }) {
           <div className="co-field">
             <label className="co-field-label">Kondisi Kamar</label>
             <select className="co-input" value={form.kondisiKamar} onChange={e => set("kondisiKamar", e.target.value)}>
-              <option value="baik">Baik \u2014 tidak ada kerusakan</option>
+              <option value="baik">Baik — tidak ada kerusakan</option>
               <option value="ringan">Ada kerusakan ringan</option>
               <option value="berat">Ada kerusakan berat</option>
             </select>
@@ -375,11 +375,11 @@ function ModalCheckout({ penyewa, kamarList, onClose, onCheckout }) {
 
         {/* After checkout info */}
         <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, padding: "10px 12px", fontSize: 11, color: "#0369a1" }}>
-          \u2139\ufe0f Setelah check-out: status kamar \u2192 <b>Deep Clean</b> \u00b7 Notifikasi ke staff pagi \u00b7 Data penyewa dipindah ke Riwayat
+          ℹ️ Setelah check-out: status kamar → <b>Deep Clean</b> · Notifikasi ke staff pagi · Data penyewa dipindah ke Riwayat
         </div>
       </div>
       <div className="co-modal-foot">
-        <button className="co-btn danger" onClick={handleCheckout}>\ud83d\udeaa Konfirmasi Check-out</button>
+        <button className="co-btn danger" onClick={handleCheckout}>🚪 Konfirmasi Check-out</button>
         <button className="co-btn ghost"  onClick={onClose}>Batal</button>
       </div>
     </>
@@ -389,8 +389,8 @@ function ModalCheckout({ penyewa, kamarList, onClose, onCheckout }) {
     <div className="co-overlay-portal" onClick={onClose}>
       <div className="co-modal" onClick={e => e.stopPropagation()}>
         <div className="co-modal-head">
-          <div className="co-modal-title">\ud83d\udeaa Proses Check-out</div>
-          <button className="co-modal-close" onClick={onClose}>\u2715</button>
+          <div className="co-modal-title">🚪 Proses Check-out</div>
+          <button className="co-modal-close" onClick={onClose}>✕</button>
         </div>
         {content}
       </div>
@@ -409,8 +409,8 @@ function ActionPanel({ penyewa, kamarList, onPerpanjang, onCheckout, onClose }) 
   return (
     <div className="co-widget">
       <div className="co-widget-head">
-        <div className="co-widget-title">\ud83d\udd11 Aksi Kontrak</div>
-        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16 }}>\u2715</button>
+        <div className="co-widget-title">🔑 Aksi Kontrak</div>
+        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16 }}>✕</button>
       </div>
       <div className="co-panel">
 
@@ -419,7 +419,7 @@ function ActionPanel({ penyewa, kamarList, onPerpanjang, onCheckout, onClose }) 
           <div className="co-panel-avatar">{getInisial(penyewa.nama)}</div>
           <div style={{ flex: 1 }}>
             <div className="co-panel-name">{penyewa.nama}</div>
-            <div className="co-panel-sub">\ud83d\udcde {penyewa.noHP || "\u2014"} \u00b7 {penyewa.pekerjaan || "\u2014"}</div>
+            <div className="co-panel-sub">📞 {penyewa.noHP || "—"} · {penyewa.pekerjaan || "—"}</div>
           </div>
         </div>
 
@@ -428,13 +428,13 @@ function ActionPanel({ penyewa, kamarList, onPerpanjang, onCheckout, onClose }) 
           <div className="co-section-label">Status Kontrak</div>
           <div className="co-kontrak-bar">
             <div className="co-kontrak-dates">
-              <span>{penyewa.kontrakMulai || "\u2014"}</span>
-              <span style={{ color: "#f97316" }}>\u2192</span>
-              <span style={{ color: sisa !== null && sisa <= 30 ? "#dc2626" : "#374151" }}>{penyewa.kontrakSelesai || "\u2014"}</span>
+              <span>{penyewa.kontrakMulai || "—"}</span>
+              <span style={{ color: "#f97316" }}>→</span>
+              <span style={{ color: sisa !== null && sisa <= 30 ? "#dc2626" : "#374151" }}>{penyewa.kontrakSelesai || "—"}</span>
             </div>
             <div className="co-progress"><div className="co-progress-fill" style={{ width: `${progres}%` }} /></div>
             <div style={{ fontSize: 11, fontWeight: 600, color: sisa <= 0 ? "#dc2626" : sisa <= 7 ? "#dc2626" : sisa <= 30 ? "#d97706" : "#16a34a" }}>
-              {sisa === null ? "\u2014" : sisa <= 0 ? `\u26a0\ufe0f ${Math.abs(sisa)} hari melewati kontrak!` : sisa <= 7 ? `\ud83d\udd34 ${sisa} hari lagi \u2014 segera tindak` : sisa <= 30 ? `\u26a0\ufe0f ${sisa} hari lagi` : `\u2705 ${sisa} hari tersisa`}
+              {sisa === null ? "—" : sisa <= 0 ? `⚠️ ${Math.abs(sisa)} hari melewati kontrak!` : sisa <= 7 ? `🔴 ${sisa} hari lagi — segera tindak` : sisa <= 30 ? `⚠️ ${sisa} hari lagi` : `✅ ${sisa} hari tersisa`}
             </div>
           </div>
         </div>
@@ -445,7 +445,7 @@ function ActionPanel({ penyewa, kamarList, onPerpanjang, onCheckout, onClose }) 
           <div className="co-info-grid">
             <div className="co-info-item">
               <div className="co-info-key">Kamar</div>
-              <div className="co-info-val orange">K{padD(penyewa.kamarId)} \u2014 {kamar?.tipe || "\u2014"}</div>
+              <div className="co-info-val orange">K{padD(penyewa.kamarId)} — {kamar?.tipe || "—"}</div>
             </div>
             <div className="co-info-item">
               <div className="co-info-key">Harga/bulan</div>
@@ -457,7 +457,7 @@ function ActionPanel({ penyewa, kamarList, onPerpanjang, onCheckout, onClose }) 
             </div>
             <div className="co-info-item">
               <div className="co-info-key">Partner</div>
-              <div className="co-info-val">{penyewa.partner?.length > 0 ? penyewa.partner.join(", ") : "\u2014"}</div>
+              <div className="co-info-val">{penyewa.partner?.length > 0 ? penyewa.partner.join(", ") : "—"}</div>
             </div>
           </div>
         </div>
@@ -467,12 +467,12 @@ function ActionPanel({ penyewa, kamarList, onPerpanjang, onCheckout, onClose }) 
           <div className="co-section-label">Pilih Aksi</div>
           <div className="co-action-grid">
             <button className="co-action-btn" onClick={onPerpanjang}>
-              <div className="co-action-btn-icon">\ud83d\udccb</div>
+              <div className="co-action-btn-icon">📋</div>
               <div className="co-action-btn-label">Perpanjang</div>
               <div className="co-action-btn-sub">Lanjutkan kontrak</div>
             </button>
             <button className="co-action-btn danger" onClick={onCheckout}>
-              <div className="co-action-btn-icon">\ud83d\udeaa</div>
+              <div className="co-action-btn-icon">🚪</div>
               <div className="co-action-btn-label">Check-out</div>
               <div className="co-action-btn-sub">Akhiri kontrak</div>
             </button>
@@ -481,7 +481,7 @@ function ActionPanel({ penyewa, kamarList, onPerpanjang, onCheckout, onClose }) 
 
         {sisa !== null && sisa <= 30 && (
           <div style={{ background: sisa <= 7 ? "#fee2e2" : "#fff7ed", border: `1px solid ${sisa <= 7 ? "#fca5a5" : "#fed7aa"}`, borderRadius: 8, padding: "10px 12px", fontSize: 11, color: sisa <= 7 ? "#dc2626" : "#92400e", fontWeight: 500 }}>
-            {sisa <= 7 ? "\ud83d\udd34" : "\u26a0\ufe0f"} {sisa <= 0 ? "Kontrak sudah habis! Segera proses perpanjang atau check-out." : `Kontrak berakhir dalam ${sisa} hari. Hubungi penyewa segera.`}
+            {sisa <= 7 ? "🔴" : "⚠️"} {sisa <= 0 ? "Kontrak sudah habis! Segera proses perpanjang atau check-out." : `Kontrak berakhir dalam ${sisa} hari. Hubungi penyewa segera.`}
           </div>
         )}
 
@@ -540,10 +540,10 @@ export default function Checkout({ user }) {
       {/* Cards */}
       <div className="co-cards">
         {[
-          { label: "Total Penyewa",   val: penyewaList.length || "\u2014",  color: "#3b82f6", sub: "Kontrak aktif" },
-          { label: "Kontrak \u2264 30hr", val: mauHabis  || (penyewaList.length?"0":"\u2014"), color: "#f59e0b", sub: "Perlu tindakan" },
-          { label: "Terlambat",      val: terlambat || (penyewaList.length?"0":"\u2014"), color: "#ef4444", sub: "Melewati kontrak" },
-          { label: "Perlu Diproses", val: (mauHabis + terlambat) || (penyewaList.length?"0":"\u2014"), color: "#f97316", sub: "Perpanjang / checkout" },
+          { label: "Total Penyewa",   val: penyewaList.length || "—",  color: "#3b82f6", sub: "Kontrak aktif" },
+          { label: "Kontrak ≤ 30hr", val: mauHabis  || (penyewaList.length?"0":"—"), color: "#f59e0b", sub: "Perlu tindakan" },
+          { label: "Terlambat",      val: terlambat || (penyewaList.length?"0":"—"), color: "#ef4444", sub: "Melewati kontrak" },
+          { label: "Perlu Diproses", val: (mauHabis + terlambat) || (penyewaList.length?"0":"—"), color: "#f97316", sub: "Perpanjang / checkout" },
         ].map((c, i) => (
           <div key={i} className="co-card">
             <div className="co-card-bar" style={{ background: c.color }} />
@@ -560,10 +560,10 @@ export default function Checkout({ user }) {
         {/* List */}
         <div className="co-widget">
           <div className="co-widget-head">
-            <div className="co-widget-title">\ud83d\udd11 Manajemen Kontrak</div>
+            <div className="co-widget-title">🔑 Manajemen Kontrak</div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#f9fafb", border: "1px solid #e5e7eb", borderRadius: 8, padding: "5px 10px" }}>
-                <span style={{ fontSize: 13 }}>\ud83d\udd0d</span>
+                <span style={{ fontSize: 13 }}>🔍</span>
                 <input
                   style={{ border: "none", outline: "none", background: "transparent", fontSize: 12, color: "#1f2937", width: 140, fontFamily: "inherit" }}
                   placeholder="Cari penyewa..."
@@ -578,8 +578,8 @@ export default function Checkout({ user }) {
           <div className="co-tabs">
             {[
               { id: "semua",      label: `Semua (${penyewaList.length})` },
-              { id: "mau-habis",  label: `\u26a0\ufe0f Mau Habis (${mauHabis})` },
-              { id: "terlambat",  label: `\ud83d\udd34 Terlambat (${terlambat})` },
+              { id: "mau-habis",  label: `⚠️ Mau Habis (${mauHabis})` },
+              { id: "terlambat",  label: `🔴 Terlambat (${terlambat})` },
             ].map(t => (
               <div key={t.id} className={`co-tab ${tab===t.id?"active":""}`} onClick={() => setTab(t.id)}>
                 {t.label}
@@ -591,13 +591,13 @@ export default function Checkout({ user }) {
           <div className="co-widget-body">
             {penyewaList.length === 0 ? (
               <div className="co-empty">
-                <div className="co-empty-icon">\ud83d\udd11</div>
+                <div className="co-empty-icon">🔑</div>
                 <div className="co-empty-title">Belum ada data penyewa</div>
                 <div className="co-empty-sub">Data akan muncul setelah Check-in di Data Penyewa</div>
               </div>
             ) : filtered.length === 0 ? (
               <div className="co-empty">
-                <div className="co-empty-icon">\u2705</div>
+                <div className="co-empty-icon">✅</div>
                 <div className="co-empty-title">Tidak ada penyewa di kategori ini</div>
                 <div className="co-empty-sub">Semua kontrak dalam kondisi aman</div>
               </div>
@@ -610,8 +610,8 @@ export default function Checkout({ user }) {
                     <div className="co-item-info">
                       <div className="co-item-name">{p.nama}</div>
                       <div className="co-item-meta">
-                        <span>\ud83d\udcc5 {p.kontrakMulai} \u2192 {p.kontrakSelesai}</span>
-                        {p.partner?.length > 0 && <span>\ud83d\udc65 +{p.partner.length}</span>}
+                        <span>📅 {p.kontrakMulai} → {p.kontrakSelesai}</span>
+                        {p.partner?.length > 0 && <span>👥 +{p.partner.length}</span>}
                       </div>
                     </div>
                     <div className="co-item-right">
@@ -641,7 +641,7 @@ export default function Checkout({ user }) {
         ) : (
           <div className="co-widget">
             <div className="co-empty" style={{ padding: "60px 20px" }}>
-              <div className="co-empty-icon">\ud83d\udd11</div>
+              <div className="co-empty-icon">🔑</div>
               <div className="co-empty-title">Pilih penyewa</div>
               <div className="co-empty-sub">Klik nama untuk proses perpanjang atau check-out</div>
             </div>

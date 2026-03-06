@@ -136,7 +136,7 @@ function StyleInjector() {
 // ============================================================
 const padD     = (n) => String(n).padStart(2, "0");
 const todayStr = (() => { const d = new Date(); return `${d.getFullYear()}-${padD(d.getMonth()+1)}-${padD(d.getDate())}`; })();
-const fmtRp    = (n) => n != null ? "Rp " + Number(n).toLocaleString("id-ID") : "\u2014";
+const fmtRp    = (n) => n != null ? "Rp " + Number(n).toLocaleString("id-ID") : "—";
 
 const getInisial = (nama) => {
   if (!nama) return "?";
@@ -169,7 +169,7 @@ const progressKontrak = (mulai, selesai) => {
 };
 
 const AGAMA_LIST   = ["Islam","Kristen","Katolik","Hindu","Buddha","Konghucu"];
-const SHIFT_LIST   = ["Pagi (08:00\u201316:00)","Sore/Malam (16:00\u201307:00)","Fleksibel"];
+const SHIFT_LIST   = ["Pagi (08:00–16:00)","Sore/Malam (16:00–07:00)","Fleksibel"];
 const STATUS_KONTRAK = {
   aktif:       { label:"Aktif",       color:"#16a34a", bg:"#dcfce7" },
   habis:       { label:"Habis",       color:"#dc2626", bg:"#fee2e2" },
@@ -201,17 +201,17 @@ function ModalKaryawan({ karyawan, onClose, onSave }) {
   const valid      = form.nama && form.nik && form.jabatan && form.tglMulai;
 
   const TABS = [
-    { id:"data",    label:"\ud83d\udc64 Data Diri" },
-    { id:"kontrak", label:"\ud83d\udccb Kontrak" },
-    { id:"rekening",label:"\ud83c\udfe6 Rekening & Gaji" },
+    { id:"data",    label:"👤 Data Diri" },
+    { id:"kontrak", label:"📋 Kontrak" },
+    { id:"rekening",label:"🏦 Rekening & Gaji" },
   ];
 
   return(
     <div className="kr-overlay" onClick={onClose}>
       <div className="kr-modal" onClick={e=>e.stopPropagation()}>
         <div className="kr-modal-head">
-          <div className="kr-modal-title">{isEdit ? "\u270f\ufe0f Edit Karyawan" : "\u2795 Tambah Karyawan"}</div>
-          <button className="kr-modal-close" onClick={onClose}>\u2715</button>
+          <div className="kr-modal-title">{isEdit ? "✏️ Edit Karyawan" : "➕ Tambah Karyawan"}</div>
+          <button className="kr-modal-close" onClick={onClose}>✕</button>
         </div>
 
         {/* Tab nav */}
@@ -228,7 +228,7 @@ function ModalKaryawan({ karyawan, onClose, onSave }) {
 
         <div className="kr-modal-body">
 
-          {/* \u2500\u2500 Tab: Data Diri */}
+          {/* ── Tab: Data Diri */}
           {tab==="data" && (
             <>
               <div className="kr-input-row">
@@ -295,7 +295,7 @@ function ModalKaryawan({ karyawan, onClose, onSave }) {
             </>
           )}
 
-          {/* \u2500\u2500 Tab: Kontrak */}
+          {/* ── Tab: Kontrak */}
           {tab==="kontrak" && (
             <>
               <div className="kr-input-row">
@@ -349,7 +349,7 @@ function ModalKaryawan({ karyawan, onClose, onSave }) {
                   <div className="kr-cuti-dots">
                     {Array.from({length:3},(_,i)=>(
                       <div key={i} className={`kr-cuti-dot ${i < (form.cutiTerpakai||0) ? "used" : "avail"}`}>
-                        {i < (form.cutiTerpakai||0) ? "\u2715" : "\u2713"}
+                        {i < (form.cutiTerpakai||0) ? "✕" : "✓"}
                       </div>
                     ))}
                   </div>
@@ -361,7 +361,7 @@ function ModalKaryawan({ karyawan, onClose, onSave }) {
             </>
           )}
 
-          {/* \u2500\u2500 Tab: Rekening & Gaji */}
+          {/* ── Tab: Rekening & Gaji */}
           {tab==="rekening" && (
             <>
               <div className="kr-input-row">
@@ -383,7 +383,7 @@ function ModalKaryawan({ karyawan, onClose, onSave }) {
               </div>
 
               <div style={{background:"#f0fdf4",border:"1px solid #86efac",borderRadius:8,padding:"10px 12px",fontSize:11,color:"#15803d"}}>
-                \u2139\ufe0f Insentif, lembur, dan potongan diatur di modul <b>Penggajian</b> setiap bulan.
+                ℹ️ Insentif, lembur, dan potongan diatur di modul <b>Penggajian</b> setiap bulan.
                 BPJS & Pajak dicatat manual di slip gaji.
               </div>
             </>
@@ -392,7 +392,7 @@ function ModalKaryawan({ karyawan, onClose, onSave }) {
         </div>
         <div className="kr-modal-foot">
           <button className="kr-btn primary" disabled={!valid} onClick={()=>{ onSave({...form, id:karyawan?.id||Date.now(), tglSelesai, noSPK, statusKontrak:"aktif"}); onClose(); }}>
-            \u2705 {isEdit ? "Simpan Perubahan" : "Tambah Karyawan"}
+            ✅ {isEdit ? "Simpan Perubahan" : "Tambah Karyawan"}
           </button>
           <button className="kr-btn ghost" onClick={onClose}>Batal</button>
         </div>
@@ -415,22 +415,22 @@ function ModalCuti({ karyawan, onClose, onSave }) {
     <div className="kr-overlay" onClick={onClose}>
       <div className="kr-modal" onClick={e=>e.stopPropagation()} style={{maxWidth:440}}>
         <div className="kr-modal-head">
-          <div className="kr-modal-title">\ud83d\udcc5 Pengajuan Cuti / Ijin</div>
-          <button className="kr-modal-close" onClick={onClose}>\u2715</button>
+          <div className="kr-modal-title">📅 Pengajuan Cuti / Ijin</div>
+          <button className="kr-modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="kr-modal-body">
           <div style={{background:"#f9fafb",borderRadius:10,padding:"10px 14px",marginBottom:14,display:"flex",alignItems:"center",gap:10}}>
             <div className="kr-staff-avatar" style={{background:getColor(karyawan.id),width:36,height:36,borderRadius:9,fontSize:13}}>{getInisial(karyawan.nama)}</div>
             <div>
               <div style={{fontSize:13,fontWeight:600,color:"#1f2937"}}>{karyawan.nama}</div>
-              <div style={{fontSize:11,color:"#9ca3af"}}>{karyawan.jabatan} \u00b7 Sisa cuti: <b style={{color:cutiSisa>0?"#16a34a":"#dc2626"}}>{cutiSisa} hari</b></div>
+              <div style={{fontSize:11,color:"#9ca3af"}}>{karyawan.jabatan} · Sisa cuti: <b style={{color:cutiSisa>0?"#16a34a":"#dc2626"}}>{cutiSisa} hari</b></div>
             </div>
           </div>
 
           <div className="kr-field">
             <label className="kr-field-label">Tipe</label>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-              {[{v:"cuti",l:"\ud83c\udfd6\ufe0f Cuti"},{v:"ijin",l:"\ud83d\udccb Ijin"}].map(t=>(
+              {[{v:"cuti",l:"🏖️ Cuti"},{v:"ijin",l:"📋 Ijin"}].map(t=>(
                 <div key={t.v} onClick={()=>set("tipe",t.v)} style={{padding:"9px",borderRadius:9,border:`1.5px solid ${form.tipe===t.v?"#f97316":"#e5e7eb"}`,background:form.tipe===t.v?"#fff7ed":"#fff",textAlign:"center",cursor:"pointer",fontSize:12,fontWeight:600,color:form.tipe===t.v?"#ea580c":"#6b7280",transition:"all .12s"}}>
                   {t.l}
                 </div>
@@ -451,7 +451,7 @@ function ModalCuti({ karyawan, onClose, onSave }) {
 
           {form.tipe==="cuti" && durasi > cutiSisa && (
             <div style={{background:"#fee2e2",border:"1px solid #fca5a5",borderRadius:8,padding:"8px 12px",fontSize:11,color:"#dc2626",marginBottom:10}}>
-              \u26a0\ufe0f Sisa cuti tidak cukup! Tersisa {cutiSisa} hari, diajukan {durasi} hari.
+              ⚠️ Sisa cuti tidak cukup! Tersisa {cutiSisa} hari, diajukan {durasi} hari.
             </div>
           )}
 
@@ -461,12 +461,12 @@ function ModalCuti({ karyawan, onClose, onSave }) {
           </div>
 
           <div style={{background:"#f9fafb",borderRadius:8,padding:"8px 12px",fontSize:12,color:"#374151"}}>
-            Durasi: <b>{durasi} hari</b> \u00b7 Status awal: <b style={{color:"#f97316"}}>Menunggu Persetujuan</b>
+            Durasi: <b>{durasi} hari</b> · Status awal: <b style={{color:"#f97316"}}>Menunggu Persetujuan</b>
           </div>
         </div>
         <div className="kr-modal-foot">
           <button className="kr-btn primary" disabled={!valid} onClick={()=>{ onSave({...form,id:Date.now(),karyawanId:karyawan.id,namaKaryawan:karyawan.nama,durasi,status:"pending",tglPengajuan:todayStr}); onClose(); }}>
-            \ud83d\udce4 Ajukan
+            📤 Ajukan
           </button>
           <button className="kr-btn ghost" onClick={onClose}>Batal</button>
         </div>
@@ -487,11 +487,11 @@ function DetailPanel({ k, onEdit, onCuti, isReadOnly }) {
   return (
     <div className="kr-widget">
       <div className="kr-widget-head">
-        <div className="kr-widget-title">\ud83d\udc64 Detail Karyawan</div>
+        <div className="kr-widget-title">👤 Detail Karyawan</div>
         {!isReadOnly && (
           <div style={{display:"flex",gap:6}}>
-            <button className="kr-btn ghost" style={{flex:"none",padding:"5px 12px",fontSize:11}} onClick={onCuti}>\ud83d\udcc5 Ajukan Cuti</button>
-            <button className="kr-btn primary" style={{flex:"none",padding:"5px 12px",fontSize:11}} onClick={onEdit}>\u270f\ufe0f Edit</button>
+            <button className="kr-btn ghost" style={{flex:"none",padding:"5px 12px",fontSize:11}} onClick={onCuti}>📅 Ajukan Cuti</button>
+            <button className="kr-btn primary" style={{flex:"none",padding:"5px 12px",fontSize:11}} onClick={onEdit}>✏️ Edit</button>
           </div>
         )}
       </div>
@@ -502,16 +502,16 @@ function DetailPanel({ k, onEdit, onCuti, isReadOnly }) {
           <div className="kr-detail-avatar" style={{background:getColor(k.id)}}>{getInisial(k.nama)}</div>
           <div>
             <div className="kr-detail-name">{k.nama}</div>
-            <div className="kr-detail-jabatan">{k.jabatan} \u00b7 {k.shift}</div>
+            <div className="kr-detail-jabatan">{k.jabatan} · {k.shift}</div>
             <div style={{marginTop:4,display:"flex",gap:6,flexWrap:"wrap"}}>
               <span className="kr-badge" style={{color:k.aktif?"#16a34a":"#dc2626",background:k.aktif?"#dcfce7":"#fee2e2"}}>
-                {k.aktif?"\u25cf Aktif":"\u25cf Nonaktif"}
+                {k.aktif?"● Aktif":"● Nonaktif"}
               </span>
               <span className="kr-badge" style={{color:STATUS_KONTRAK[stKontrak]?.color,background:STATUS_KONTRAK[stKontrak]?.bg}}>
                 SPK {STATUS_KONTRAK[stKontrak]?.label}
               </span>
               {sisa !== null && sisa <= 30 && sisa >= 0 && (
-                <span className="kr-badge" style={{color:"#dc2626",background:"#fee2e2"}}>\u26a0\ufe0f H-{sisa} habis kontrak</span>
+                <span className="kr-badge" style={{color:"#dc2626",background:"#fee2e2"}}>⚠️ H-{sisa} habis kontrak</span>
               )}
             </div>
           </div>
@@ -523,21 +523,21 @@ function DetailPanel({ k, onEdit, onCuti, isReadOnly }) {
           <div className="kr-kontrak-name">{k.nama}</div>
           <div className="kr-kontrak-row">
             <span className="kr-kontrak-key">Mulai</span>
-            <span className="kr-kontrak-val">{k.tglMulai || "\u2014"}</span>
+            <span className="kr-kontrak-val">{k.tglMulai || "—"}</span>
           </div>
           <div className="kr-kontrak-row">
             <span className="kr-kontrak-key">Selesai</span>
-            <span className="kr-kontrak-val">{k.tglSelesai || "\u2014"}</span>
+            <span className="kr-kontrak-val">{k.tglSelesai || "—"}</span>
           </div>
           <div className="kr-kontrak-row">
             <span className="kr-kontrak-key">Gaji Pokok</span>
-            <span className="kr-kontrak-val">{k.gajiPokok ? fmtRp(k.gajiPokok) : "\u2014"}</span>
+            <span className="kr-kontrak-val">{k.gajiPokok ? fmtRp(k.gajiPokok) : "—"}</span>
           </div>
           <div className="kr-kontrak-bar">
             <div className="kr-kontrak-fill" style={{width:`${prog}%`,background:prog>85?"#ef4444":prog>60?"#f97316":"#22c55e"}} />
           </div>
           <div className="kr-kontrak-sisa">
-            {sisa !== null ? (sisa >= 0 ? `${sisa} hari lagi` : `Habis ${Math.abs(sisa)} hari lalu`) : "\u2014"}
+            {sisa !== null ? (sisa >= 0 ? `${sisa} hari lagi` : `Habis ${Math.abs(sisa)} hari lalu`) : "—"}
           </div>
         </div>
 
@@ -546,13 +546,13 @@ function DetailPanel({ k, onEdit, onCuti, isReadOnly }) {
           <div className="kr-section-label">Data Diri</div>
           <div className="kr-info-grid">
             {[
-              {k:"NIK",          v:k.nik||"\u2014"},
-              {k:"Tgl Lahir",    v:k.tglLahir||"\u2014"},
+              {k:"NIK",          v:k.nik||"—"},
+              {k:"Tgl Lahir",    v:k.tglLahir||"—"},
               {k:"Jenis Kelamin",v:k.jenisKelamin==="L"?"Laki-laki":"Perempuan"},
-              {k:"Agama",        v:k.agama||"\u2014"},
-              {k:"Status",       v:k.statusNikah||"\u2014"},
-              {k:"No HP",        v:k.noHP||"\u2014"},
-              {k:"No Darurat",   v:k.noDarurat||"\u2014"},
+              {k:"Agama",        v:k.agama||"—"},
+              {k:"Status",       v:k.statusNikah||"—"},
+              {k:"No HP",        v:k.noHP||"—"},
+              {k:"No Darurat",   v:k.noDarurat||"—"},
             ].map((r,i)=>(
               <div key={i} className="kr-info-item">
                 <div className="kr-info-key">{r.k}</div>
@@ -561,7 +561,7 @@ function DetailPanel({ k, onEdit, onCuti, isReadOnly }) {
             ))}
             <div className="kr-info-item" style={{gridColumn:"1/-1"}}>
               <div className="kr-info-key">Alamat</div>
-              <div className="kr-info-val">{k.alamat||"\u2014"}</div>
+              <div className="kr-info-val">{k.alamat||"—"}</div>
             </div>
           </div>
         </div>
@@ -572,11 +572,11 @@ function DetailPanel({ k, onEdit, onCuti, isReadOnly }) {
           <div className="kr-info-grid">
             <div className="kr-info-item">
               <div className="kr-info-key">Bank</div>
-              <div className="kr-info-val orange">{k.rekeningBank||"\u2014"}</div>
+              <div className="kr-info-val orange">{k.rekeningBank||"—"}</div>
             </div>
             <div className="kr-info-item">
               <div className="kr-info-key">No. Rekening</div>
-              <div className="kr-info-val" style={{fontFamily:"JetBrains Mono,monospace",fontSize:11}}>{k.rekeningNo||"\u2014"}</div>
+              <div className="kr-info-val" style={{fontFamily:"JetBrains Mono,monospace",fontSize:11}}>{k.rekeningNo||"—"}</div>
             </div>
           </div>
         </div>
@@ -588,7 +588,7 @@ function DetailPanel({ k, onEdit, onCuti, isReadOnly }) {
             <div className="kr-cuti-dots">
               {Array.from({length:3},(_,i)=>(
                 <div key={i} className={`kr-cuti-dot ${i < cutiTerpakai ? "used" : "avail"}`}>
-                  {i < cutiTerpakai ? "\u2715" : "\u2713"}
+                  {i < cutiTerpakai ? "✕" : "✓"}
                 </div>
               ))}
             </div>
@@ -598,7 +598,7 @@ function DetailPanel({ k, onEdit, onCuti, isReadOnly }) {
 
         {k.catatan && (
           <div style={{background:"#fff7ed",border:"1px solid #fed7aa",borderRadius:8,padding:"10px 12px",fontSize:12,color:"#9a3412"}}>
-            \ud83d\udcdd {k.catatan}
+            📝 {k.catatan}
           </div>
         )}
 
@@ -676,7 +676,7 @@ export default function Karyawan({ user, globalData = {} }) {
       <div className="kr-cards">
         {[
           {label:"Total Karyawan", val:karyawanList.length, color:"#f97316", sub:`${totalAktif} aktif`},
-          {label:"Kontrak Habis",  val:kontrakHabis,        color:"#ef4444", sub:"\u2264 30 hari"},
+          {label:"Kontrak Habis",  val:kontrakHabis,        color:"#ef4444", sub:"≤ 30 hari"},
           {label:"Cuti Pending",   val:cutiPending,         color:"#eab308", sub:"Menunggu approval"},
           {label:"Total Gaji",     val:karyawanList.filter(k=>k.aktif).reduce((s,k)=>s+(Number(k.gajiPokok)||0),0).toLocaleString("id-ID"), color:"#16a34a", sub:"Pokok / bulan", prefix:"Rp "},
         ].map((c,i)=>(
@@ -694,8 +694,8 @@ export default function Karyawan({ user, globalData = {} }) {
       {/* Main tabs */}
       <div style={{display:"flex",gap:4,background:"#fff",borderRadius:12,border:"1px solid #e5e7eb",padding:5}}>
         {[
-          {id:"karyawan", label:"\ud83d\udc65 Data Karyawan"},
-          {id:"cuti",     label:`\ud83d\udcc5 Cuti & Ijin ${cutiPending>0?`(${cutiPending} pending)`:""}` },
+          {id:"karyawan", label:"👥 Data Karyawan"},
+          {id:"cuti",     label:`📅 Cuti & Ijin ${cutiPending>0?`(${cutiPending} pending)`:""}` },
         ].map(t=>(
           <div key={t.id} onClick={()=>setActiveTab(t.id)} style={{
             flex:1,padding:"8px 12px",borderRadius:8,textAlign:"center",fontSize:12,fontWeight:600,cursor:"pointer",
@@ -706,22 +706,22 @@ export default function Karyawan({ user, globalData = {} }) {
         ))}
       </div>
 
-      {/* \u2500\u2500 Tab: Data Karyawan */}
+      {/* ── Tab: Data Karyawan */}
       {activeTab==="karyawan" && (
         <div className="kr-layout">
           {/* List */}
           <div className="kr-widget">
             <div className="kr-widget-head">
-              <div className="kr-widget-title">\ud83d\udc65 Daftar Karyawan</div>
+              <div className="kr-widget-title">👥 Daftar Karyawan</div>
               {!isReadOnly && (
                 <button className="kr-btn primary" style={{flex:"none",padding:"6px 12px",fontSize:11}} onClick={()=>{ setEditData(null); setShow(true); }}>
-                  \u2795 Tambah
+                  ➕ Tambah
                 </button>
               )}
             </div>
             <div className="kr-filterbar">
               <div className="kr-search">
-                <span>\ud83d\udd0d</span>
+                <span>🔍</span>
                 <input placeholder="Cari nama, jabatan..." value={search} onChange={e=>setSearch(e.target.value)} />
               </div>
               <select className="kr-select" value={filterStatus} onChange={e=>setFS(e.target.value)}>
@@ -733,12 +733,12 @@ export default function Karyawan({ user, globalData = {} }) {
 
             {karyawanList.length === 0 ? (
               <div className="kr-empty">
-                <div style={{fontSize:36,opacity:.4}}>\ud83d\udc65</div>
+                <div style={{fontSize:36,opacity:.4}}>👥</div>
                 <div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Belum ada karyawan</div>
-                {!isReadOnly && <button className="kr-btn primary" style={{maxWidth:160,marginTop:4}} onClick={()=>{setEditData(null);setShow(true);}}>\u2795 Tambah Karyawan</button>}
+                {!isReadOnly && <button className="kr-btn primary" style={{maxWidth:160,marginTop:4}} onClick={()=>{setEditData(null);setShow(true);}}>➕ Tambah Karyawan</button>}
               </div>
             ) : filtered.length === 0 ? (
-              <div className="kr-empty"><div style={{fontSize:32,opacity:.4}}>\ud83d\udd0d</div><div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Tidak ditemukan</div></div>
+              <div className="kr-empty"><div style={{fontSize:32,opacity:.4}}>🔍</div><div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Tidak ditemukan</div></div>
             ) : (
               filtered.map(k => {
                 const sisa = hariSisa(k.tglSelesai);
@@ -754,7 +754,7 @@ export default function Karyawan({ user, globalData = {} }) {
                         {k.aktif?"Aktif":"Nonaktif"}
                       </span>
                       {sisa !== null && sisa <= 30 && sisa >= 0 && (
-                        <div style={{fontSize:10,color:"#dc2626",marginTop:2}}>\u26a0\ufe0f H-{sisa}</div>
+                        <div style={{fontSize:10,color:"#dc2626",marginTop:2}}>⚠️ H-{sisa}</div>
                       )}
                     </div>
                   </div>
@@ -774,7 +774,7 @@ export default function Karyawan({ user, globalData = {} }) {
           ) : (
             <div className="kr-widget">
               <div className="kr-empty" style={{padding:"60px 20px"}}>
-                <div style={{fontSize:36,opacity:.4}}>\ud83d\udc64</div>
+                <div style={{fontSize:36,opacity:.4}}>👤</div>
                 <div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Pilih karyawan</div>
                 <div style={{fontSize:11,color:"#9ca3af"}}>Klik nama untuk lihat detail</div>
               </div>
@@ -783,16 +783,16 @@ export default function Karyawan({ user, globalData = {} }) {
         </div>
       )}
 
-      {/* \u2500\u2500 Tab: Cuti & Ijin */}
+      {/* ── Tab: Cuti & Ijin */}
       {activeTab==="cuti" && (
         <div className="kr-widget">
           <div className="kr-widget-head">
-            <div className="kr-widget-title">\ud83d\udcc5 Pengajuan Cuti & Ijin</div>
+            <div className="kr-widget-title">📅 Pengajuan Cuti & Ijin</div>
             <span style={{fontSize:11,color:"#9ca3af"}}>{cutiList.length} pengajuan</span>
           </div>
           {cutiList.length === 0 ? (
             <div className="kr-empty">
-              <div style={{fontSize:32,opacity:.4}}>\ud83d\udcc5</div>
+              <div style={{fontSize:32,opacity:.4}}>📅</div>
               <div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Belum ada pengajuan</div>
               <div style={{fontSize:11,color:"#9ca3af"}}>Pengajuan dari karyawan akan muncul di sini</div>
             </div>
@@ -801,11 +801,11 @@ export default function Karyawan({ user, globalData = {} }) {
               <div key={c.id} className="kr-req-item">
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
                   <div>
-                    <div className="kr-req-name">{c.namaKaryawan} \u2014 {c.tipe==="cuti"?"\ud83c\udfd6\ufe0f Cuti":"\ud83d\udccb Ijin"}</div>
+                    <div className="kr-req-name">{c.namaKaryawan} — {c.tipe==="cuti"?"🏖️ Cuti":"📋 Ijin"}</div>
                     <div className="kr-req-meta">
-                      <span>\ud83d\udcc5 {c.dari} s/d {c.sampai}</span>
-                      <span>\u00b7 {c.durasi} hari</span>
-                      <span>\u00b7 Diajukan {c.tglPengajuan}</span>
+                      <span>📅 {c.dari} s/d {c.sampai}</span>
+                      <span>· {c.durasi} hari</span>
+                      <span>· Diajukan {c.tglPengajuan}</span>
                     </div>
                     <div style={{fontSize:11,color:"#6b7280",marginTop:3}}>"{c.alasan}"</div>
                   </div>
@@ -815,8 +815,8 @@ export default function Karyawan({ user, globalData = {} }) {
                 </div>
                 {c.status==="pending" && !isReadOnly && (
                   <div className="kr-req-actions">
-                    <button className="kr-btn success" style={{maxWidth:120,padding:"6px 10px",fontSize:11}} onClick={()=>handleApproveCuti(c.id,true)}>\u2705 Setujui</button>
-                    <button className="kr-btn danger"  style={{maxWidth:120,padding:"6px 10px",fontSize:11}} onClick={()=>handleApproveCuti(c.id,false)}>\u2715 Tolak</button>
+                    <button className="kr-btn success" style={{maxWidth:120,padding:"6px 10px",fontSize:11}} onClick={()=>handleApproveCuti(c.id,true)}>✅ Setujui</button>
+                    <button className="kr-btn danger"  style={{maxWidth:120,padding:"6px 10px",fontSize:11}} onClick={()=>handleApproveCuti(c.id,false)}>✕ Tolak</button>
                   </div>
                 )}
               </div>

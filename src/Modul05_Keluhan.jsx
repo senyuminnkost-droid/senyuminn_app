@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 const CSS = `
   .ws-wrap { display: flex; flex-direction: column; gap: 16px; }
 
-  /* \u2500\u2500\u2500 TOP CARDS \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── TOP CARDS ──────────────────────────── */
   .ws-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
   .ws-card {
     background: #fff; border-radius: 12px; border: 1px solid #e5e7eb;
@@ -17,10 +17,10 @@ const CSS = `
   .ws-card-val { font-size: 22px; font-weight: 700; color: #111827; font-family: 'JetBrains Mono', monospace; }
   .ws-card-sub { font-size: 11px; color: #6b7280; margin-top: 3px; }
 
-  /* \u2500\u2500\u2500 LAYOUT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── LAYOUT ─────────────────────────────── */
   .ws-layout { display: grid; grid-template-columns: 1fr 320px; gap: 14px; align-items: start; }
 
-  /* \u2500\u2500\u2500 WIDGET \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── WIDGET ─────────────────────────────── */
   .ws-widget {
     background: #fff; border-radius: 12px; border: 1px solid #e5e7eb;
     display: flex; flex-direction: column; overflow: hidden;
@@ -32,7 +32,7 @@ const CSS = `
   .ws-widget-title { font-size: 12px; font-weight: 600; color: #111827; display: flex; align-items: center; gap: 6px; }
   .ws-widget-body { padding: 14px 16px; flex: 1; }
 
-  /* \u2500\u2500\u2500 PERIODE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── PERIODE ────────────────────────────── */
   .ws-period {
     display: flex; align-items: center; gap: 8px;
     background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;
@@ -44,7 +44,7 @@ const CSS = `
   }
   .ws-period-btn:hover { background: #f3f4f6; }
 
-  /* \u2500\u2500\u2500 JADWAL GRID \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── JADWAL GRID ────────────────────────── */
   .ws-jadwal-grid { display: flex; flex-direction: column; gap: 8px; }
   .ws-jadwal-row {
     display: grid; grid-template-columns: 100px 1fr auto;
@@ -74,7 +74,7 @@ const CSS = `
     padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600;
   }
 
-  /* \u2500\u2500\u2500 CHECKLIST PANEL \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── CHECKLIST PANEL ────────────────────── */
   .ws-checklist { display: flex; flex-direction: column; gap: 10px; }
   .ws-check-group { background: #f9fafb; border-radius: 10px; overflow: hidden; border: 1px solid #e5e7eb; }
   .ws-check-group-head {
@@ -104,7 +104,7 @@ const CSS = `
   .ws-progress-bar { height: 4px; background: #e5e7eb; border-radius: 2px; margin: 6px 0 10px; overflow: hidden; }
   .ws-progress-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, #f97316, #16a34a); transition: width 0.3s; }
 
-  /* \u2500\u2500\u2500 MODAL JADWAL \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── MODAL JADWAL ───────────────────────── */
   .ws-overlay {
     position: fixed; inset: 0; background: rgba(17,24,39,0.45);
     backdrop-filter: blur(3px); z-index: 200; display: flex;
@@ -164,13 +164,13 @@ const CSS = `
   .ws-btn.ghost { background: #f3f4f6; color: #4b5563; }
   .ws-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  /* \u2500\u2500\u2500 EMPTY \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── EMPTY ──────────────────────────────── */
   .ws-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 16px; color: #9ca3af; text-align: center; gap: 8px; }
   .ws-empty-icon { font-size: 36px; opacity: 0.4; }
   .ws-empty-title { font-size: 14px; font-weight: 600; color: #374151; }
   .ws-empty-sub { font-size: 12px; }
 
-  /* \u2500\u2500\u2500 RESPONSIVE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── RESPONSIVE ─────────────────────────── */
   @media (max-width: 1024px) { .ws-layout { grid-template-columns: 1fr; } }
   @media (max-width: 768px)  { .ws-cards { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 480px)  {
@@ -200,9 +200,9 @@ const BULAN_NAMES = ["Januari","Februari","Maret","April","Mei","Juni","Juli","A
 const HARI_NAMES  = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
 
 const CHECKLIST_AREAS = [
-  { group: "\ud83c\udfe0 Per Kamar", items: ["Sapu & pel lantai", "Lap permukaan meja & lemari", "Bersihkan kamar mandi", "Ganti tempat sampah", "Cek kondisi AC", "Lap kaca & jendela"] },
-  { group: "\ud83c\udfe2 Area Umum", items: ["Selasar & tangga Lt 1-3", "Parkiran Lt 1", "Kamar mandi umum", "Langit-langit Lt 1-3", "Kantor", "Wastafel & taman"] },
-  { group: "\ud83d\uddd1\ufe0f Rutin Harian", items: ["Tempat sampah besar", "Nyalakan lampu sore", "Cek gerbang", "Buang sampah ke TPS"] },
+  { group: "🏠 Per Kamar", items: ["Sapu & pel lantai", "Lap permukaan meja & lemari", "Bersihkan kamar mandi", "Ganti tempat sampah", "Cek kondisi AC", "Lap kaca & jendela"] },
+  { group: "🏢 Area Umum", items: ["Selasar & tangga Lt 1-3", "Parkiran Lt 1", "Kamar mandi umum", "Langit-langit Lt 1-3", "Kantor", "Wastafel & taman"] },
+  { group: "🗑️ Rutin Harian", items: ["Tempat sampah besar", "Nyalakan lampu sore", "Cek gerbang", "Buang sampah ke TPS"] },
 ];
 
 const today = new Date();
@@ -229,8 +229,8 @@ function ModalJadwal({ kamarList, bulanJadwal, onClose, onSave }) {
     <div className="ws-overlay" onClick={onClose}>
       <div className="ws-modal" onClick={e => e.stopPropagation()}>
         <div className="ws-modal-head">
-          <div className="ws-modal-title">\ud83d\uddd3\ufe0f Buat Jadwal Weekly Service</div>
-          <button className="ws-modal-close" onClick={onClose}>\u2715</button>
+          <div className="ws-modal-title">🗓️ Buat Jadwal Weekly Service</div>
+          <button className="ws-modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="ws-modal-body">
 
@@ -245,7 +245,7 @@ function ModalJadwal({ kamarList, bulanJadwal, onClose, onSave }) {
             </label>
             {kamarList.length === 0 ? (
               <div style={{ fontSize: 12, color: "#9ca3af", padding: "10px 0" }}>
-                Belum ada data kamar \u2014 tambah di Pengaturan \u2192 Profil Kost
+                Belum ada data kamar — tambah di Pengaturan → Profil Kost
               </div>
             ) : (
               <div className="ws-kamar-selector">
@@ -256,7 +256,7 @@ function ModalJadwal({ kamarList, bulanJadwal, onClose, onSave }) {
                       key={k.id}
                       className={`ws-kamar-opt ${kamar.includes(k.id) ? "selected" : ""} ${skip ? "disabled" : ""}`}
                       onClick={() => !skip && toggleKamar(k.id)}
-                      title={skip ? `Skip \u2014 status: ${k.status}` : `Kamar ${k.id}`}
+                      title={skip ? `Skip — status: ${k.status}` : `Kamar ${k.id}`}
                     >
                       <div>K{padD(k.id)}</div>
                       <div className="ws-kamar-count">{k.tipe?.[0] || "R"}</div>
@@ -266,7 +266,7 @@ function ModalJadwal({ kamarList, bulanJadwal, onClose, onSave }) {
               </div>
             )}
             <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 6 }}>
-              \ud83d\udd35 Kamar Deep Clean & Tersedia otomatis di-skip, masuk minggu depan
+              🔵 Kamar Deep Clean & Tersedia otomatis di-skip, masuk minggu depan
             </div>
           </div>
 
@@ -278,7 +278,7 @@ function ModalJadwal({ kamarList, bulanJadwal, onClose, onSave }) {
           </div>
 
           <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 8, padding: "10px 12px", fontSize: 11, color: "#15803d" }}>
-            \u2705 Setelah jadwal disimpan, staff akan mendapat notifikasi WA otomatis.
+            ✅ Setelah jadwal disimpan, staff akan mendapat notifikasi WA otomatis.
           </div>
         </div>
         <div className="ws-modal-foot">
@@ -310,15 +310,15 @@ function ChecklistPanel({ jadwal, onClose, onSelesai }) {
   return (
     <div className="ws-widget">
       <div className="ws-widget-head">
-        <div className="ws-widget-title">\ud83e\uddf9 Checklist Service</div>
-        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16 }}>\u2715</button>
+        <div className="ws-widget-title">🧹 Checklist Service</div>
+        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16 }}>✕</button>
       </div>
       <div className="ws-widget-body" style={{ padding: "12px 14px" }}>
 
         {/* Header info */}
         <div style={{ background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 9, padding: "10px 12px", marginBottom: 12 }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: "#111827", marginBottom: 2 }}>
-            \ud83d\udcc5 {jadwal?.tgl} \u00b7 {jadwal?.kamar?.map(k => `K${padD(k)}`).join(", ")}
+            📅 {jadwal?.tgl} · {jadwal?.kamar?.map(k => `K${padD(k)}`).join(", ")}
           </div>
           <div style={{ fontSize: 10, color: "#9ca3af" }}>
             Staff: {jadwal?.staff || "Belum ditugaskan"}
@@ -349,7 +349,7 @@ function ChecklistPanel({ jadwal, onClose, onSelesai }) {
                   const checked = !!checks[key];
                   return (
                     <div key={iIdx} className={`ws-check-item ${checked ? "checked" : ""}`} onClick={() => toggleCheck(gIdx, iIdx)}>
-                      <div className="ws-checkbox">{checked && <span style={{ color: "#fff", fontSize: 10 }}>\u2713</span>}</div>
+                      <div className="ws-checkbox">{checked && <span style={{ color: "#fff", fontSize: 10 }}>✓</span>}</div>
                       <div className="ws-check-label">{item}</div>
                     </div>
                   );
@@ -372,7 +372,7 @@ function ChecklistPanel({ jadwal, onClose, onSelesai }) {
           />
           {catatan && (
             <div style={{ marginTop: 6, fontSize: 11, color: "#f97316", cursor: "pointer", fontWeight: 500 }}>
-              \u2691 Buat tiket keluhan dari temuan ini \u2192
+              ⚑ Buat tiket keluhan dari temuan ini →
             </div>
           )}
         </div>
@@ -385,7 +385,7 @@ function ChecklistPanel({ jadwal, onClose, onSelesai }) {
             disabled={pct < 100}
             style={{ flex: 2 }}
           >
-            {pct === 100 ? "\u2705 Tandai Selesai" : `Selesaikan dulu (${pct}%)`}
+            {pct === 100 ? "✅ Tandai Selesai" : `Selesaikan dulu (${pct}%)`}
           </button>
           <button className="ws-btn ghost" onClick={onClose} style={{ flex: 1 }}>Tutup</button>
         </div>
@@ -448,10 +448,10 @@ export default function Weekly({ user }) {
       {/* Cards */}
       <div className="ws-cards">
         {[
-          { label: "Jadwal Bulan Ini",  val: jadwalBulan.length || "\u2014", color: "#3b82f6", sub: "Total dijadwalkan" },
-          { label: "Selesai",           val: selesai || (jadwalBulan.length ? "0" : "\u2014"), color: "#16a34a", sub: `${pctBulan}% completion` },
-          { label: "Pending",           val: pending || (jadwalBulan.length ? "0" : "\u2014"), color: "#f97316", sub: "Belum dikerjakan" },
-          { label: "Hari Ini",          val: todayJadwal.length || "\u2014",  color: "#8b5cf6", sub: `${todayJadwal.reduce((s,j) => s + j.kamar.length, 0)} kamar` },
+          { label: "Jadwal Bulan Ini",  val: jadwalBulan.length || "—", color: "#3b82f6", sub: "Total dijadwalkan" },
+          { label: "Selesai",           val: selesai || (jadwalBulan.length ? "0" : "—"), color: "#16a34a", sub: `${pctBulan}% completion` },
+          { label: "Pending",           val: pending || (jadwalBulan.length ? "0" : "—"), color: "#f97316", sub: "Belum dikerjakan" },
+          { label: "Hari Ini",          val: todayJadwal.length || "—",  color: "#8b5cf6", sub: `${todayJadwal.reduce((s,j) => s + j.kamar.length, 0)} kamar` },
         ].map((c, i) => (
           <div key={i} className="ws-card">
             <div className="ws-card-bar" style={{ background: c.color }} />
@@ -468,7 +468,7 @@ export default function Weekly({ user }) {
         {/* Jadwal List */}
         <div className="ws-widget">
           <div className="ws-widget-head">
-            <div className="ws-widget-title">\ud83d\uddd3\ufe0f Jadwal Weekly Service</div>
+            <div className="ws-widget-title">🗓️ Jadwal Weekly Service</div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               {isAdmin && (
                 <button
@@ -478,9 +478,9 @@ export default function Weekly({ user }) {
                 </button>
               )}
               <div className="ws-period">
-                <button className="ws-period-btn" onClick={prevMonth}>\u2039</button>
+                <button className="ws-period-btn" onClick={prevMonth}>‹</button>
                 <span>{BULAN_NAMES[periodeMonth]} {periodeYear}</span>
-                <button className="ws-period-btn" onClick={nextMonth}>\u203a</button>
+                <button className="ws-period-btn" onClick={nextMonth}>›</button>
               </div>
             </div>
           </div>
@@ -501,7 +501,7 @@ export default function Weekly({ user }) {
 
             {jadwalBulan.length === 0 ? (
               <div className="ws-empty">
-                <div className="ws-empty-icon">\ud83e\uddf9</div>
+                <div className="ws-empty-icon">🧹</div>
                 <div className="ws-empty-title">Belum ada jadwal bulan ini</div>
                 <div className="ws-empty-sub">
                   {isAdmin ? 'Klik "+ Buat Jadwal" untuk membuat jadwal service' : "Tunggu jadwal dari PJ Operasional"}
@@ -523,21 +523,21 @@ export default function Weekly({ user }) {
                         <div className="ws-jadwal-kamar">
                           {j.kamar.map(k => (
                             <span key={k} className={`ws-kamar-chip ${done ? "done" : ""}`}>
-                              {done ? "\u2713" : "\ud83e\uddf9"} K{padD(k)}
+                              {done ? "✓" : "🧹"} K{padD(k)}
                             </span>
                           ))}
                         </div>
-                        {j.staff && <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 3 }}>\ud83d\udc64 {j.staff}</div>}
+                        {j.staff && <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 3 }}>👤 {j.staff}</div>}
                       </div>
                       <div className="ws-jadwal-actions">
                         {done ? (
-                          <span className="ws-badge" style={{ background: "#dcfce7", color: "#16a34a" }}>\u2705 Selesai</span>
+                          <span className="ws-badge" style={{ background: "#dcfce7", color: "#16a34a" }}>✅ Selesai</span>
                         ) : (
                           <button
                             onClick={() => setActiveChecklist(j)}
                             style={{ padding: "5px 10px", borderRadius: 7, border: "1.5px solid #e5e7eb", background: "#fff", fontSize: 11, fontWeight: 600, cursor: "pointer", color: "#374151", transition: "all 0.12s" }}
                           >
-                            {isT ? "\u25b6 Mulai" : "\ud83d\udccb Checklist"}
+                            {isT ? "▶ Mulai" : "📋 Checklist"}
                           </button>
                         )}
                       </div>
@@ -562,11 +562,11 @@ export default function Weekly({ user }) {
           ) : (
             <div className="ws-widget">
               <div className="ws-widget-head">
-                <div className="ws-widget-title">\ud83d\udccb Checklist Service</div>
+                <div className="ws-widget-title">📋 Checklist Service</div>
               </div>
               <div className="ws-widget-body">
                 <div className="ws-empty" style={{ padding: "28px 0" }}>
-                  <div className="ws-empty-icon">\ud83e\uddf9</div>
+                  <div className="ws-empty-icon">🧹</div>
                   <div className="ws-empty-sub">Klik "Mulai" atau "Checklist" pada jadwal untuk memulai</div>
                 </div>
               </div>
@@ -576,7 +576,7 @@ export default function Weekly({ user }) {
           {/* Area Service Info */}
           <div className="ws-widget">
             <div className="ws-widget-head">
-              <div className="ws-widget-title">\ud83d\udcd6 Area yang Di-service</div>
+              <div className="ws-widget-title">📖 Area yang Di-service</div>
             </div>
             <div className="ws-widget-body">
               {CHECKLIST_AREAS.map((g, i) => (
@@ -591,7 +591,7 @@ export default function Weekly({ user }) {
                 </div>
               ))}
               <div style={{ marginTop: 8, padding: "8px 10px", background: "#fff7ed", borderRadius: 8, fontSize: 11, color: "#92400e" }}>
-                \u270f\ufe0f Checklist bisa diubah di <b>Pengaturan \u2192 SOP & Standar</b>
+                ✏️ Checklist bisa diubah di <b>Pengaturan → SOP & Standar</b>
               </div>
             </div>
           </div>

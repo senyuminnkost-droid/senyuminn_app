@@ -83,7 +83,7 @@ function StyleInjector() {
   return null;
 }
 
-// \u2500\u2500\u2500 helpers \u2500\u2500\u2500
+// ─── helpers ───
 const getInisial = (nama="") => {
   const p = nama.trim().split(" ");
   return (p.length>=2 ? p[0][0]+p[1][0] : nama.slice(0,2)).toUpperCase();
@@ -120,7 +120,7 @@ const MENU_SECTIONS = [
   { label:"Pengaturan",  keys:["profil","users","sop"] },
 ];
 
-// \u2500\u2500\u2500 Modal Form User \u2500\u2500\u2500
+// ─── Modal Form User ───
 function ModalUser({ userObj, currentUser, onClose, onSave }) {
   const isEdit = !!userObj?.id;
   const [form, setForm] = useState(userObj ? {...userObj} : {
@@ -148,8 +148,8 @@ function ModalUser({ userObj, currentUser, onClose, onSave }) {
     <div className="us-overlay" onClick={onClose}>
       <div className="us-modal" onClick={e=>e.stopPropagation()}>
         <div className="us-modal-head">
-          <div className="us-modal-title">{isEdit?"\u270f\ufe0f Edit User":"\u2795 Tambah User"}</div>
-          <button className="us-modal-close" onClick={onClose}>\u2715</button>
+          <div className="us-modal-title">{isEdit?"✏️ Edit User":"➕ Tambah User"}</div>
+          <button className="us-modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="us-modal-body">
 
@@ -197,7 +197,7 @@ function ModalUser({ userObj, currentUser, onClose, onSave }) {
           {/* Permission matrix */}
           <div style={{marginTop:4}}>
             <div style={{fontSize:11,fontWeight:700,color:"#374151",marginBottom:8,display:"flex",alignItems:"center",gap:6}}>
-              \ud83d\udd10 Hak Akses per Menu
+              🔐 Hak Akses per Menu
               {(form.role==="owner"||form.role==="direktur") && (
                 <span style={{fontSize:10,color:"#9ca3af",fontWeight:400}}>(Role ini selalu read-only)</span>
               )}
@@ -218,9 +218,9 @@ function ModalUser({ userObj, currentUser, onClose, onSave }) {
                           disabled={isLocked}
                           onChange={e=>setPerm(menu,e.target.value)}
                         >
-                          <option value="write">\u270f\ufe0f Write</option>
-                          <option value="read">\ud83d\udc41\ufe0f Read</option>
-                          <option value="none">\ud83d\udeab None</option>
+                          <option value="write">✏️ Write</option>
+                          <option value="read">👁️ Read</option>
+                          <option value="none">🚫 None</option>
                         </select>
                       </div>
                     );
@@ -239,7 +239,7 @@ function ModalUser({ userObj, currentUser, onClose, onSave }) {
         </div>
         <div className="us-modal-foot">
           <button className="us-btn primary" disabled={!valid} onClick={()=>{ onSave({...form, id:userObj?.id||Date.now()}); onClose(); }}>
-            \u2705 {isEdit?"Simpan Perubahan":"Tambah User"}
+            ✅ {isEdit?"Simpan Perubahan":"Tambah User"}
           </button>
           <button className="us-btn ghost" onClick={onClose}>Batal</button>
         </div>
@@ -247,7 +247,7 @@ function ModalUser({ userObj, currentUser, onClose, onSave }) {
   );
 }
 
-// \u2500\u2500\u2500 Modal Reset Password \u2500\u2500\u2500
+// ─── Modal Reset Password ───
 function ModalResetPW({ userObj, onClose, onSave }) {
   const [pw, setPw] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -256,8 +256,8 @@ function ModalResetPW({ userObj, onClose, onSave }) {
     <div className="us-overlay" onClick={onClose}>
       <div className="us-modal" onClick={e=>e.stopPropagation()} style={{maxWidth:380}}>
         <div className="us-modal-head">
-          <div className="us-modal-title">\ud83d\udd11 Reset Password \u2014 {userObj?.nama}</div>
-          <button className="us-modal-close" onClick={onClose}>\u2715</button>
+          <div className="us-modal-title">🔑 Reset Password — {userObj?.nama}</div>
+          <button className="us-modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="us-modal-body">
           <div className="us-field">
@@ -269,10 +269,10 @@ function ModalResetPW({ userObj, onClose, onSave }) {
             <input className="us-input" type="password" value={confirm} onChange={e=>setConfirm(e.target.value)} placeholder="Ulangi password..." style={{borderColor:confirm&&!match?"#ef4444":confirm&&match?"#16a34a":""}} />
           </div>
           {confirm && !match && <div style={{fontSize:11,color:"#ef4444"}}>Password tidak sama</div>}
-          {match && <div style={{fontSize:11,color:"#16a34a"}}>\u2713 Password cocok</div>}
+          {match && <div style={{fontSize:11,color:"#16a34a"}}>✓ Password cocok</div>}
         </div>
         <div className="us-modal-foot">
-          <button className="us-btn primary" disabled={!match||pw.length<6} onClick={()=>{ onSave(pw); onClose(); }}>\ud83d\udd11 Reset Password</button>
+          <button className="us-btn primary" disabled={!match||pw.length<6} onClick={()=>{ onSave(pw); onClose(); }}>🔑 Reset Password</button>
           <button className="us-btn ghost" onClick={onClose}>Batal</button>
         </div>
       </div>
@@ -280,7 +280,7 @@ function ModalResetPW({ userObj, onClose, onSave }) {
   );
 }
 
-// \u2500\u2500\u2500 MAIN \u2500\u2500\u2500
+// ─── MAIN ───
 export default function ManajemenUsers({ user, globalData={} }) {
   const { isReadOnly=false } = globalData;
 
@@ -300,7 +300,7 @@ export default function ManajemenUsers({ user, globalData={} }) {
     { id:1, waktu:"2026-03-04 09:12", user:"admin",    aksi:"Login berhasil" },
     { id:2, waktu:"2026-03-04 08:45", user:"staff1",   aksi:"Update status tiket T-003" },
     { id:3, waktu:"2026-03-03 16:30", user:"admin",    aksi:"Konfirmasi pembayaran Kamar 7" },
-    { id:4, waktu:"2026-03-03 14:10", user:"staff2",   aksi:"Input absensi \u2014 Shift Malam" },
+    { id:4, waktu:"2026-03-03 14:10", user:"staff2",   aksi:"Input absensi — Shift Malam" },
     { id:5, waktu:"2026-03-02 10:05", user:"admin",    aksi:"Tambah karyawan baru" },
   ]);
 
@@ -356,8 +356,8 @@ export default function ManajemenUsers({ user, globalData={} }) {
       {/* Tabs */}
       <div style={{display:"flex",gap:4,background:"#fff",borderRadius:12,border:"1px solid #e5e7eb",padding:5}}>
         {[
-          {id:"users", label:"\ud83d\udc64 Daftar User"},
-          {id:"log",   label:"\ud83d\udccb Log Aktivitas"},
+          {id:"users", label:"👤 Daftar User"},
+          {id:"log",   label:"📋 Log Aktivitas"},
         ].map(t=>(
           <div key={t.id} onClick={()=>setActiveTab(t.id)} style={{flex:1,padding:"8px 12px",borderRadius:8,textAlign:"center",fontSize:12,fontWeight:600,cursor:"pointer",color:activeTab===t.id?"#fff":"#9ca3af",background:activeTab===t.id?"linear-gradient(135deg,#f97316,#ea580c)":"transparent",transition:"all .15s"}}>
             {t.label}
@@ -371,10 +371,10 @@ export default function ManajemenUsers({ user, globalData={} }) {
           {/* List */}
           <div className="us-widget">
             <div className="us-widget-head">
-              <div className="us-widget-title">\ud83d\udc64 User ({users.length})</div>
+              <div className="us-widget-title">👤 User ({users.length})</div>
               {canManage && (
                 <button className="us-btn primary" style={{padding:"5px 11px",fontSize:11}} onClick={()=>{ setEditData(null); setShowModal(true); }}>
-                  \u2795 Tambah
+                  ➕ Tambah
                 </button>
               )}
             </div>
@@ -400,22 +400,22 @@ export default function ManajemenUsers({ user, globalData={} }) {
           {selected ? (
             <div className="us-widget">
               <div className="us-widget-head">
-                <div className="us-widget-title">\ud83d\udd10 Detail & Hak Akses</div>
+                <div className="us-widget-title">🔐 Detail & Hak Akses</div>
                 <div style={{display:"flex",gap:6}}>
                   {/* Reset password: manajemen bisa semua, owner hanya diri sendiri */}
                   {(canManage || (isOwner && selected.id===user?.id)) && (
                     <button className="us-btn warning" style={{padding:"5px 10px",fontSize:11}} onClick={()=>setShowReset(true)}>
-                      \ud83d\udd11 Reset PW
+                      🔑 Reset PW
                     </button>
                   )}
                   {canManage && selected.role!=="owner" && (
                     <button className="us-btn ghost" style={{padding:"5px 10px",fontSize:11}} onClick={()=>handleToggleAktif(selected.id)}>
-                      {selected.aktif?"\u23f8 Nonaktifkan":"\u25b6 Aktifkan"}
+                      {selected.aktif?"⏸ Nonaktifkan":"▶ Aktifkan"}
                     </button>
                   )}
                   {canManage && (
                     <button className="us-btn primary" style={{padding:"5px 10px",fontSize:11}} onClick={()=>{ setEditData(selected); setShowModal(true); }}>
-                      \u270f\ufe0f Edit
+                      ✏️ Edit
                     </button>
                   )}
                 </div>
@@ -432,7 +432,7 @@ export default function ManajemenUsers({ user, globalData={} }) {
                         {ROLE_COLORS[selected.role]?.label}
                       </span>
                       <span className="us-badge" style={{color:selected.aktif?"#15803d":"#9ca3af",background:selected.aktif?"#dcfce7":"#f3f4f6"}}>
-                        {selected.aktif?"\u25cf Aktif":"\u25cf Nonaktif"}
+                        {selected.aktif?"● Aktif":"● Nonaktif"}
                       </span>
                       <span className="us-badge" style={{color:"#6b7280",background:"#f3f4f6",fontFamily:"JetBrains Mono,monospace"}}>
                         @{selected.username}
@@ -452,7 +452,7 @@ export default function ManajemenUsers({ user, globalData={} }) {
                           <div key={menu} className="us-perm-row">
                             <span className="us-perm-label">{MENU_LABELS[menu]}</span>
                             <span className={`us-perm-select ${val}`} style={{padding:"3px 8px",borderRadius:6,fontSize:11,fontWeight:600}}>
-                              {val==="write"?"\u270f\ufe0f Write":val==="read"?"\ud83d\udc41\ufe0f Read":"\ud83d\udeab None"}
+                              {val==="write"?"✏️ Write":val==="read"?"👁️ Read":"🚫 None"}
                             </span>
                           </div>
                         );
@@ -464,7 +464,7 @@ export default function ManajemenUsers({ user, globalData={} }) {
             </div>
           ) : (
             <div className="us-widget">
-              <div className="us-empty"><div style={{fontSize:36,opacity:.4}}>\ud83d\udc64</div><div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Pilih user untuk lihat detail</div></div>
+              <div className="us-empty"><div style={{fontSize:36,opacity:.4}}>👤</div><div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Pilih user untuk lihat detail</div></div>
             </div>
           )}
         </div>
@@ -474,12 +474,12 @@ export default function ManajemenUsers({ user, globalData={} }) {
       {activeTab==="log" && (
         <div className="us-widget">
           <div className="us-widget-head">
-            <div className="us-widget-title">\ud83d\udccb Log Aktivitas</div>
+            <div className="us-widget-title">📋 Log Aktivitas</div>
             <span style={{fontSize:11,color:"#9ca3af"}}>{activityLog.length} entri</span>
           </div>
           {activityLog.map(log=>(
             <div key={log.id} className="us-log-item">
-              <div className="us-log-time">\ud83d\udd50 {log.waktu} \u00b7 <b>@{log.user}</b></div>
+              <div className="us-log-time">🕐 {log.waktu} · <b>@{log.user}</b></div>
               <div className="us-log-action">{log.aksi}</div>
             </div>
           ))}

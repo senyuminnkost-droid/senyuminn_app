@@ -41,7 +41,7 @@ const CSS = `
 
   .py-badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
 
-  /* \u2500\u2500\u2500 DETAIL \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── DETAIL ──────────────────────────────── */
   .py-detail { padding: 16px; overflow-y: auto; max-height: calc(100vh - 220px); }
   .py-detail-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
   .py-detail-avatar { width: 52px; height: 52px; border-radius: 12px; flex-shrink: 0; background: linear-gradient(135deg, #f97316, #ea580c); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: #fff; }
@@ -68,7 +68,7 @@ const CSS = `
   .py-partner-icon { width: 28px; height: 28px; border-radius: 7px; background: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 13px; }
   .py-partner-name { font-size: 12px; font-weight: 500; color: #374151; }
 
-  /* \u2500\u2500\u2500 MODAL \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── MODAL ───────────────────────────────── */
   .py-overlay { position: fixed; inset: 0; background: rgba(17,24,39,0.5); backdrop-filter: blur(3px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px; animation: pyFade 0.18s ease; }
   @keyframes pyFade { from { opacity: 0; } to { opacity: 1; } }
   .py-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 580px; max-height: 92vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.18); animation: pySlide 0.2s cubic-bezier(0.4,0,0.2,1); }
@@ -167,7 +167,7 @@ function StyleInjector() {
 // ============================================================
 const padD = (n) => String(n).padStart(2, "0");
 const todayStr = (() => { const d = new Date(); return `${d.getFullYear()}-${padD(d.getMonth()+1)}-${padD(d.getDate())}`; })();
-const fmtRp = (n) => n ? "Rp " + Number(n).toLocaleString("id-ID") : "\u2014";
+const fmtRp = (n) => n ? "Rp " + Number(n).toLocaleString("id-ID") : "—";
 const hariSisa = (tgl) => tgl ? Math.ceil((new Date(tgl) - new Date()) / 86400000) : null;
 const progressKontrak = (mulai, selesai) => {
   if (!mulai || !selesai) return 0;
@@ -185,7 +185,7 @@ const addMonths = (dateStr, n) => {
 };
 
 // ============================================================
-// CHECKIN MODAL \u2014 3 STEPS
+// CHECKIN MODAL — 3 STEPS
 // ============================================================
 const STEPS = ["Data Penyewa", "Kamar & Kontrak", "Konfirmasi"];
 
@@ -245,16 +245,16 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
       <div className="py-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 440 }}>
         <div className="py-modal-body">
           <div className="py-success">
-            <div className="py-success-icon">\ud83c\udf89</div>
+            <div className="py-success-icon">🎉</div>
             <div className="py-success-title">Check-in Berhasil!</div>
             <div className="py-success-sub">
               <b>{form.nama}</b> telah check-in di Kamar {form.kamarId}.<br />
-              Status kamar diperbarui \u2192 <b>Terisi</b>.<br />
+              Status kamar diperbarui → <b>Terisi</b>.<br />
               Tagihan pertama telah dibuat.
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, width: "100%", maxWidth: 300, margin: "0 auto" }}>
               <button className="py-btn primary" onClick={() => alert("Generate PDF Surat Perjanjian...")}>
-                \ud83d\udcc4 Download Surat Perjanjian
+                📄 Download Surat Perjanjian
               </button>
               <button className="py-btn ghost" onClick={onClose}>Tutup</button>
             </div>
@@ -268,8 +268,8 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
     <div className="py-overlay" onClick={onClose}>
       <div className="py-modal" onClick={e => e.stopPropagation()}>
         <div className="py-modal-head">
-          <div className="py-modal-title">\ud83d\udd11 Check-in Penyewa Baru</div>
-          <button className="py-modal-close" onClick={onClose}>\u2715</button>
+          <div className="py-modal-title">🔑 Check-in Penyewa Baru</div>
+          <button className="py-modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="py-modal-body">
 
@@ -278,7 +278,7 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
             {STEPS.map((s, i) => (
               <div key={i} className="py-step" style={{ flex: i < STEPS.length-1 ? "1" : "0 0 auto" }}>
                 <div className={`py-step-num ${i < step ? "done" : i === step ? "active" : "idle"}`}>
-                  {i < step ? "\u2713" : i + 1}
+                  {i < step ? "✓" : i + 1}
                 </div>
                 <div className={`py-step-label ${i === step ? "active" : ""}`}>{s}</div>
                 {i < STEPS.length - 1 && <div className={`py-step-line ${i < step ? "done" : ""}`} />}
@@ -286,7 +286,7 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
             ))}
           </div>
 
-          {/* \u2500\u2500 STEP 0: Data Penyewa \u2500\u2500 */}
+          {/* ── STEP 0: Data Penyewa ── */}
           {step === 0 && (
             <div>
               <div className="py-divider">Identitas</div>
@@ -345,10 +345,10 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
               >
                 <input id="ktp-input" type="file" accept="image/*,.pdf" style={{ display: "none" }} onChange={e => setKtpFile(e.target.files[0])} />
                 {ktpFile ? (
-                  <div style={{ fontSize: 13, color: "#15803d", fontWeight: 600 }}>\u2705 {ktpFile.name}</div>
+                  <div style={{ fontSize: 13, color: "#15803d", fontWeight: 600 }}>✅ {ktpFile.name}</div>
                 ) : (
                   <div>
-                    <div style={{ fontSize: 24, marginBottom: 6 }}>\ud83e\udeaa</div>
+                    <div style={{ fontSize: 24, marginBottom: 6 }}>🪪</div>
                     <div style={{ fontSize: 12, fontWeight: 600, color: "#6b7280" }}>Klik untuk upload foto KTP</div>
                     <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 2 }}>JPG, PNG, atau PDF</div>
                   </div>
@@ -369,12 +369,12 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
             </div>
           )}
 
-          {/* \u2500\u2500 STEP 1: Kamar & Kontrak \u2500\u2500 */}
+          {/* ── STEP 1: Kamar & Kontrak ── */}
           {step === 1 && (
             <div>
               <div className="py-divider">Pilih Kamar</div>
               {kamarList.length === 0 ? (
-                <div style={{ fontSize: 12, color: "#9ca3af", padding: "12px 0" }}>Belum ada data kamar \u2014 tambah di Pengaturan \u2192 Profil Kost</div>
+                <div style={{ fontSize: 12, color: "#9ca3af", padding: "12px 0" }}>Belum ada data kamar — tambah di Pengaturan → Profil Kost</div>
               ) : (
                 <div className="py-kamar-grid">
                   {kamarList.map(k => {
@@ -396,7 +396,7 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
               )}
               {kamarDipilih && (
                 <div style={{ marginTop: 8, padding: "8px 12px", background: "#fff7ed", borderRadius: 8, fontSize: 12, color: "#92400e", fontWeight: 500 }}>
-                  \u2705 Kamar {kamarDipilih.id} \u2014 {kamarDipilih.tipe} \u00b7 {fmtRp(kamarDipilih.harga)}/bulan
+                  ✅ Kamar {kamarDipilih.id} — {kamarDipilih.tipe} · {fmtRp(kamarDipilih.harga)}/bulan
                 </div>
               )}
 
@@ -417,33 +417,33 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
               </div>
               {form.kontrakSelesai && (
                 <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 8, padding: "9px 12px", fontSize: 12, color: "#15803d", fontWeight: 500 }}>
-                  \u2705 Kontrak berakhir: <b>{form.kontrakSelesai}</b>
+                  ✅ Kontrak berakhir: <b>{form.kontrakSelesai}</b>
                 </div>
               )}
             </div>
           )}
 
-          {/* \u2500\u2500 STEP 2: Konfirmasi \u2500\u2500 */}
+          {/* ── STEP 2: Konfirmasi ── */}
           {step === 2 && (
             <div>
               <div style={{ marginBottom: 14, padding: "10px 14px", background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 10, fontSize: 12, color: "#15803d", fontWeight: 500 }}>
-                \u2705 Periksa kembali data sebelum konfirmasi. Setelah disimpan, kamar akan langsung berstatus <b>Terisi</b> dan tagihan pertama dibuat.
+                ✅ Periksa kembali data sebelum konfirmasi. Setelah disimpan, kamar akan langsung berstatus <b>Terisi</b> dan tagihan pertama dibuat.
               </div>
               <div className="py-summary">
                 {[
                   { k: "Nama",          v: form.nama },
-                  { k: "NIK",           v: form.nik || "\u2014" },
+                  { k: "NIK",           v: form.nik || "—" },
                   { k: "Jenis Kelamin", v: form.jenisKelamin === "L" ? "Laki-laki" : "Perempuan" },
-                  { k: "Tanggal Lahir", v: form.tglLahir || "\u2014" },
+                  { k: "Tanggal Lahir", v: form.tglLahir || "—" },
                   { k: "No. HP",        v: form.noHP },
-                  { k: "Kontak Darurat",v: `${form.namaDarurat || "\u2014"} (${form.noHPDarurat || "\u2014"})` },
+                  { k: "Kontak Darurat",v: `${form.namaDarurat || "—"} (${form.noHPDarurat || "—"})` },
                   { k: "Alamat",        v: form.alamat },
-                  { k: "Pekerjaan",     v: form.pekerjaan || "\u2014" },
-                  { k: "Partner",       v: [form.partner1, form.partner2].filter(Boolean).join(", ") || "\u2014" },
-                  { k: "Kamar",         v: `Kamar ${form.kamarId} \u2014 ${kamarDipilih?.tipe || ""}`, cls: "orange" },
-                  { k: "Kontrak",       v: `${form.kontrakMulai} \u2192 ${form.kontrakSelesai} (${form.durasi} bln)`, cls: "orange" },
+                  { k: "Pekerjaan",     v: form.pekerjaan || "—" },
+                  { k: "Partner",       v: [form.partner1, form.partner2].filter(Boolean).join(", ") || "—" },
+                  { k: "Kamar",         v: `Kamar ${form.kamarId} — ${kamarDipilih?.tipe || ""}`, cls: "orange" },
+                  { k: "Kontrak",       v: `${form.kontrakMulai} → ${form.kontrakSelesai} (${form.durasi} bln)`, cls: "orange" },
                   { k: "Tagihan/bln",   v: fmtRp(kamarDipilih?.harga), cls: "orange" },
-                  { k: "Foto KTP",      v: ktpFile ? `\u2705 ${ktpFile.name}` : "Belum diupload" },
+                  { k: "Foto KTP",      v: ktpFile ? `✅ ${ktpFile.name}` : "Belum diupload" },
                 ].map((r, i) => (
                   <div key={i} className="py-summary-row">
                     <span className="py-summary-key">{r.k}</span>
@@ -457,16 +457,16 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
         </div>
 
         <div className="py-modal-foot">
-          {step > 0 && <button className="py-btn ghost" style={{ flex: "0 0 80px" }} onClick={() => setStep(s => s-1)}>\u2190 Kembali</button>}
+          {step > 0 && <button className="py-btn ghost" style={{ flex: "0 0 80px" }} onClick={() => setStep(s => s-1)}>← Kembali</button>}
           {step < 2 ? (
             <button className="py-btn primary"
               disabled={step === 0 ? !validStep0 : !validStep1}
               onClick={() => setStep(s => s+1)}>
-              Lanjut \u2192
+              Lanjut →
             </button>
           ) : (
             <button className="py-btn success" onClick={handleFinish}>
-              \u2705 Konfirmasi Check-in
+              ✅ Konfirmasi Check-in
             </button>
           )}
         </div>
@@ -482,10 +482,10 @@ function DetailPanel({ penyewa, onEdit, onClose }) {
   return (
     <div className="py-widget">
       <div className="py-widget-head">
-        <div className="py-widget-title">\ud83d\udc64 Detail Penyewa</div>
+        <div className="py-widget-title">👤 Detail Penyewa</div>
         <div style={{ display: "flex", gap: 6 }}>
-          <button onClick={onEdit} style={{ padding: "4px 10px", borderRadius: 7, border: "1.5px solid #e5e7eb", background: "#fff", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>\u270f\ufe0f Edit</button>
-          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16 }}>\u2715</button>
+          <button onClick={onEdit} style={{ padding: "4px 10px", borderRadius: 7, border: "1.5px solid #e5e7eb", background: "#fff", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>✏️ Edit</button>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16 }}>✕</button>
         </div>
       </div>
       <div className="py-detail">
@@ -494,11 +494,11 @@ function DetailPanel({ penyewa, onEdit, onClose }) {
           <div className="py-detail-avatar">{getInisial(penyewa.nama)}</div>
           <div style={{ flex: 1 }}>
             <div className="py-detail-name">{penyewa.nama}</div>
-            <div className="py-detail-sub">\ud83d\udcde {penyewa.noHP || "\u2014"} \u00b7 {penyewa.pekerjaan || "\u2014"}</div>
+            <div className="py-detail-sub">📞 {penyewa.noHP || "—"} · {penyewa.pekerjaan || "—"}</div>
             <div className="py-detail-badges">
-              <span className="py-badge" style={{ background: "#fff7ed", color: "#ea580c" }}>\ud83c\udfe0 Kamar {penyewa.kamarId}</span>
-              {penyewa.partner?.length > 0 && <span className="py-badge" style={{ background: "#f3f4f6", color: "#6b7280" }}>\ud83d\udc65 +{penyewa.partner.length} partner</span>}
-              <span className="py-badge" style={{ background: "#f3f4f6", color: "#6b7280" }}>{penyewa.jenisKelamin === "L" ? "\u2642" : "\u2640"}</span>
+              <span className="py-badge" style={{ background: "#fff7ed", color: "#ea580c" }}>🏠 Kamar {penyewa.kamarId}</span>
+              {penyewa.partner?.length > 0 && <span className="py-badge" style={{ background: "#f3f4f6", color: "#6b7280" }}>👥 +{penyewa.partner.length} partner</span>}
+              <span className="py-badge" style={{ background: "#f3f4f6", color: "#6b7280" }}>{penyewa.jenisKelamin === "L" ? "♂" : "♀"}</span>
             </div>
           </div>
         </div>
@@ -508,14 +508,14 @@ function DetailPanel({ penyewa, onEdit, onClose }) {
           <div className="py-section-label">Kontrak Sewa</div>
           <div className="py-kontrak-bar">
             <div className="py-kontrak-dates">
-              <span>{penyewa.kontrakMulai || "\u2014"}</span>
-              <span className="py-kontrak-arrow">\u2192</span>
-              <span style={{ color: sisa !== null && sisa <= 30 ? "#dc2626" : "#374151" }}>{penyewa.kontrakSelesai || "\u2014"}</span>
+              <span>{penyewa.kontrakMulai || "—"}</span>
+              <span className="py-kontrak-arrow">→</span>
+              <span style={{ color: sisa !== null && sisa <= 30 ? "#dc2626" : "#374151" }}>{penyewa.kontrakSelesai || "—"}</span>
             </div>
             <div className="py-progress"><div className="py-progress-fill" style={{ width: `${progres}%` }} /></div>
             {sisa !== null && (
               <div style={{ fontSize: 11, marginTop: 6, fontWeight: 500, color: sisa <= 7 ? "#dc2626" : sisa <= 30 ? "#d97706" : "#16a34a" }}>
-                {sisa <= 0 ? "\u26a0\ufe0f Kontrak habis!" : sisa <= 7 ? `\ud83d\udd34 ${sisa} hari lagi` : sisa <= 30 ? `\u26a0\ufe0f ${sisa} hari lagi` : `\u2705 ${sisa} hari tersisa`}
+                {sisa <= 0 ? "⚠️ Kontrak habis!" : sisa <= 7 ? `🔴 ${sisa} hari lagi` : sisa <= 30 ? `⚠️ ${sisa} hari lagi` : `✅ ${sisa} hari tersisa`}
               </div>
             )}
           </div>
@@ -526,12 +526,12 @@ function DetailPanel({ penyewa, onEdit, onClose }) {
           <div className="py-section-label">Identitas & Kontak</div>
           <div className="py-info-grid">
             {[
-              { k: "NIK / KTP",      v: penyewa.nik           || "\u2014", mono: true },
-              { k: "Tanggal Lahir",  v: penyewa.tglLahir      || "\u2014" },
-              { k: "Alamat",         v: penyewa.alamat         || "\u2014" },
-              { k: "No. Darurat",    v: penyewa.noHPDarurat    || "\u2014" },
-              { k: "Nama Darurat",   v: penyewa.namaDarurat    || "\u2014" },
-              { k: "Foto KTP",       v: penyewa.ktpFile ? `\u2705 ${penyewa.ktpFile}` : "Belum diupload" },
+              { k: "NIK / KTP",      v: penyewa.nik           || "—", mono: true },
+              { k: "Tanggal Lahir",  v: penyewa.tglLahir      || "—" },
+              { k: "Alamat",         v: penyewa.alamat         || "—" },
+              { k: "No. Darurat",    v: penyewa.noHPDarurat    || "—" },
+              { k: "Nama Darurat",   v: penyewa.namaDarurat    || "—" },
+              { k: "Foto KTP",       v: penyewa.ktpFile ? `✅ ${penyewa.ktpFile}` : "Belum diupload" },
             ].map((i, idx) => (
               <div key={idx} className="py-info-item" style={i.k === "Alamat" ? { gridColumn: "1 / -1" } : {}}>
                 <div className="py-info-key">{i.k}</div>
@@ -547,7 +547,7 @@ function DetailPanel({ penyewa, onEdit, onClose }) {
             <div className="py-section-label">Partner</div>
             {penyewa.partner.map((p, i) => (
               <div key={i} className="py-partner-item">
-                <div className="py-partner-icon">\ud83d\udc65</div>
+                <div className="py-partner-icon">👥</div>
                 <div className="py-partner-name">{p}</div>
               </div>
             ))}
@@ -556,8 +556,8 @@ function DetailPanel({ penyewa, onEdit, onClose }) {
 
         {/* Aksi */}
         <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-          <button className="py-btn primary" style={{ flex: 2 }}>\ud83d\udccb Perpanjang</button>
-          <button className="py-btn ghost"   style={{ flex: 1 }}>\ud83d\udeaa Check-out</button>
+          <button className="py-btn primary" style={{ flex: 2 }}>📋 Perpanjang</button>
+          <button className="py-btn ghost"   style={{ flex: 1 }}>🚪 Check-out</button>
         </div>
       </div>
     </div>
@@ -600,10 +600,10 @@ export default function Penyewa({ user }) {
       {/* Cards */}
       <div className="py-cards">
         {[
-          { label: "Total Penyewa",    val: penyewaList.length || "\u2014",    color: "#3b82f6", sub: "Kontrak aktif" },
-          { label: "Kontrak Habis",    val: kontrakHabis || (penyewaList.length ? "0" : "\u2014"), color: "#ef4444", sub: "\u2264 30 hari" },
-          { label: "Total Penghuni",   val: penyewaList.reduce((s,p) => s+1+(p.partner?.length||0), 0) || "\u2014", color: "#f97316", sub: "Termasuk partner" },
-          { label: "Kamar Terisi",     val: new Set(penyewaList.map(p=>p.kamarId)).size || (penyewaList.length ? "0" : "\u2014"), color: "#16a34a", sub: "Unit berpenghuni" },
+          { label: "Total Penyewa",    val: penyewaList.length || "—",    color: "#3b82f6", sub: "Kontrak aktif" },
+          { label: "Kontrak Habis",    val: kontrakHabis || (penyewaList.length ? "0" : "—"), color: "#ef4444", sub: "≤ 30 hari" },
+          { label: "Total Penghuni",   val: penyewaList.reduce((s,p) => s+1+(p.partner?.length||0), 0) || "—", color: "#f97316", sub: "Termasuk partner" },
+          { label: "Kamar Terisi",     val: new Set(penyewaList.map(p=>p.kamarId)).size || (penyewaList.length ? "0" : "—"), color: "#16a34a", sub: "Unit berpenghuni" },
         ].map((c, i) => (
           <div key={i} className="py-card">
             <div className="py-card-bar" style={{ background: c.color }} />
@@ -618,17 +618,17 @@ export default function Penyewa({ user }) {
       <div className="py-layout">
         <div className="py-widget">
           <div className="py-widget-head">
-            <div className="py-widget-title">\ud83d\udc65 Data Penyewa</div>
+            <div className="py-widget-title">👥 Data Penyewa</div>
             {isAdmin && (
               <button onClick={() => setShowForm(true)} style={{ background: "linear-gradient(135deg,#f97316,#ea580c)", color: "#fff", border: "none", borderRadius: 8, padding: "6px 12px", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
-                \ud83d\udd11 Check-in Baru
+                🔑 Check-in Baru
               </button>
             )}
           </div>
 
           <div className="py-filterbar">
             <div className="py-search">
-              <span>\ud83d\udd0d</span>
+              <span>🔍</span>
               <input className="py-search-input" placeholder="Cari nama, NIK, kamar..." value={search} onChange={e => setSearch(e.target.value)} />
             </div>
             <div className={`py-tag ${filterK==="all"?"active":""}`} onClick={() => setFilterK("all")}>Semua</div>
@@ -640,13 +640,13 @@ export default function Penyewa({ user }) {
           <div className="py-widget-body">
             {penyewaList.length === 0 ? (
               <div className="py-empty">
-                <div className="py-empty-icon">\ud83d\udc65</div>
+                <div className="py-empty-icon">👥</div>
                 <div className="py-empty-title">Belum ada data penyewa</div>
-                <div className="py-empty-sub">{isAdmin ? 'Klik "\ud83d\udd11 Check-in Baru" untuk menambahkan penyewa' : "Data penyewa akan muncul di sini"}</div>
+                <div className="py-empty-sub">{isAdmin ? 'Klik "🔑 Check-in Baru" untuk menambahkan penyewa' : "Data penyewa akan muncul di sini"}</div>
               </div>
             ) : filtered.length === 0 ? (
               <div className="py-empty">
-                <div className="py-empty-icon">\ud83d\udd0d</div>
+                <div className="py-empty-icon">🔍</div>
                 <div className="py-empty-title">Tidak ditemukan</div>
                 <div className="py-empty-sub">Coba ubah kata kunci</div>
               </div>
@@ -659,9 +659,9 @@ export default function Penyewa({ user }) {
                     <div className="py-item-info">
                       <div className="py-item-name">{p.nama}</div>
                       <div className="py-item-meta">
-                        <span>\ud83d\udcde {p.noHP||"\u2014"}</span>
-                        <span>\ud83e\udeaa {p.nik ? p.nik.slice(0,8)+"..." : "\u2014"}</span>
-                        {p.partner?.length > 0 && <span>\ud83d\udc65 +{p.partner.length}</span>}
+                        <span>📞 {p.noHP||"—"}</span>
+                        <span>🪪 {p.nik ? p.nik.slice(0,8)+"..." : "—"}</span>
+                        {p.partner?.length > 0 && <span>👥 +{p.partner.length}</span>}
                       </div>
                     </div>
                     <div className="py-item-right">
@@ -684,7 +684,7 @@ export default function Penyewa({ user }) {
         ) : (
           <div className="py-widget">
             <div className="py-empty" style={{ padding: "60px 20px" }}>
-              <div className="py-empty-icon">\ud83d\udc64</div>
+              <div className="py-empty-icon">👤</div>
               <div className="py-empty-title">Pilih penyewa</div>
               <div className="py-empty-sub">Klik nama untuk melihat detail lengkap</div>
             </div>

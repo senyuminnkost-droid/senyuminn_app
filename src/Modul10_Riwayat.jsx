@@ -19,7 +19,7 @@ const CSS = `
   .rw-widget-head { padding: 13px 16px 10px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: space-between; }
   .rw-widget-title { font-size: 12px; font-weight: 600; color: #111827; display: flex; align-items: center; gap: 6px; }
 
-  /* \u2500\u2500\u2500 FILTER BAR \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── FILTER BAR ─────────────────────────── */
   .rw-filterbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #f3f4f6; flex-wrap: wrap; }
   .rw-search { display: flex; align-items: center; gap: 7px; background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 6px 11px; flex: 1; max-width: 240px; transition: border-color 0.12s; }
   .rw-search:focus-within { border-color: #f97316; background: #fff; }
@@ -30,7 +30,7 @@ const CSS = `
   .rw-tag { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; cursor: pointer; border: 1.5px solid #e5e7eb; color: #6b7280; background: #fff; transition: all 0.12s; white-space: nowrap; }
   .rw-tag.active { background: #111827; border-color: #111827; color: #fff; font-weight: 600; }
 
-  /* \u2500\u2500\u2500 LIST \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── LIST ───────────────────────────────── */
   .rw-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #f3f4f6; cursor: pointer; transition: background 0.1s; }
   .rw-item:last-child { border-bottom: none; }
   .rw-item:hover { background: #fafafa; }
@@ -46,7 +46,7 @@ const CSS = `
 
   .rw-badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
 
-  /* \u2500\u2500\u2500 DETAIL PANEL \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── DETAIL PANEL ───────────────────────── */
   .rw-detail { padding: 16px; overflow-y: auto; max-height: calc(100vh - 220px); }
   .rw-detail-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
   .rw-detail-avatar { width: 52px; height: 52px; border-radius: 12px; flex-shrink: 0; background: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: #6b7280; }
@@ -77,7 +77,7 @@ const CSS = `
   .rw-tl-title { font-size: 12px; font-weight: 600; color: #1f2937; }
   .rw-tl-sub   { font-size: 11px; color: #9ca3af; margin-top: 2px; }
 
-  /* \u2500\u2500\u2500 MODAL CHECKIN ULANG \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── MODAL CHECKIN ULANG ────────────────── */
   .rw-overlay-portal { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(17,24,39,0.65) !important; backdrop-filter: blur(4px) !important; z-index: 9999 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 16px !important; box-sizing: border-box !important; animation: rwFade 0.18s ease; }
   @keyframes rwFade { from { opacity: 0; } to { opacity: 1; } }
   .rw-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 480px; max-height: 88vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.18); animation: rwSlide 0.2s cubic-bezier(0.4,0,0.2,1); }
@@ -127,7 +127,7 @@ function StyleInjector() {
 // ============================================================
 const padD = (n) => String(n).padStart(2, "0");
 const todayStr = (() => { const d = new Date(); return `${d.getFullYear()}-${padD(d.getMonth()+1)}-${padD(d.getDate())}`; })();
-const fmtRp = (n) => n ? "Rp " + Number(n).toLocaleString("id-ID") : "\u2014";
+const fmtRp = (n) => n ? "Rp " + Number(n).toLocaleString("id-ID") : "—";
 const getInisial = (nama) => {
   if (!nama) return "?";
   const p = nama.trim().split(" ");
@@ -139,7 +139,7 @@ const addMonths = (dateStr, n) => {
   return `${d.getFullYear()}-${padD(d.getMonth()+1)}-${padD(d.getDate())}`;
 };
 const hitungDurasi = (mulai, selesai) => {
-  if (!mulai || !selesai) return "\u2014";
+  if (!mulai || !selesai) return "—";
   const bln = Math.round((new Date(selesai) - new Date(mulai)) / (1000 * 60 * 60 * 24 * 30));
   return `${bln} bulan`;
 };
@@ -177,8 +177,8 @@ function ModalCheckinUlang({ penyewa, kamarList, onClose, onCheckin }) {
     <div className="rw-overlay-portal" onClick={onClose}>
       <div className="rw-modal" onClick={e => e.stopPropagation()}>
         <div className="rw-modal-head">
-          <div className="rw-modal-title">\ud83d\udd04 Check-in Ulang \u2014 {penyewa.nama}</div>
-          <button className="rw-modal-close" onClick={onClose}>\u2715</button>
+          <div className="rw-modal-title">🔄 Check-in Ulang — {penyewa.nama}</div>
+          <button className="rw-modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="rw-modal-body">
 
@@ -187,10 +187,10 @@ function ModalCheckinUlang({ penyewa, kamarList, onClose, onCheckin }) {
             <div style={{ fontSize: 10, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>Data Tersimpan</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, fontSize: 12 }}>
               {[
-                { k: "NIK",      v: penyewa.nik || "\u2014" },
-                { k: "No. HP",   v: penyewa.noHP || "\u2014" },
-                { k: "Alamat",   v: penyewa.alamat || "\u2014" },
-                { k: "Pekerjaan",v: penyewa.pekerjaan || "\u2014" },
+                { k: "NIK",      v: penyewa.nik || "—" },
+                { k: "No. HP",   v: penyewa.noHP || "—" },
+                { k: "Alamat",   v: penyewa.alamat || "—" },
+                { k: "Pekerjaan",v: penyewa.pekerjaan || "—" },
               ].map((r,i) => (
                 <div key={i}>
                   <span style={{ color: "#9ca3af" }}>{r.k}: </span>
@@ -198,7 +198,7 @@ function ModalCheckinUlang({ penyewa, kamarList, onClose, onCheckin }) {
                 </div>
               ))}
             </div>
-            <div style={{ fontSize: 11, color: "#16a34a", marginTop: 8, fontWeight: 500 }}>\u2705 Data identitas tidak perlu diisi ulang</div>
+            <div style={{ fontSize: 11, color: "#16a34a", marginTop: 8, fontWeight: 500 }}>✅ Data identitas tidak perlu diisi ulang</div>
           </div>
 
           <div style={{ fontSize: 11, fontWeight: 600, color: "#374151", marginBottom: 8 }}>Pilih Kamar</div>
@@ -246,15 +246,15 @@ function ModalCheckinUlang({ penyewa, kamarList, onClose, onCheckin }) {
 
           {form.kontrakSelesai && (
             <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 8, padding: "8px 12px", fontSize: 11, color: "#15803d" }}>
-              \u2705 Kontrak berakhir: <b>{form.kontrakSelesai}</b>
-              {kamarDipilih && <> \u00b7 <b>{fmtRp(kamarDipilih.harga)}/bulan</b></>}
+              ✅ Kontrak berakhir: <b>{form.kontrakSelesai}</b>
+              {kamarDipilih && <> · <b>{fmtRp(kamarDipilih.harga)}/bulan</b></>}
             </div>
           )}
 
         </div>
         <div className="rw-modal-foot">
           <button className="rw-btn primary" disabled={!valid} onClick={() => { onCheckin({ ...penyewa, ...form, id: Date.now(), statusRiwayat: undefined, tglCheckout: undefined }); onClose(); }}>
-            \ud83d\udd11 Check-in Ulang
+            🔑 Check-in Ulang
           </button>
           <button className="rw-btn ghost" onClick={onClose}>Batal</button>
         </div>
@@ -281,8 +281,8 @@ function DetailPanel({ penyewa, kamarList, onCheckinUlang, onClose }) {
   return (
     <div className="rw-widget">
       <div className="rw-widget-head">
-        <div className="rw-widget-title">\ud83d\udccb Detail Riwayat</div>
-        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16 }}>\u2715</button>
+        <div className="rw-widget-title">📋 Detail Riwayat</div>
+        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16 }}>✕</button>
       </div>
       <div className="rw-detail">
 
@@ -291,10 +291,10 @@ function DetailPanel({ penyewa, kamarList, onCheckinUlang, onClose }) {
           <div className="rw-detail-avatar">{getInisial(penyewa.nama)}</div>
           <div style={{ flex: 1 }}>
             <div className="rw-detail-name">{penyewa.nama}</div>
-            <div className="rw-detail-sub">\ud83d\udcde {penyewa.noHP || "\u2014"} \u00b7 {penyewa.pekerjaan || "\u2014"}</div>
+            <div className="rw-detail-sub">📞 {penyewa.noHP || "—"} · {penyewa.pekerjaan || "—"}</div>
             <div className="rw-detail-badges">
-              <span className="rw-badge" style={{ background: "#f3f4f6", color: "#6b7280" }}>\ud83c\udfe0 Kamar {penyewa.kamarId}</span>
-              <span className="rw-badge" style={{ background: "#fee2e2", color: "#dc2626" }}>\u2713 Alumni</span>
+              <span className="rw-badge" style={{ background: "#f3f4f6", color: "#6b7280" }}>🏠 Kamar {penyewa.kamarId}</span>
+              <span className="rw-badge" style={{ background: "#fee2e2", color: "#dc2626" }}>✓ Alumni</span>
             </div>
           </div>
         </div>
@@ -305,13 +305,13 @@ function DetailPanel({ penyewa, kamarList, onCheckinUlang, onClose }) {
           <div style={{ background: "#f9fafb", borderRadius: 10, padding: "12px 14px", border: "1px solid #e5e7eb" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
               <span style={{ fontSize: 12, fontWeight: 700, color: "#374151", fontFamily: "JetBrains Mono, monospace" }}>
-                {penyewa.kontrakMulai || "\u2014"} \u2192 {penyewa.kontrakSelesai || "\u2014"}
+                {penyewa.kontrakMulai || "—"} → {penyewa.kontrakSelesai || "—"}
               </span>
               <span className="rw-badge" style={{ background: "#f3f4f6", color: "#6b7280" }}>{hitungDurasi(penyewa.kontrakMulai, penyewa.kontrakSelesai)}</span>
             </div>
             <div style={{ fontSize: 11, color: "#9ca3af" }}>
-              Check-out: {penyewa.tglCheckout || "\u2014"}
-              {kamar && <> \u00b7 {fmtRp(kamar.harga)}/bulan</>}
+              Check-out: {penyewa.tglCheckout || "—"}
+              {kamar && <> · {fmtRp(kamar.harga)}/bulan</>}
             </div>
           </div>
         </div>
@@ -321,12 +321,12 @@ function DetailPanel({ penyewa, kamarList, onCheckinUlang, onClose }) {
           <div className="rw-section-label">Identitas</div>
           <div className="rw-info-grid">
             {[
-              { k: "NIK / KTP",    v: penyewa.nik       || "\u2014", mono: true },
-              { k: "Tgl Lahir",    v: penyewa.tglLahir  || "\u2014" },
-              { k: "Alamat",       v: penyewa.alamat    || "\u2014", full: true },
-              { k: "No. Darurat",  v: penyewa.noHPDarurat || "\u2014" },
-              { k: "Nama Darurat", v: penyewa.namaDarurat || "\u2014" },
-              { k: "Foto KTP",     v: penyewa.ktpFile ? `\u2705 ${penyewa.ktpFile}` : "\u2014" },
+              { k: "NIK / KTP",    v: penyewa.nik       || "—", mono: true },
+              { k: "Tgl Lahir",    v: penyewa.tglLahir  || "—" },
+              { k: "Alamat",       v: penyewa.alamat    || "—", full: true },
+              { k: "No. Darurat",  v: penyewa.noHPDarurat || "—" },
+              { k: "Nama Darurat", v: penyewa.namaDarurat || "—" },
+              { k: "Foto KTP",     v: penyewa.ktpFile ? `✅ ${penyewa.ktpFile}` : "—" },
             ].map((i,idx) => (
               <div key={idx} className="rw-info-item" style={i.full ? { gridColumn: "1 / -1" } : {}}>
                 <div className="rw-info-key">{i.k}</div>
@@ -342,7 +342,7 @@ function DetailPanel({ penyewa, kamarList, onCheckinUlang, onClose }) {
             <div className="rw-section-label">Partner</div>
             {penyewa.partner.map((p,i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 10px", background: "#f9fafb", borderRadius: 8, marginBottom: 6 }}>
-                <span style={{ fontSize: 14 }}>\ud83d\udc65</span>
+                <span style={{ fontSize: 14 }}>👥</span>
                 <span style={{ fontSize: 12, fontWeight: 500, color: "#374151" }}>{p}</span>
               </div>
             ))}
@@ -356,9 +356,9 @@ function DetailPanel({ penyewa, kamarList, onCheckinUlang, onClose }) {
             {timeline.map((t, i) => (
               <div key={i} className={`rw-tl-item ${t.type}`}>
                 <div className="rw-tl-title">
-                  {t.type === "checkin" ? "\ud83d\udd11" : t.type === "checkout" ? "\ud83d\udeaa" : "\ud83d\udccb"} {t.label}
+                  {t.type === "checkin" ? "🔑" : t.type === "checkout" ? "🚪" : "📋"} {t.label}
                 </div>
-                <div className="rw-tl-sub">{t.tgl || "\u2014"} \u00b7 {t.sub}</div>
+                <div className="rw-tl-sub">{t.tgl || "—"} · {t.sub}</div>
               </div>
             ))}
           </div>
@@ -370,7 +370,7 @@ function DetailPanel({ penyewa, kamarList, onCheckinUlang, onClose }) {
           style={{ width: "100%", marginTop: 4 }}
           onClick={onCheckinUlang}
         >
-          \ud83d\udd04 Check-in Ulang
+          🔄 Check-in Ulang
         </button>
 
       </div>
@@ -436,10 +436,10 @@ export default function Riwayat({ user, globalData = {} }) {
       {/* Cards */}
       <div className="rw-cards">
         {[
-          { label: "Total Alumni",      val: riwayatList.length || "\u2014", color: "#6b7280",  sub: "Pernah tinggal" },
-          { label: "Bulan Ini",         val: riwayatList.filter(p => p.tglCheckout?.startsWith(todayStr.slice(0,7))).length || (riwayatList.length?"0":"\u2014"), color: "#f97316", sub: "Check-out bulan ini" },
-          { label: "Check-in Ulang",    val: riwayatList.filter(p => p.checkinUlang).length || (riwayatList.length?"0":"\u2014"), color: "#16a34a", sub: "Penyewa kembali" },
-          { label: "Kamar Paling Aktif",val: kamarPalingAktif ? `K${padD(kamarPalingAktif)}` : "\u2014", color: "#3b82f6", sub: kamarPalingAktif ? `${kamarTerbanyak[kamarPalingAktif]}x disewa` : "Belum ada data" },
+          { label: "Total Alumni",      val: riwayatList.length || "—", color: "#6b7280",  sub: "Pernah tinggal" },
+          { label: "Bulan Ini",         val: riwayatList.filter(p => p.tglCheckout?.startsWith(todayStr.slice(0,7))).length || (riwayatList.length?"0":"—"), color: "#f97316", sub: "Check-out bulan ini" },
+          { label: "Check-in Ulang",    val: riwayatList.filter(p => p.checkinUlang).length || (riwayatList.length?"0":"—"), color: "#16a34a", sub: "Penyewa kembali" },
+          { label: "Kamar Paling Aktif",val: kamarPalingAktif ? `K${padD(kamarPalingAktif)}` : "—", color: "#3b82f6", sub: kamarPalingAktif ? `${kamarTerbanyak[kamarPalingAktif]}x disewa` : "Belum ada data" },
         ].map((c,i) => (
           <div key={i} className="rw-card">
             <div className="rw-card-bar" style={{ background: c.color }} />
@@ -454,14 +454,14 @@ export default function Riwayat({ user, globalData = {} }) {
       <div className="rw-layout">
         <div className="rw-widget">
           <div className="rw-widget-head">
-            <div className="rw-widget-title">\ud83d\udccb Riwayat Penyewa</div>
+            <div className="rw-widget-title">📋 Riwayat Penyewa</div>
             <span style={{ fontSize: 11, color: "#9ca3af" }}>{riwayatList.length} total alumni</span>
           </div>
 
           {/* Filter */}
           <div className="rw-filterbar">
             <div className="rw-search">
-              <span>\ud83d\udd0d</span>
+              <span>🔍</span>
               <input className="rw-search-input" placeholder="Cari nama, NIK, kamar..." value={search} onChange={e => setSearch(e.target.value)} />
             </div>
             <select className="rw-select" value={filterKamar} onChange={e => setFK(e.target.value)}>
@@ -473,7 +473,7 @@ export default function Riwayat({ user, globalData = {} }) {
             <select className="rw-select" value={sortBy} onChange={e => setSortBy(e.target.value)}>
               <option value="terbaru">Terbaru</option>
               <option value="terlama">Terlama</option>
-              <option value="nama">A\u2013Z Nama</option>
+              <option value="nama">A–Z Nama</option>
             </select>
           </div>
 
@@ -481,13 +481,13 @@ export default function Riwayat({ user, globalData = {} }) {
           <div>
             {riwayatList.length === 0 ? (
               <div className="rw-empty">
-                <div className="rw-empty-icon">\ud83d\udccb</div>
+                <div className="rw-empty-icon">📋</div>
                 <div className="rw-empty-title">Belum ada riwayat</div>
                 <div className="rw-empty-sub">Riwayat akan muncul otomatis setelah penyewa melakukan check-out</div>
               </div>
             ) : filtered.length === 0 ? (
               <div className="rw-empty">
-                <div className="rw-empty-icon">\ud83d\udd0d</div>
+                <div className="rw-empty-icon">🔍</div>
                 <div className="rw-empty-title">Tidak ditemukan</div>
                 <div className="rw-empty-sub">Coba ubah kata kunci pencarian</div>
               </div>
@@ -500,9 +500,9 @@ export default function Riwayat({ user, globalData = {} }) {
                     <div className="rw-item-info">
                       <div className="rw-item-name">{p.nama}</div>
                       <div className="rw-item-meta">
-                        <span>\ud83d\udcc5 {p.tglMasuk} \u2192 {p.tglCheckout || "\u2014"}</span>
-                        {p.partner?.length > 0 && <span>\ud83d\udc65 +{p.partner.length}</span>}
-                        {p.checkinUlang && <span style={{ color: "#16a34a", fontWeight: 600 }}>\ud83d\udd04 Kembali lagi</span>}
+                        <span>📅 {p.tglMasuk} → {p.tglCheckout || "—"}</span>
+                        {p.partner?.length > 0 && <span>👥 +{p.partner.length}</span>}
+                        {p.checkinUlang && <span style={{ color: "#16a34a", fontWeight: 600 }}>🔄 Kembali lagi</span>}
                       </div>
                     </div>
                     <div className="rw-item-right">
@@ -527,7 +527,7 @@ export default function Riwayat({ user, globalData = {} }) {
         ) : (
           <div className="rw-widget">
             <div className="rw-empty" style={{ padding: "60px 20px" }}>
-              <div className="rw-empty-icon">\ud83d\udccb</div>
+              <div className="rw-empty-icon">📋</div>
               <div className="rw-empty-title">Pilih alumni</div>
               <div className="rw-empty-sub">Klik nama untuk lihat detail & opsi check-in ulang</div>
             </div>

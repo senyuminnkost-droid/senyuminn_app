@@ -73,24 +73,24 @@ function StyleInjector() {
   return null;
 }
 
-const fmtRp = (n) => n ? "Rp " + Number(n).toLocaleString("id-ID") : "\u2014";
-const val = (v, fallback="\u2014") => v || fallback;
+const fmtRp = (n) => n ? "Rp " + Number(n).toLocaleString("id-ID") : "—";
+const val = (v, fallback="—") => v || fallback;
 
 // ============================================================
-// MODAL EDIT \u2014 generic
+// MODAL EDIT — generic
 // ============================================================
 function ModalEdit({ title, onClose, onSave, children, valid=true }) {
   return(
     <div className="pf-overlay" onClick={onClose}>
       <div className="pf-modal" onClick={e=>e.stopPropagation()}>
         <div className="pf-modal-head">
-          <div className="pf-modal-title">\u270f\ufe0f {title}</div>
-          <button onClick={onClose} style={{background:"none",border:"none",cursor:"pointer",fontSize:18,color:"#9ca3af"}}>\u2715</button>
+          <div className="pf-modal-title">✏️ {title}</div>
+          <button onClick={onClose} style={{background:"none",border:"none",cursor:"pointer",fontSize:18,color:"#9ca3af"}}>✕</button>
         </div>
         <div className="pf-modal-body">{children}</div>
         <div className="pf-modal-foot">
           <button className="pf-btn ghost" onClick={onClose}>Batal</button>
-          <button className="pf-btn primary" disabled={!valid} onClick={onSave}>\u2705 Simpan</button>
+          <button className="pf-btn primary" disabled={!valid} onClick={onSave}>✅ Simpan</button>
         </div>
       </div>
     </div>
@@ -98,7 +98,7 @@ function ModalEdit({ title, onClose, onSave, children, valid=true }) {
 }
 
 // ============================================================
-// MODAL REKENING \u2014 input manual (no dropdown bank)
+// MODAL REKENING — input manual (no dropdown bank)
 // ============================================================
 function ModalRekening({ rek, onClose, onSave }) {
   const [form, setForm] = useState(rek || { namaBank:"", noRek:"", atasNama:"", keterangan:"", utama:false });
@@ -108,8 +108,8 @@ function ModalRekening({ rek, onClose, onSave }) {
     <div className="pf-overlay" onClick={onClose}>
       <div className="pf-modal" onClick={e=>e.stopPropagation()}>
         <div className="pf-modal-head">
-          <div className="pf-modal-title">{rek?.id ? "\u270f\ufe0f Edit Rekening" : "\u2795 Tambah Rekening"}</div>
-          <button onClick={onClose} style={{background:"none",border:"none",cursor:"pointer",fontSize:18,color:"#9ca3af"}}>\u2715</button>
+          <div className="pf-modal-title">{rek?.id ? "✏️ Edit Rekening" : "➕ Tambah Rekening"}</div>
+          <button onClick={onClose} style={{background:"none",border:"none",cursor:"pointer",fontSize:18,color:"#9ca3af"}}>✕</button>
         </div>
         <div className="pf-modal-body">
           <div className="pf-field">
@@ -144,7 +144,7 @@ function ModalRekening({ rek, onClose, onSave }) {
         </div>
         <div className="pf-modal-foot">
           <button className="pf-btn ghost" onClick={onClose}>Batal</button>
-          <button className="pf-btn primary" disabled={!valid} onClick={()=>{ onSave({...form,id:rek?.id||Date.now()}); onClose(); }}>\u2705 Simpan</button>
+          <button className="pf-btn primary" disabled={!valid} onClick={()=>{ onSave({...form,id:rek?.id||Date.now()}); onClose(); }}>✅ Simpan</button>
         </div>
       </div>
     </div>
@@ -163,7 +163,7 @@ export default function ProfilKost({ user, globalData = {} }) {
   const cfg = pengaturanConfig;
   const update = (patch) => setPengaturanConfig(p=>({...p,...patch}));
 
-  // Modal state \u2014 which section is being edited
+  // Modal state — which section is being edited
   const [modal, setModal] = useState(null); // "profil"|"operasional"|"keuangan"|"hr"|"gps"|null
   const [rekModal, setRekModal] = useState(null); // null | {} | {id,...}
 
@@ -195,13 +195,13 @@ export default function ProfilKost({ user, globalData = {} }) {
     update({ rekeningList: rekeningList.filter(r=>r.id!==id) });
   };
 
-  // \u2500\u2500 Section card helper
+  // ── Section card helper
   const Section = ({ title, icon, section, children, fullWidth }) => (
     <div className="pf-section-card" style={fullWidth?{gridColumn:"1/-1"}:{}}>
       <div className="pf-section-head">
         <div className="pf-section-title">{icon} {title}</div>
         {!isReadOnly && (
-          <button className="pf-edit-btn" onClick={()=>openModal(section)}>\u270f\ufe0f Edit</button>
+          <button className="pf-edit-btn" onClick={()=>openModal(section)}>✏️ Edit</button>
         )}
       </div>
       <div className="pf-section-body">{children}</div>
@@ -211,7 +211,7 @@ export default function ProfilKost({ user, globalData = {} }) {
   const Row = ({ label, value, orange, mono }) => (
     <div className="pf-row">
       <span className="pf-row-label">{label}</span>
-      <span className={`pf-row-val${orange?" orange":""}${mono?" mono":""}`}>{value||"\u2014"}</span>
+      <span className={`pf-row-val${orange?" orange":""}${mono?" mono":""}`}>{value||"—"}</span>
     </div>
   );
 
@@ -219,11 +219,11 @@ export default function ProfilKost({ user, globalData = {} }) {
     <div className="pf-wrap">
       <StyleInjector />
 
-      {/* \u2500\u2500 OVERVIEW GRID \u2500\u2500 */}
+      {/* ── OVERVIEW GRID ── */}
       <div className="pf-overview-grid">
 
         {/* Profil Kost */}
-        <Section title="Profil Kost" icon="\ud83c\udfe0" section="profil">
+        <Section title="Profil Kost" icon="🏠" section="profil">
           <Row label="Nama Kost"    value={cfg.namaKost||"Senyum Inn"} />
           <Row label="Alamat"       value={cfg.alamat} />
           <Row label="No. Telepon"  value={cfg.telepon} />
@@ -232,60 +232,60 @@ export default function ProfilKost({ user, globalData = {} }) {
         </Section>
 
         {/* Operasional */}
-        <Section title="Operasional" icon="\u2699\ufe0f" section="operasional">
-          <Row label="Total Kamar"   value={cfg.totalKamar ? `${cfg.totalKamar} kamar` : "\u2014"} />
-          <Row label="Kamar Premium" value={cfg.nomorPremium || "\u2014"} />
-          <Row label="Kamar Reguler" value={cfg.nomorReguler || "\u2014"} />
-          <Row label="Jam Buka"      value={cfg.jamBuka ? `${cfg.jamBuka} \u2013 ${cfg.jamTutup}` : "\u2014"} />
-          <Row label="Parkir Motor"  value={cfg.parkirMotor ? `${cfg.parkirMotor} slot` : "\u2014"} />
-          <Row label="Parkir Mobil"  value={cfg.parkirMobil ? `${cfg.parkirMobil} slot (Premium)` : "\u2014"} />
+        <Section title="Operasional" icon="⚙️" section="operasional">
+          <Row label="Total Kamar"   value={cfg.totalKamar ? `${cfg.totalKamar} kamar` : "—"} />
+          <Row label="Kamar Premium" value={cfg.nomorPremium || "—"} />
+          <Row label="Kamar Reguler" value={cfg.nomorReguler || "—"} />
+          <Row label="Jam Buka"      value={cfg.jamBuka ? `${cfg.jamBuka} – ${cfg.jamTutup}` : "—"} />
+          <Row label="Parkir Motor"  value={cfg.parkirMotor ? `${cfg.parkirMotor} slot` : "—"} />
+          <Row label="Parkir Mobil"  value={cfg.parkirMobil ? `${cfg.parkirMobil} slot (Premium)` : "—"} />
         </Section>
 
         {/* Keuangan */}
-        <Section title="Keuangan & Tagihan" icon="\ud83d\udcb0" section="keuangan">
-          <Row label="Batas Bayar"     value={cfg.batasBayar ? `Tanggal ${cfg.batasBayar}` : "\u2014"} />
-          <Row label="Toleransi"       value={cfg.toleransiHari ? `${cfg.toleransiHari} hari` : "\u2014"} />
-          <Row label="Denda Terlambat" value={cfg.dendaPerHari ? fmtRp(cfg.dendaPerHari)+"/hari" : "\u2014"} orange />
-          <Row label="Sewa Harian"     value={cfg.sewaHarian ? fmtRp(cfg.sewaHarian)+"/hari" : "\u2014"} orange />
-          <Row label="Mgmt Fee"        value={cfg.mgmtFeePct ? `${cfg.mgmtFeePct}%` : "\u2014"} />
+        <Section title="Keuangan & Tagihan" icon="💰" section="keuangan">
+          <Row label="Batas Bayar"     value={cfg.batasBayar ? `Tanggal ${cfg.batasBayar}` : "—"} />
+          <Row label="Toleransi"       value={cfg.toleransiHari ? `${cfg.toleransiHari} hari` : "—"} />
+          <Row label="Denda Terlambat" value={cfg.dendaPerHari ? fmtRp(cfg.dendaPerHari)+"/hari" : "—"} orange />
+          <Row label="Sewa Harian"     value={cfg.sewaHarian ? fmtRp(cfg.sewaHarian)+"/hari" : "—"} orange />
+          <Row label="Mgmt Fee"        value={cfg.mgmtFeePct ? `${cfg.mgmtFeePct}%` : "—"} />
           <Row label="Deposit Jaminan" value={cfg.depositJaminan ? fmtRp(cfg.depositJaminan) : "Belum diaktifkan"} />
         </Section>
 
         {/* HR & Gaji */}
-        <Section title="HR & Gaji" icon="\ud83d\udc65" section="hr">
-          <Row label="Lembur/Shift"    value={cfg.lemburPerShift ? fmtRp(cfg.lemburPerShift) : "\u2014"} orange />
-          <Row label="Denda Ijin TS"   value={cfg.dendaIjinTidakSah ? fmtRp(cfg.dendaIjinTidakSah)+"/hari" : "\u2014"} orange />
-          <Row label="Maks Pinjaman"   value={cfg.maxPinjamanKoperasi ? fmtRp(cfg.maxPinjamanKoperasi) : "\u2014"} />
-          <Row label="KPI Threshold"   value={cfg.kpiThresholdPct ? `\u2265 ${cfg.kpiThresholdPct}% kehadiran` : "\u2014"} />
+        <Section title="HR & Gaji" icon="👥" section="hr">
+          <Row label="Lembur/Shift"    value={cfg.lemburPerShift ? fmtRp(cfg.lemburPerShift) : "—"} orange />
+          <Row label="Denda Ijin TS"   value={cfg.dendaIjinTidakSah ? fmtRp(cfg.dendaIjinTidakSah)+"/hari" : "—"} orange />
+          <Row label="Maks Pinjaman"   value={cfg.maxPinjamanKoperasi ? fmtRp(cfg.maxPinjamanKoperasi) : "—"} />
+          <Row label="KPI Threshold"   value={cfg.kpiThresholdPct ? `≥ ${cfg.kpiThresholdPct}% kehadiran` : "—"} />
           <Row label="Bank Koperasi"   value={cfg.bankKoperasi} />
           <Row label="No. Rek Koperasi" value={cfg.rekeningKoperasi} mono />
         </Section>
 
         {/* GPS Absensi */}
-        <Section title="GPS Absensi" icon="\ud83d\udccd" section="gps">
+        <Section title="GPS Absensi" icon="📍" section="gps">
           <Row label="Latitude"  value={cfg.gpsLat} mono />
           <Row label="Longitude" value={cfg.gpsLng} mono />
           <Row label="Radius"    value={cfg.gpsRadius ? `${cfg.gpsRadius} meter` : "500 meter (default)"} />
           {cfg.gpsLat && cfg.gpsLng && (
             <div className="pf-info-box" style={{marginTop:4}}>
-              \u2705 GPS aktif \u2014 staff harus dalam radius {cfg.gpsRadius||500}m untuk clock-in
+              ✅ GPS aktif — staff harus dalam radius {cfg.gpsRadius||500}m untuk clock-in
             </div>
           )}
           {!cfg.gpsLat && (
             <div className="pf-warn-box" style={{marginTop:4}}>
-              \u26a0\ufe0f Koordinat GPS belum diset. Klik Edit untuk mengisi.
+              ⚠️ Koordinat GPS belum diset. Klik Edit untuk mengisi.
             </div>
           )}
         </Section>
 
         {/* Fasilitas Umum */}
-        <Section title="Fasilitas Umum" icon="\ud83c\udfe2" section="fasilitas">
+        <Section title="Fasilitas Umum" icon="🏢" section="fasilitas">
           {(cfg.fasilitasUmum||[]).length === 0 ? (
             <div className="pf-empty">Belum ada fasilitas yang didefinisikan</div>
           ) : (
             <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
               {(cfg.fasilitasUmum||[]).map((f,i)=>(
-                <span key={i} className="pf-tag" style={{background:"#f0fdf4",color:"#15803d",border:"1px solid #86efac"}}>\u2713 {f}</span>
+                <span key={i} className="pf-tag" style={{background:"#f0fdf4",color:"#15803d",border:"1px solid #86efac"}}>✓ {f}</span>
               ))}
             </div>
           )}
@@ -293,32 +293,32 @@ export default function ProfilKost({ user, globalData = {} }) {
 
       </div>
 
-      {/* \u2500\u2500 REKENING BANK \u2500\u2500 */}
+      {/* ── REKENING BANK ── */}
       <div className="pf-section-card">
         <div className="pf-section-head">
-          <div className="pf-section-title">\ud83c\udfe6 Rekening Bank Operasional</div>
+          <div className="pf-section-title">🏦 Rekening Bank Operasional</div>
           {!isReadOnly && (
-            <button className="pf-edit-btn" onClick={()=>setRekModal({})}>\u2795 Tambah Rekening</button>
+            <button className="pf-edit-btn" onClick={()=>setRekModal({})}>➕ Tambah Rekening</button>
           )}
         </div>
         <div className="pf-section-body">
           {rekeningList.length === 0 ? (
-            <div className="pf-empty">Belum ada rekening. Klik \u2795 untuk menambah.</div>
+            <div className="pf-empty">Belum ada rekening. Klik ➕ untuk menambah.</div>
           ) : (
             <div style={{display:"flex",flexDirection:"column",gap:8}}>
               {rekeningList.map(r=>(
                 <div key={r.id} className="pf-rek-card">
                   <div className="pf-rek-icon">{(r.namaBank||"?")[0]?.toUpperCase()}</div>
                   <div className="pf-rek-info">
-                    <div className="pf-rek-name">{r.namaBank} \u2014 {r.atasNama}</div>
+                    <div className="pf-rek-name">{r.namaBank} — {r.atasNama}</div>
                     <div className="pf-rek-no">{r.noRek}</div>
                     {r.keterangan && <div style={{fontSize:10,color:"#9ca3af"}}>{r.keterangan}</div>}
                   </div>
                   {r.utama && <span className="pf-rek-badge">Utama</span>}
                   {!isReadOnly && (
                     <div style={{display:"flex",gap:6}}>
-                      <button className="pf-btn ghost" style={{padding:"4px 9px",fontSize:11}} onClick={()=>setRekModal(r)}>\u270f\ufe0f</button>
-                      <button className="pf-btn danger" style={{padding:"4px 9px",fontSize:11}} onClick={()=>deleteRekening(r.id)}>\ud83d\uddd1\ufe0f</button>
+                      <button className="pf-btn ghost" style={{padding:"4px 9px",fontSize:11}} onClick={()=>setRekModal(r)}>✏️</button>
+                      <button className="pf-btn danger" style={{padding:"4px 9px",fontSize:11}} onClick={()=>deleteRekening(r.id)}>🗑️</button>
                     </div>
                   )}
                 </div>
@@ -328,9 +328,9 @@ export default function ProfilKost({ user, globalData = {} }) {
         </div>
       </div>
 
-      {/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+      {/* ══════════════════════════════════════════
           MODALS EDIT PER SECTION
-      \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */}
+      ══════════════════════════════════════════ */}
 
       {/* Modal Profil */}
       {modal==="profil" && (
@@ -426,7 +426,7 @@ export default function ProfilKost({ user, globalData = {} }) {
               <input className="pf-input mono" value={form.rekeningKoperasi||""} onChange={e=>setF("rekeningKoperasi",e.target.value)} placeholder="Nomor rekening..." /></div>
           </div>
           <div className="pf-info-box">
-            \ud83d\udca1 Nominal insentif per karyawan diset di Data Karyawan \u2192 masing-masing profil.
+            💡 Nominal insentif per karyawan diset di Data Karyawan → masing-masing profil.
           </div>
         </ModalEdit>
       )}
@@ -434,7 +434,7 @@ export default function ProfilKost({ user, globalData = {} }) {
       {/* Modal GPS */}
       {modal==="gps" && (
         <ModalEdit title="Edit GPS Absensi" onClose={()=>setModal(null)} onSave={saveModal}>
-          <div className="pf-warn-box">\ud83d\udccd Buka Google Maps, klik kanan lokasi kost \u2192 salin koordinat</div>
+          <div className="pf-warn-box">📍 Buka Google Maps, klik kanan lokasi kost → salin koordinat</div>
           <div className="pf-grid2">
             <div className="pf-field"><label className="pf-label">Latitude</label>
               <input className="pf-input mono" value={form.gpsLat||""} onChange={e=>setF("gpsLat",e.target.value)} placeholder="-7.123456" /></div>
@@ -443,11 +443,11 @@ export default function ProfilKost({ user, globalData = {} }) {
           </div>
           <div className="pf-field"><label className="pf-label">Radius Clock-in (meter)</label>
             <input className="pf-input" type="number" min={50} max={2000} value={form.gpsRadius||""} onChange={e=>setF("gpsRadius",e.target.value)} placeholder="500" />
-            <div className="pf-hint">Rekomendasi: 200\u2013500 meter</div></div>
+            <div className="pf-hint">Rekomendasi: 200–500 meter</div></div>
         </ModalEdit>
       )}
 
-      {/* Modal Fasilitas \u2014 via operasional, sudah include */}
+      {/* Modal Fasilitas — via operasional, sudah include */}
 
       {/* Modal Rekening */}
       {rekModal !== null && (

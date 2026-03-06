@@ -85,7 +85,7 @@ function StyleInjector() {
   return null;
 }
 
-// \u2500\u2500\u2500 Kategori \u2500\u2500\u2500
+// ─── Kategori ───
 const CATS_CHECKLIST = ["Kebersihan","Kamar Mandi","AC & Elektronik","Listrik","Furniture","Tekstil","Struktur","Elektronik","Inventaris","Dokumentasi","Pelaporan","Dasar","Lainnya"];
 const CATS_INV       = ["buah","set","unit","lembar","pasang","botol","rol","karung"];
 
@@ -96,7 +96,7 @@ const CAT_COLORS = {
   "Dasar":"#1f2937","Lainnya":"#9ca3af",
 };
 
-// \u2500\u2500\u2500 SOP Steps (konten statis, tidak perlu edit) \u2500\u2500\u2500
+// ─── SOP Steps (konten statis, tidak perlu edit) ───
 const SOP_CHECKIN = [
   {title:"Verifikasi identitas penyewa",desc:"Cocokkan KTP fisik dengan data yang diinput di sistem"},
   {title:"Upload foto KTP ke sistem",desc:"Foto harus jelas dan terbaca"},
@@ -105,21 +105,21 @@ const SOP_CHECKIN = [
   {title:"Pembayaran lunas",desc:"Konfirmasi transfer masuk sebelum serahkan kunci"},
   {title:"Serahkan kunci kamar",desc:"Test kunci bersama penyewa sebelum ditinggal"},
   {title:"Foto kondisi kamar saat check-in",desc:"Dokumentasi untuk referensi saat check-out"},
-  {title:"Update status kamar di sistem",desc:"Ubah dari Booked \u2192 Terisi"},
+  {title:"Update status kamar di sistem",desc:"Ubah dari Booked → Terisi"},
 ];
 const SOP_CHECKOUT = [
   {title:"Reminder H-30 kepada penyewa",desc:"Tanyakan rencana perpanjang atau tidak"},
   {title:"Generate surat tagihan perpanjangan H-7",desc:"Kirim via WhatsApp jika tidak perpanjang"},
-  {title:"Kunjungi kamar bersama penyewa",desc:"Cek kondisi kamar \u2014 bandingkan dengan foto check-in"},
+  {title:"Kunjungi kamar bersama penyewa",desc:"Cek kondisi kamar — bandingkan dengan foto check-in"},
   {title:"Catat kerusakan jika ada",desc:"Buat tiket maintenance dan hitung biaya ganti rugi"},
   {title:"Penyewa kembalikan kunci",desc:"Pastikan semua kunci dikembalikan"},
-  {title:"Update status kamar \u2192 Deep Clean",desc:"Assign staff pagi untuk deep clean"},
+  {title:"Update status kamar → Deep Clean",desc:"Assign staff pagi untuk deep clean"},
   {title:"Notifikasi ke grup WA",desc:"Info kamar tersedia setelah deep clean selesai"},
   {title:"Selesaikan administrasi",desc:"Archive data penyewa di modul Riwayat"},
 ];
 const SOP_KELUHAN = [
   {title:"Terima laporan keluhan",desc:"Via sistem atau langsung dari penyewa"},
-  {title:"Kategorikan dan set prioritas",desc:"Normal: koordinasi jadwal \u00b7 Urgent: tindak < 1 jam"},
+  {title:"Kategorikan dan set prioritas",desc:"Normal: koordinasi jadwal · Urgent: tindak < 1 jam"},
   {title:"[URGENT] Notifikasi WA langsung ke PJ",desc:"PJ wajib balas konfirmasi dalam 15 menit"},
   {title:"Assign ke staff yang tersedia",desc:"Staff pagi untuk siang, staff malam untuk malam"},
   {title:"Staff tangani dan update progress",desc:"Update status tiket: In Progress"},
@@ -137,7 +137,7 @@ function ModalTambahChecklist({ onClose, onSave }) {
   return (
     <div className="sp-overlay" onClick={onClose}>
       <div className="sp-modal" onClick={e => e.stopPropagation()}>
-        <div className="sp-modal-title">\u2795 Tambah Item Checklist</div>
+        <div className="sp-modal-title">➕ Tambah Item Checklist</div>
         <div className="sp-modal-field">
           <label className="sp-label">Deskripsi Item</label>
           <input
@@ -177,7 +177,7 @@ function ModalTambahInventaris({ item, onClose, onSave }) {
   return (
     <div className="sp-overlay" onClick={onClose}>
       <div className="sp-modal" onClick={e => e.stopPropagation()}>
-        <div className="sp-modal-title">{item ? "\u270f\ufe0f Edit Item Inventaris" : "\u2795 Tambah Item Inventaris"}</div>
+        <div className="sp-modal-title">{item ? "✏️ Edit Item Inventaris" : "➕ Tambah Item Inventaris"}</div>
         <div className="sp-modal-field">
           <label className="sp-label">Nama Fasilitas</label>
           <input
@@ -254,7 +254,7 @@ function ChecklistEditor({ list, setList, title, subtitle, isReadOnly }) {
             <span style={{ fontSize:11, color:"#9ca3af" }}>{list.length} item</span>
             {!isReadOnly && (
               <button className="sp-btn primary" style={{ padding:"6px 12px" }} onClick={() => setShowModal(true)}>
-                \u2795 Tambah Item
+                ➕ Tambah Item
               </button>
             )}
           </div>
@@ -262,9 +262,9 @@ function ChecklistEditor({ list, setList, title, subtitle, isReadOnly }) {
         <div className="sp-body">
           {list.length === 0 ? (
             <div className="sp-empty">
-              <div className="sp-empty-icon">\ud83d\udccb</div>
+              <div className="sp-empty-icon">📋</div>
               <div style={{ fontSize:13, fontWeight:600, color:"#374151" }}>Belum ada item checklist</div>
-              <div style={{ fontSize:12, marginTop:4 }}>Klik \u2795 Tambah Item untuk mulai membuat checklist</div>
+              <div style={{ fontSize:12, marginTop:4 }}>Klik ➕ Tambah Item untuk mulai membuat checklist</div>
             </div>
           ) : (
             Object.entries(grouped).map(([cat, items]) => (
@@ -282,7 +282,7 @@ function ChecklistEditor({ list, setList, title, subtitle, isReadOnly }) {
                         style={{ background:"none", border:"none", cursor:"pointer", color:"#dc2626", fontSize:14, padding:"0 4px", flexShrink:0 }}
                         onClick={() => handleDelete(item.id)}
                         title="Hapus"
-                      >\u2715</button>
+                      >✕</button>
                     )}
                   </div>
                 ))}
@@ -325,7 +325,7 @@ function SOPView({ steps, title }) {
 }
 
 // ============================================================
-// KPI & INSENTIF \u2014 editable langsung
+// KPI & INSENTIF — editable langsung
 // ============================================================
 function TabKPI({ pengaturanConfig, setPengaturanConfig, isReadOnly }) {
   const cfg = pengaturanConfig || {};
@@ -357,9 +357,9 @@ function TabKPI({ pengaturanConfig, setPengaturanConfig, isReadOnly }) {
       {/* Edit Fields */}
       <div className="sp-widget">
         <div className="sp-widget-head">
-          <div className="sp-widget-title">\ud83c\udfaf Threshold & Nominal KPI</div>
+          <div className="sp-widget-title">🎯 Threshold & Nominal KPI</div>
           {dirty && !isReadOnly && (
-            <span style={{ fontSize:11, color:"#f97316", fontWeight:600 }}>\u25cf Ada perubahan</span>
+            <span style={{ fontSize:11, color:"#f97316", fontWeight:600 }}>● Ada perubahan</span>
           )}
         </div>
         <div className="sp-body">
@@ -392,7 +392,7 @@ function TabKPI({ pengaturanConfig, setPengaturanConfig, isReadOnly }) {
           ))}
           {!isReadOnly && (
             <div className="sp-info-box" style={{ marginTop:4 }}>
-              \u270f\ufe0f Perubahan langsung tersimpan ke konfigurasi sistem
+              ✏️ Perubahan langsung tersimpan ke konfigurasi sistem
             </div>
           )}
         </div>
@@ -401,15 +401,15 @@ function TabKPI({ pengaturanConfig, setPengaturanConfig, isReadOnly }) {
       {/* Cara Hitung */}
       <div className="sp-widget">
         <div className="sp-widget-head">
-          <div className="sp-widget-title">\ud83d\udcca Cara Hitung KPI</div>
+          <div className="sp-widget-title">📊 Cara Hitung KPI</div>
         </div>
         <div className="sp-body">
           {[
             { n:"1", title:"Hitung hari kerja wajib",    desc:"Total hari dalam bulan dikurangi hari libur resmi" },
             { n:"2", title:"Hitung kehadiran aktual",    desc:"Jumlah hari dengan kode: P, M, SM, IN, L, LL, PL, LS" },
-            { n:"3", title:"Hitung persentase",          desc:"(Kehadiran aktual \u00f7 Hari kerja wajib) \u00d7 100%" },
-            { n:"4", title:"Bandingkan dengan threshold",desc:`Jika \u2265 ${val("kpiThresholdPct")}% \u2192 dapat insentif Rp ${val("nominalInsentif").toLocaleString("id-ID")}` },
-            { n:"5", title:"Hitung potongan",            desc:`Ijin Tidak Sah \u2192 potong Rp ${val("dendaIjinTidakSah").toLocaleString("id-ID")}/hari dari gaji` },
+            { n:"3", title:"Hitung persentase",          desc:"(Kehadiran aktual ÷ Hari kerja wajib) × 100%" },
+            { n:"4", title:"Bandingkan dengan threshold",desc:`Jika ≥ ${val("kpiThresholdPct")}% → dapat insentif Rp ${val("nominalInsentif").toLocaleString("id-ID")}` },
+            { n:"5", title:"Hitung potongan",            desc:`Ijin Tidak Sah → potong Rp ${val("dendaIjinTidakSah").toLocaleString("id-ID")}/hari dari gaji` },
           ].map(s => (
             <div key={s.n} className="sp-sop-step">
               <div className="sp-sop-num" style={{ background:"linear-gradient(135deg,#3b82f6,#2563eb)" }}>{s.n}</div>
@@ -460,7 +460,7 @@ function TabInventaris({ inventaris, setInventaris, setPengaturanConfig, isReadO
       <div className="sp-widget">
         <div className="sp-widget-head">
           <div>
-            <div className="sp-widget-title">\ud83d\udce6 Inventaris Fasilitas Standar per Kamar</div>
+            <div className="sp-widget-title">📦 Inventaris Fasilitas Standar per Kamar</div>
             <div style={{ fontSize:11, color:"#9ca3af", marginTop:2 }}>
               Template referensi saat deep clean & check-out
             </div>
@@ -469,7 +469,7 @@ function TabInventaris({ inventaris, setInventaris, setPengaturanConfig, isReadO
             <span style={{ fontSize:11, color:"#9ca3af" }}>{inventaris.length} item</span>
             {!isReadOnly && (
               <button className="sp-btn primary" style={{ padding:"6px 12px" }} onClick={() => setShowModal(true)}>
-                \u2795 Tambah Item
+                ➕ Tambah Item
               </button>
             )}
           </div>
@@ -478,10 +478,10 @@ function TabInventaris({ inventaris, setInventaris, setPengaturanConfig, isReadO
         <div className="sp-body">
           {inventaris.length === 0 ? (
             <div className="sp-empty">
-              <div className="sp-empty-icon">\ud83d\udce6</div>
+              <div className="sp-empty-icon">📦</div>
               <div style={{ fontSize:13, fontWeight:600, color:"#374151" }}>Belum ada item inventaris</div>
               <div style={{ fontSize:12, marginTop:4 }}>
-                Klik \u2795 Tambah Item untuk mendefinisikan fasilitas standar kamar
+                Klik ➕ Tambah Item untuk mendefinisikan fasilitas standar kamar
               </div>
             </div>
           ) : (
@@ -489,7 +489,7 @@ function TabInventaris({ inventaris, setInventaris, setPengaturanConfig, isReadO
               {inventaris.map(item => (
                 <div key={item.id} className="sp-inv-item">
                   <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                    <span style={{ fontSize:18 }}>\ud83d\udce6</span>
+                    <span style={{ fontSize:18 }}>📦</span>
                     <div>
                       <div className="sp-inv-name">{item.nama}</div>
                       <div className="sp-inv-sub">{item.satuan}</div>
@@ -503,12 +503,12 @@ function TabInventaris({ inventaris, setInventaris, setPengaturanConfig, isReadO
                           style={{ background:"none", border:"none", cursor:"pointer", fontSize:13, color:"#6b7280", padding:"2px 5px" }}
                           onClick={() => setEditItem(item)}
                           title="Edit"
-                        >\u270f\ufe0f</button>
+                        >✏️</button>
                         <button
                           style={{ background:"none", border:"none", cursor:"pointer", fontSize:13, color:"#dc2626", padding:"2px 5px" }}
                           onClick={() => handleDelete(item.id)}
                           title="Hapus"
-                        >\u2715</button>
+                        >✕</button>
                       </>
                     )}
                   </div>
@@ -518,14 +518,14 @@ function TabInventaris({ inventaris, setInventaris, setPengaturanConfig, isReadO
           )}
 
           <div className="sp-info-box">
-            \ud83d\udccb Inventaris ini digunakan sebagai referensi saat deep clean dan check-out untuk verifikasi kelengkapan fasilitas kamar.
+            📋 Inventaris ini digunakan sebagai referensi saat deep clean dan check-out untuk verifikasi kelengkapan fasilitas kamar.
           </div>
         </div>
 
         {!isReadOnly && dirty && (
           <div className="sp-save-bar">
             <button className="sp-btn ghost" onClick={() => { setDirty(false); }}>Batalkan</button>
-            <button className="sp-btn primary" onClick={handleSave}>\u2705 Simpan Perubahan</button>
+            <button className="sp-btn primary" onClick={handleSave}>✅ Simpan Perubahan</button>
           </div>
         )}
       </div>
@@ -571,11 +571,11 @@ export default function SOP({ user, globalData = {} }) {
   }, [deepcleanList]);
 
   const TABS = [
-    { id:"weekly",    label:"\u2705 Weekly Service" },
-    { id:"deepclean", label:"\u2728 Deep Clean" },
-    { id:"sop",       label:"\ud83d\udccb SOP Alur" },
-    { id:"kpi",       label:"\ud83c\udfaf KPI & Insentif" },
-    { id:"inventaris",label:"\ud83d\udce6 Inventaris Kamar" },
+    { id:"weekly",    label:"✅ Weekly Service" },
+    { id:"deepclean", label:"✨ Deep Clean" },
+    { id:"sop",       label:"📋 SOP Alur" },
+    { id:"kpi",       label:"🎯 KPI & Insentif" },
+    { id:"inventaris",label:"📦 Inventaris Kamar" },
   ];
 
   return (
@@ -596,7 +596,7 @@ export default function SOP({ user, globalData = {} }) {
         <ChecklistEditor
           list={weeklyList}
           setList={setWeeklyList}
-          title="\ud83e\uddf9 Checklist Weekly Service"
+          title="🧹 Checklist Weekly Service"
           subtitle="Dilakukan 1x seminggu per kamar oleh staff pagi"
           isReadOnly={isReadOnly}
         />
@@ -607,7 +607,7 @@ export default function SOP({ user, globalData = {} }) {
         <ChecklistEditor
           list={deepcleanList}
           setList={setDCList}
-          title="\u2728 Checklist Deep Clean"
+          title="✨ Checklist Deep Clean"
           subtitle="Dilakukan setelah check-out, sebelum kamar disewakan kembali"
           isReadOnly={isReadOnly}
         />
@@ -616,9 +616,9 @@ export default function SOP({ user, globalData = {} }) {
       {/* SOP Alur */}
       {tab === "sop" && (
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-          <SOPView steps={SOP_CHECKIN}  title="\ud83d\udd11 SOP Check-in Penyewa" />
-          <SOPView steps={SOP_CHECKOUT} title="\ud83d\udce6 SOP Check-out Penyewa" />
-          <SOPView steps={SOP_KELUHAN}  title="\ud83d\udd27 SOP Penanganan Keluhan Urgent" />
+          <SOPView steps={SOP_CHECKIN}  title="🔑 SOP Check-in Penyewa" />
+          <SOPView steps={SOP_CHECKOUT} title="📦 SOP Check-out Penyewa" />
+          <SOPView steps={SOP_KELUHAN}  title="🔧 SOP Penanganan Keluhan Urgent" />
         </div>
       )}
 

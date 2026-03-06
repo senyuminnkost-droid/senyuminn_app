@@ -51,7 +51,7 @@ const CSS = `
   .kal-select:focus { border-color:#f97316; }
   @media(max-width:900px){ .kal-layout{grid-template-columns:1fr} .kal-stats{grid-template-columns:repeat(2,1fr)} }
 
-  /* \u2500\u2500 PENGAJUAN ANGGARAN \u2500\u2500 */
+  /* ── PENGAJUAN ANGGARAN ── */
   .kal-angg-bar { background:linear-gradient(135deg,#eff6ff,#dbeafe); border:1px solid #bfdbfe; border-radius:10px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
   .kal-angg-form { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:14px 16px; }
   .kal-angg-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
@@ -74,15 +74,15 @@ const toDateStr = (y, m, d) =>
   `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
 
 const EVENT_CFG = {
-  weekly:      { label:"Weekly Service",   icon:"\ud83e\uddf9", color:"#2563eb", bg:"#dbeafe" },
-  keluhan:     { label:"Keluhan Baru",     icon:"\ud83d\udd34", color:"#dc2626", bg:"#fee2e2" },
-  selesai:     { label:"Selesai Diperbaiki",icon:"\u2705", color:"#16a34a", bg:"#dcfce7" },
-  checkin:     { label:"Check-in",         icon:"\ud83d\udd11", color:"#ea580c", bg:"#ffedd5" },
-  checkout:    { label:"Check-out",        icon:"\ud83d\udce6", color:"#7c3aed", bg:"#ede9fe" },
-  deepclean:   { label:"Deep Clean",       icon:"\u2728", color:"#0284c7", bg:"#e0f2fe" },
-  maintenance: { label:"Maintenance",      icon:"\ud83d\udd27", color:"#b45309", bg:"#fef3c7" },
-  servis:      { label:"Servis Rutin",     icon:"\u2744\ufe0f", color:"#0891b2", bg:"#cffafe" },
-  reminder:    { label:"Reminder",         icon:"\u26a0\ufe0f", color:"#ca8a04", bg:"#fef9c3" },
+  weekly:      { label:"Weekly Service",   icon:"🧹", color:"#2563eb", bg:"#dbeafe" },
+  keluhan:     { label:"Keluhan Baru",     icon:"🔴", color:"#dc2626", bg:"#fee2e2" },
+  selesai:     { label:"Selesai Diperbaiki",icon:"✅", color:"#16a34a", bg:"#dcfce7" },
+  checkin:     { label:"Check-in",         icon:"🔑", color:"#ea580c", bg:"#ffedd5" },
+  checkout:    { label:"Check-out",        icon:"📦", color:"#7c3aed", bg:"#ede9fe" },
+  deepclean:   { label:"Deep Clean",       icon:"✨", color:"#0284c7", bg:"#e0f2fe" },
+  maintenance: { label:"Maintenance",      icon:"🔧", color:"#b45309", bg:"#fef3c7" },
+  servis:      { label:"Servis Rutin",     icon:"❄️", color:"#0891b2", bg:"#cffafe" },
+  reminder:    { label:"Reminder",         icon:"⚠️", color:"#ca8a04", bg:"#fef9c3" },
 };
 
 export default function Kalender({ user, globalData = {} }) {
@@ -109,7 +109,7 @@ export default function Kalender({ user, globalData = {} }) {
 
   const canEdit = user?.role !== "staff";
 
-  // \u2500\u2500 Generate events otomatis \u2500\u2500
+  // ── Generate events otomatis ──
   const autoEvents = [];
 
   tiketList.forEach(t => {
@@ -118,7 +118,7 @@ export default function Kalender({ user, globalData = {} }) {
       id:      `tiket-${t.id}`,
       tanggal: t.tanggal,
       tipe:    t.status === "selesai" ? "selesai" : "keluhan",
-      label:   `${t.prioritas==="urgent"?"\ud83d\udd34":"\ud83d\udfe1"} Kamar ${t.kamar} \u2014 ${t.kategori}`,
+      label:   `${t.prioritas==="urgent"?"🔴":"🟡"} Kamar ${t.kamar} — ${t.kategori}`,
       catatan: t.deskripsi,
     });
   });
@@ -130,7 +130,7 @@ export default function Kalender({ user, globalData = {} }) {
       id:      `weekly-${w.id||w.tanggal}`,
       tanggal: w.tanggal,
       tipe:    "weekly",
-      label:   `\ud83e\uddf9 Weekly Service \u2014 Kamar ${kamarIds.length>0 ? kamarIds.join(", ") : w.kamarId||""}`,
+      label:   `🧹 Weekly Service — Kamar ${kamarIds.length>0 ? kamarIds.join(", ") : w.kamarId||""}`,
       catatan: w.catatan || "",
     });
   });
@@ -141,7 +141,7 @@ export default function Kalender({ user, globalData = {} }) {
         id:      `checkout-${p.id}`,
         tanggal: p.kontrakSelesai,
         tipe:    "checkout",
-        label:   `\ud83d\udce6 Kontrak Selesai \u2014 ${p.namaPenyewa} (Kamar ${p.kamarId})`,
+        label:   `📦 Kontrak Selesai — ${p.namaPenyewa} (Kamar ${p.kamarId})`,
         catatan: "Reminder kontrak selesai",
       });
     }
@@ -211,10 +211,10 @@ export default function Kalender({ user, globalData = {} }) {
     <div className="kal-wrap">
       <StyleInjector />
 
-      {/* \u2500\u2500 Pengajuan Anggaran Banner \u2500\u2500 */}
+      {/* ── Pengajuan Anggaran Banner ── */}
       <div className="kal-angg-bar">
         <div>
-          <div style={{fontSize:13,fontWeight:700,color:"#1d4ed8"}}>\ud83d\udccb Pengajuan Anggaran Belanja</div>
+          <div style={{fontSize:13,fontWeight:700,color:"#1d4ed8"}}>📋 Pengajuan Anggaran Belanja</div>
           <div style={{fontSize:11,color:"#3b82f6",marginTop:1}}>
             {anggaranList.filter(a => a.status==="pending").length} pengajuan menunggu approval
           </div>
@@ -222,14 +222,14 @@ export default function Kalender({ user, globalData = {} }) {
         <button
           style={{padding:"7px 14px",background:"linear-gradient(135deg,#3b82f6,#2563eb)",color:"#fff",border:"none",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer"}}
           onClick={() => setShowAnggForm(s => !s)}>
-          {showAnggForm ? "\u2715 Tutup" : "+ Ajukan Anggaran"}
+          {showAnggForm ? "✕ Tutup" : "+ Ajukan Anggaran"}
         </button>
       </div>
 
-      {/* \u2500\u2500 Form Pengajuan Anggaran \u2500\u2500 */}
+      {/* ── Form Pengajuan Anggaran ── */}
       {showAnggForm && (
         <div className="kal-angg-form">
-          <div style={{fontSize:13,fontWeight:700,color:"#111827",marginBottom:10}}>\ud83d\udcdd Form Pengajuan Anggaran</div>
+          <div style={{fontSize:13,fontWeight:700,color:"#111827",marginBottom:10}}>📝 Form Pengajuan Anggaran</div>
           <div className="kal-angg-grid">
             <div>
               <label className="kal-label">Judul Kebutuhan *</label>
@@ -266,7 +266,7 @@ export default function Kalender({ user, globalData = {} }) {
               style={{padding:"7px 14px",background:"linear-gradient(135deg,#f97316,#ea580c)",color:"#fff",border:"none",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer",opacity:anggForm.judul ? 1 : 0.5}}
               disabled={!anggForm.judul}
               onClick={handleAjukanAnggaran}>
-              \u2705 Ajukan
+              ✅ Ajukan
             </button>
             <button
               style={{padding:"7px 14px",background:"#f3f4f6",border:"none",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer"}}
@@ -277,7 +277,7 @@ export default function Kalender({ user, globalData = {} }) {
         </div>
       )}
 
-      {/* \u2500\u2500 Stats \u2500\u2500 */}
+      {/* ── Stats ── */}
       <div className="kal-stats">
         {[
           { val: statsCount.weekly,  label: "Weekly Service",  color: "#2563eb" },
@@ -292,26 +292,26 @@ export default function Kalender({ user, globalData = {} }) {
         ))}
       </div>
 
-      {/* \u2500\u2500 Layout Utama \u2500\u2500 */}
+      {/* ── Layout Utama ── */}
       <div className="kal-layout">
 
         {/* Kalender */}
         <div className="kal-widget">
           <div className="kal-widget-head">
-            <div className="kal-widget-title">\ud83d\udcc5 Kalender Operasional</div>
+            <div className="kal-widget-title">📅 Kalender Operasional</div>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
               {canEdit && (
                 <button className="kal-btn" onClick={() => {
                   setForm(f => ({...f, tanggal: selectedDate || todayStr}));
                   setShowModal(true);
                 }}>
-                  \uff0b Tambah Event
+                  ＋ Tambah Event
                 </button>
               )}
               <div className="kal-period">
-                <button className="kal-period-btn" onClick={prevMonth}>\u2039</button>
+                <button className="kal-period-btn" onClick={prevMonth}>‹</button>
                 <span className="kal-period-label">{BULAN[month].toUpperCase()} {year}</span>
-                <button className="kal-period-btn" onClick={nextMonth}>\u203a</button>
+                <button className="kal-period-btn" onClick={nextMonth}>›</button>
               </div>
             </div>
           </div>
@@ -345,7 +345,7 @@ export default function Kalender({ user, globalData = {} }) {
                       return (
                         <div key={ei} className="kal-pill"
                           style={{background:cfg.bg, color:cfg.color}}>
-                          {cfg.icon} {ev.label.split("\u2014")[0].trim()}
+                          {cfg.icon} {ev.label.split("—")[0].trim()}
                         </div>
                       );
                     })}
@@ -375,7 +375,7 @@ export default function Kalender({ user, globalData = {} }) {
             <div className="kal-widget-body">
               {selectedEvents.length === 0 ? (
                 <div className="kal-empty-state">
-                  <div style={{fontSize:28,marginBottom:6}}>\ud83d\udced</div>
+                  <div style={{fontSize:28,marginBottom:6}}>📭</div>
                   <div style={{fontSize:12,fontWeight:600,color:"#374151"}}>Tidak ada event</div>
                   {canEdit && (
                     <div style={{fontSize:11,color:"#f97316",marginTop:6,cursor:"pointer",fontWeight:600}}
@@ -407,7 +407,7 @@ export default function Kalender({ user, globalData = {} }) {
                             if (window.confirm("Hapus event ini?"))
                               setManualEvents(prev => prev.filter(e => e.id !== ev.id));
                           }} style={{background:"none",border:"none",cursor:"pointer",color:"#9ca3af",fontSize:14,padding:"0 2px"}}>
-                            \u2715
+                            ✕
                           </button>
                         )}
                       </div>
@@ -421,7 +421,7 @@ export default function Kalender({ user, globalData = {} }) {
           {/* Legenda */}
           <div className="kal-widget">
             <div className="kal-widget-head">
-              <div className="kal-widget-title">\ud83c\udfa8 Legenda</div>
+              <div className="kal-widget-title">🎨 Legenda</div>
             </div>
             <div className="kal-widget-body">
               {Object.entries(EVENT_CFG).map(([key, cfg]) => (
@@ -436,13 +436,13 @@ export default function Kalender({ user, globalData = {} }) {
         </div>
       </div>
 
-      {/* \u2500\u2500 Modal Tambah Event \u2500\u2500 */}
+      {/* ── Modal Tambah Event ── */}
       {showModal && (
         <div className="kal-overlay" onClick={() => setShowModal(false)}>
           <div className="kal-modal" onClick={e => e.stopPropagation()}>
             <div className="kal-modal-head">
-              <div className="kal-modal-title">\uff0b Tambah Event Kalender</div>
-              <button className="kal-modal-close" onClick={() => setShowModal(false)}>\u2715</button>
+              <div className="kal-modal-title">＋ Tambah Event Kalender</div>
+              <button className="kal-modal-close" onClick={() => setShowModal(false)}>✕</button>
             </div>
             <div className="kal-modal-body">
               <div className="kal-field">
@@ -463,7 +463,7 @@ export default function Kalender({ user, globalData = {} }) {
                 <label className="kal-label">Keterangan *</label>
                 <input className="kal-input" value={form.label}
                   onChange={e => setForm(f => ({...f, label:e.target.value}))}
-                  placeholder="Contoh: Weekly Service \u2014 Kamar 1, 4, 7" />
+                  placeholder="Contoh: Weekly Service — Kamar 1, 4, 7" />
               </div>
               <div className="kal-field">
                 <label className="kal-label">Catatan (opsional)</label>
@@ -476,7 +476,7 @@ export default function Kalender({ user, globalData = {} }) {
               <button className="kal-btn"
                 disabled={!form.tanggal || !form.label.trim()}
                 onClick={handleAdd}>
-                \u2705 Simpan
+                ✅ Simpan
               </button>
               <button className="kal-btn-ghost" onClick={() => setShowModal(false)}>Batal</button>
             </div>

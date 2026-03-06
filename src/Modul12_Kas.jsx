@@ -142,7 +142,7 @@ function StyleInjector() {
 const padD    = (n) => String(n).padStart(2,"0");
 const todayStr= (()=>{ const d=new Date(); return `${d.getFullYear()}-${padD(d.getMonth()+1)}-${padD(d.getDate())}`; })();
 const thisMonth = todayStr.slice(0,7);
-const fmtRp   = (n) => n!=null ? "Rp "+Number(n).toLocaleString("id-ID") : "\u2014";
+const fmtRp   = (n) => n!=null ? "Rp "+Number(n).toLocaleString("id-ID") : "—";
 const fmtRpShort = (n) => {
   if (!n) return "Rp 0";
   if (Math.abs(n)>=1000000) return "Rp "+(n/1000000).toFixed(1)+"jt";
@@ -179,16 +179,16 @@ function ModalTransaksi({ onClose, onSave, rekeningList }) {
     <div className="ks-overlay" onClick={onClose}>
       <div className="ks-modal" onClick={e=>e.stopPropagation()}>
         <div className="ks-modal-head">
-          <div className="ks-modal-title">\u2795 Tambah Transaksi</div>
-          <button className="ks-modal-close" onClick={onClose}>\u2715</button>
+          <div className="ks-modal-title">➕ Tambah Transaksi</div>
+          <button className="ks-modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="ks-modal-body">
 
           {/* Tipe */}
           <div className="ks-tipe-row">
             {[
-              { val:"pemasukan",  icon:"\u2b06\ufe0f", label:"Pemasukan",  cls:"active-in"  },
-              { val:"pengeluaran",icon:"\u2b07\ufe0f", label:"Pengeluaran",cls:"active-out" },
+              { val:"pemasukan",  icon:"⬆️", label:"Pemasukan",  cls:"active-in"  },
+              { val:"pengeluaran",icon:"⬇️", label:"Pengeluaran",cls:"active-out" },
             ].map(t=>(
               <div key={t.val} className={`ks-tipe-btn ${form.tipe===t.val?t.cls:""}`} onClick={()=>set("tipe",t.val)}>
                 <div className="ks-tipe-icon">{t.icon}</div>
@@ -225,7 +225,7 @@ function ModalTransaksi({ onClose, onSave, rekeningList }) {
               <label className="ks-field-label">Rekening</label>
               <select className="ks-input" value={form.rekening} onChange={e=>set("rekening",e.target.value)}>
                 {rekeningList.length===0 && <option value="">Kas Umum</option>}
-                {rekeningList.map(r=><option key={r.id} value={r.id}>{r.bank} \u2014 {r.nama}</option>)}
+                {rekeningList.map(r=><option key={r.id} value={r.id}>{r.bank} — {r.nama}</option>)}
               </select>
             </div>
           </div>
@@ -248,11 +248,11 @@ function ModalTransaksi({ onClose, onSave, rekeningList }) {
                     <div style={{display:"grid",gridTemplateColumns:"1fr 80px 80px",gap:6,fontSize:11,padding:"4px 0",borderBottom:"1px solid #e5e7eb"}}>
                       <span style={{color:"#374151"}}>Kas / Bank</span>
                       <span style={{textAlign:"right",fontWeight:600,color:"#16a34a",fontFamily:"monospace"}}>{fmtRpShort(Number(form.nominal))}</span>
-                      <span style={{textAlign:"right",color:"#9ca3af"}}>\u2014</span>
+                      <span style={{textAlign:"right",color:"#9ca3af"}}>—</span>
                     </div>
                     <div style={{display:"grid",gridTemplateColumns:"1fr 80px 80px",gap:6,fontSize:11,padding:"4px 0"}}>
                       <span style={{color:"#374151",paddingLeft:12}}>{form.kategori||"Pendapatan"}</span>
-                      <span style={{textAlign:"right",color:"#9ca3af"}}>\u2014</span>
+                      <span style={{textAlign:"right",color:"#9ca3af"}}>—</span>
                       <span style={{textAlign:"right",fontWeight:600,color:"#16a34a",fontFamily:"monospace"}}>{fmtRpShort(Number(form.nominal))}</span>
                     </div>
                   </>
@@ -261,11 +261,11 @@ function ModalTransaksi({ onClose, onSave, rekeningList }) {
                     <div style={{display:"grid",gridTemplateColumns:"1fr 80px 80px",gap:6,fontSize:11,padding:"4px 0",borderBottom:"1px solid #e5e7eb"}}>
                       <span style={{color:"#374151"}}>{form.kategori||"Beban"}</span>
                       <span style={{textAlign:"right",fontWeight:600,color:"#dc2626",fontFamily:"monospace"}}>{fmtRpShort(Number(form.nominal))}</span>
-                      <span style={{textAlign:"right",color:"#9ca3af"}}>\u2014</span>
+                      <span style={{textAlign:"right",color:"#9ca3af"}}>—</span>
                     </div>
                     <div style={{display:"grid",gridTemplateColumns:"1fr 80px 80px",gap:6,fontSize:11,padding:"4px 0"}}>
                       <span style={{color:"#374151",paddingLeft:12}}>Kas / Bank</span>
-                      <span style={{textAlign:"right",color:"#9ca3af"}}>\u2014</span>
+                      <span style={{textAlign:"right",color:"#9ca3af"}}>—</span>
                       <span style={{textAlign:"right",fontWeight:600,color:"#dc2626",fontFamily:"monospace"}}>{fmtRpShort(Number(form.nominal))}</span>
                     </div>
                   </>
@@ -277,7 +277,7 @@ function ModalTransaksi({ onClose, onSave, rekeningList }) {
         </div>
         <div className="ks-modal-foot">
           <button className="ks-btn primary" disabled={!valid} onClick={()=>{ onSave({...form, id:Date.now(), nominal:Number(form.nominal)}); onClose(); }}>
-            \u2705 Simpan Transaksi
+            ✅ Simpan Transaksi
           </button>
           <button className="ks-btn ghost" onClick={onClose}>Batal</button>
         </div>
@@ -301,8 +301,8 @@ function ModalAset({ onClose, onSave }) {
     <div className="ks-overlay" onClick={onClose}>
       <div className="ks-modal" onClick={e=>e.stopPropagation()} style={{maxWidth:420}}>
         <div className="ks-modal-head">
-          <div className="ks-modal-title">\ud83c\udff7\ufe0f Tambah Aset</div>
-          <button className="ks-modal-close" onClick={onClose}>\u2715</button>
+          <div className="ks-modal-title">🏷️ Tambah Aset</div>
+          <button className="ks-modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="ks-modal-body">
           <div className="ks-field">
@@ -327,7 +327,7 @@ function ModalAset({ onClose, onSave }) {
           </div>
           {depPerBulan>0 && (
             <div style={{background:"#fff7ed",border:"1px solid #fed7aa",borderRadius:8,padding:"10px 12px",fontSize:12}}>
-              <div style={{color:"#9a3412",fontWeight:600,marginBottom:4}}>\ud83d\udcca Estimasi Depresiasi (Garis Lurus)</div>
+              <div style={{color:"#9a3412",fontWeight:600,marginBottom:4}}>📊 Estimasi Depresiasi (Garis Lurus)</div>
               <div style={{display:"flex",gap:16}}>
                 <div><span style={{color:"#9ca3af"}}>Per bulan: </span><b style={{color:"#ea580c"}}>{fmtRp(depPerBulan)}</b></div>
                 <div><span style={{color:"#9ca3af"}}>Per tahun: </span><b style={{color:"#ea580c"}}>{fmtRp(depPerBulan*12)}</b></div>
@@ -337,7 +337,7 @@ function ModalAset({ onClose, onSave }) {
         </div>
         <div className="ks-modal-foot">
           <button className="ks-btn primary" disabled={!valid} onClick={()=>{ onSave({...form,id:Date.now(),nilaiPerolehan:Number(form.nilaiPerolehan),depPerBulan}); onClose(); }}>
-            \u2705 Simpan Aset
+            ✅ Simpan Aset
           </button>
           <button className="ks-btn ghost" onClick={onClose}>Batal</button>
         </div>
@@ -379,23 +379,23 @@ function TabJurnal({ kasJurnal, setKasJurnal, rekeningList }) {
     <div className="ks-layout">
       <div className="ks-widget">
         <div className="ks-widget-head">
-          <div className="ks-widget-title">\ud83d\udcd2 Jurnal Transaksi</div>
+          <div className="ks-widget-title">📒 Jurnal Transaksi</div>
           <div style={{display:"flex",gap:8}}>
-            <button className="ks-pdf-btn" onClick={downloadPDF}>\u2b07\ufe0f Export CSV</button>
+            <button className="ks-pdf-btn" onClick={downloadPDF}>⬇️ Export CSV</button>
             <button className="ks-btn primary" style={{flex:"none",padding:"6px 14px",fontSize:12}} onClick={()=>setShow(true)}>
-              \u2795 Tambah
+              ➕ Tambah
             </button>
           </div>
         </div>
         <div className="ks-filterbar">
           <div className="ks-search">
-            <span>\ud83d\udd0d</span>
+            <span>🔍</span>
             <input placeholder="Cari keterangan..." value={search} onChange={e=>setSearch(e.target.value)} />
           </div>
           <select className="ks-select" value={filterTipe} onChange={e=>setFT(e.target.value)}>
             <option value="all">Semua Tipe</option>
-            <option value="pemasukan">\u2b06\ufe0f Pemasukan</option>
-            <option value="pengeluaran">\u2b07\ufe0f Pengeluaran</option>
+            <option value="pemasukan">⬆️ Pemasukan</option>
+            <option value="pengeluaran">⬇️ Pengeluaran</option>
           </select>
           <select className="ks-select" value={filterBln} onChange={e=>setFB(e.target.value)}>
             <option value="all">Semua Bulan</option>
@@ -423,23 +423,23 @@ function TabJurnal({ kasJurnal, setKasJurnal, rekeningList }) {
         {/* List */}
         {kasJurnal.length===0 ? (
           <div className="ks-empty">
-            <div className="ks-empty-icon">\ud83d\udcd2</div>
+            <div className="ks-empty-icon">📒</div>
             <div className="ks-empty-title">Belum ada transaksi</div>
             <div style={{fontSize:11,color:"#9ca3af"}}>Tambah transaksi manual atau konfirmasi tagihan di Modul Tagihan</div>
           </div>
         ) : filtered.length===0 ? (
-          <div className="ks-empty"><div className="ks-empty-icon">\ud83d\udd0d</div><div className="ks-empty-title">Tidak ditemukan</div></div>
+          <div className="ks-empty"><div className="ks-empty-icon">🔍</div><div className="ks-empty-title">Tidak ditemukan</div></div>
         ) : (
           filtered.map(t=>(
             <div key={t.id} className="ks-row">
               <div className="ks-row-icon" style={{background:t.tipe==="pemasukan"?"#f0fdf4":"#fee2e2"}}>
-                {t.tipe==="pemasukan"?"\u2b06\ufe0f":"\u2b07\ufe0f"}
+                {t.tipe==="pemasukan"?"⬆️":"⬇️"}
               </div>
               <div className="ks-row-info">
                 <div className="ks-row-desc">{t.keterangan}</div>
                 <div className="ks-row-meta">
                   <span>{t.kategori}</span>
-                  {t.catatan && <span>\u00b7 {t.catatan}</span>}
+                  {t.catatan && <span>· {t.catatan}</span>}
                 </div>
               </div>
               <div className="ks-row-right">
@@ -453,10 +453,10 @@ function TabJurnal({ kasJurnal, setKasJurnal, rekeningList }) {
         )}
       </div>
 
-      {/* Panel kanan \u2014 rekening */}
+      {/* Panel kanan — rekening */}
       <div style={{display:"flex",flexDirection:"column",gap:12}}>
         <div className="ks-widget">
-          <div className="ks-widget-head"><div className="ks-widget-title">\ud83c\udfe6 Rekening</div></div>
+          <div className="ks-widget-head"><div className="ks-widget-title">🏦 Rekening</div></div>
           <div className="ks-widget-body">
             {rekeningList.length===0 ? (
               <div style={{fontSize:12,color:"#9ca3af",textAlign:"center",padding:"16px 0"}}>Rekening diatur di Profil Kost</div>
@@ -475,7 +475,7 @@ function TabJurnal({ kasJurnal, setKasJurnal, rekeningList }) {
 
         {/* Quick stats */}
         <div className="ks-widget">
-          <div className="ks-widget-head"><div className="ks-widget-title">\ud83d\udcca Bulan {thisMonth}</div></div>
+          <div className="ks-widget-head"><div className="ks-widget-title">📊 Bulan {thisMonth}</div></div>
           <div className="ks-widget-body" style={{padding:"8px 16px"}}>
             {[
               {k:"Pemasukan",   v:fmtRp(kasJurnal.filter(t=>t.tipe==="pemasukan"&&t.tanggal?.startsWith(thisMonth)).reduce((s,t)=>s+t.nominal,0)),  c:"#16a34a"},
@@ -523,8 +523,8 @@ function TabBudget({ kasJurnal }) {
       {/* Summary */}
       <div className="ks-widget">
         <div className="ks-widget-head">
-          <div className="ks-widget-title">\ud83d\udcb0 Budget Planning \u2014 {thisMonth}</div>
-          <span style={{fontSize:11,color:"#9ca3af"}}>Cash basis \u00b7 Single Source of Truth</span>
+          <div className="ks-widget-title">💰 Budget Planning — {thisMonth}</div>
+          <span style={{fontSize:11,color:"#9ca3af"}}>Cash basis · Single Source of Truth</span>
         </div>
         <div className="ks-widget-body">
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12,marginBottom:16}}>
@@ -567,7 +567,7 @@ function TabBudget({ kasJurnal }) {
 
       {/* Pengeluaran per kategori */}
       <div className="ks-widget">
-        <div className="ks-widget-head"><div className="ks-widget-title">\ud83d\udcca Breakdown Pengeluaran {thisMonth}</div></div>
+        <div className="ks-widget-head"><div className="ks-widget-title">📊 Breakdown Pengeluaran {thisMonth}</div></div>
         <div className="ks-widget-body">
           {KATEGORI_PENGELUARAN.map(kat=>{
             const total = kasJurnal.filter(t=>t.tipe==="pengeluaran"&&t.tanggal?.startsWith(thisMonth)&&t.kategori===kat).reduce((s,t)=>s+t.nominal,0);
@@ -632,15 +632,15 @@ function TabAset({ asetList, setAsetList }) {
 
       <div className="ks-widget">
         <div className="ks-widget-head">
-          <div className="ks-widget-title">\ud83c\udff7\ufe0f Daftar Aset</div>
+          <div className="ks-widget-title">🏷️ Daftar Aset</div>
           <button className="ks-btn primary" style={{flex:"none",padding:"6px 14px",fontSize:12}} onClick={()=>setShow(true)}>
-            \u2795 Tambah Aset
+            ➕ Tambah Aset
           </button>
         </div>
         <div>
           {asetList.length===0 ? (
             <div className="ks-empty">
-              <div className="ks-empty-icon">\ud83c\udff7\ufe0f</div>
+              <div className="ks-empty-icon">🏷️</div>
               <div className="ks-empty-title">Belum ada aset</div>
               <div style={{fontSize:11,color:"#9ca3af"}}>Tambah aset untuk tracking depresiasi otomatis</div>
             </div>
@@ -654,7 +654,7 @@ function TabAset({ asetList, setAsetList }) {
                     <div>
                       <div style={{fontSize:13,fontWeight:600,color:"#1f2937"}}>{a.nama}</div>
                       <div style={{fontSize:10,color:"#9ca3af",marginTop:1}}>
-                        Dibeli: {a.tanggalBeli} \u00b7 Umur: {a.umurEkonomis} thn
+                        Dibeli: {a.tanggalBeli} · Umur: {a.umurEkonomis} thn
                       </div>
                     </div>
                     <div style={{textAlign:"right"}}>
@@ -694,7 +694,7 @@ export default function Kas({ user, globalData = {} }) {
   const [activeTab,  setActiveTab]  = useState("jurnal");
   const [asetList,   setAsetList]   = useState([]);
 
-  // Rekening dummy \u2014 nanti dari Profil Kost
+  // Rekening dummy — nanti dari Profil Kost
   const rekeningList = [];
 
   // Stats header
@@ -726,9 +726,9 @@ export default function Kas({ user, globalData = {} }) {
       {/* Tabs */}
       <div className="ks-tabs">
         {[
-          {id:"jurnal",  label:"\ud83d\udcd2 Jurnal & Transaksi"},
-          {id:"budget",  label:"\ud83d\udcb0 Budget Planning"},
-          {id:"aset",    label:"\ud83c\udff7\ufe0f Aset & Depresiasi"},
+          {id:"jurnal",  label:"📒 Jurnal & Transaksi"},
+          {id:"budget",  label:"💰 Budget Planning"},
+          {id:"aset",    label:"🏷️ Aset & Depresiasi"},
         ].map(t=>(
           <div key={t.id} className={`ks-tab ${activeTab===t.id?"active":""}`} onClick={()=>setActiveTab(t.id)}>
             {t.label}

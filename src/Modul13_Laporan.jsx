@@ -101,8 +101,8 @@ function StyleInjector() {
 // HELPERS
 // ============================================================
 const padD    = (n) => String(n).padStart(2,"0");
-const fmtRp   = (n) => n!=null ? "Rp "+Math.abs(Number(n)).toLocaleString("id-ID") : "\u2014";
-const fmtPct  = (n) => n!=null ? Number(n).toFixed(1)+"%" : "\u2014";
+const fmtRp   = (n) => n!=null ? "Rp "+Math.abs(Number(n)).toLocaleString("id-ID") : "—";
+const fmtPct  = (n) => n!=null ? Number(n).toFixed(1)+"%" : "—";
 const todayStr= (()=>{ const d=new Date(); return `${d.getFullYear()}-${padD(d.getMonth()+1)}-${padD(d.getDate())}`; })();
 const thisYear = new Date().getFullYear();
 
@@ -136,7 +136,7 @@ const hitungKeuangan = (kasJurnal, asetList, penyewaList, karyawanList, periode)
   });
   const totalBeban = Object.values(beban).reduce((s,v)=>s+v,0);
 
-  // Depresiasi (per bulan \u00d7 jumlah bulan)
+  // Depresiasi (per bulan × jumlah bulan)
   const jumlahBulan = (() => {
     const d1=new Date(dari), d2=new Date(sampai);
     return Math.max(1, (d2.getFullYear()-d1.getFullYear())*12 + d2.getMonth()-d1.getMonth()+1);
@@ -189,8 +189,8 @@ function PeriodSelector({ periodeTipe, setPeriodeTipe, periodeVal, setPeriodeVal
     if (periodeTipe==="bulan")    return `${BULAN_FULL[parseInt(periodeVal.bulan)-1]} ${periodeVal.tahun}`;
     if (periodeTipe==="semester") return `Semester ${periodeVal.semester} ${periodeVal.tahun}`;
     if (periodeTipe==="tahun")    return `Tahun ${periodeVal.tahun}`;
-    if (periodeTipe==="custom")   return `${periodeVal.dari} \u2014 ${periodeVal.sampai}`;
-    return "\u2014";
+    if (periodeTipe==="custom")   return `${periodeVal.dari} — ${periodeVal.sampai}`;
+    return "—";
   };
 
   const getDariSampai = () => {
@@ -217,7 +217,7 @@ function PeriodSelector({ periodeTipe, setPeriodeTipe, periodeVal, setPeriodeVal
 // LAPORAN LABA RUGI
 // ============================================================
 function LabaRugi({ data, label }) {
-  if (!data) return <div className="lk-empty"><div className="lk-empty-icon">\ud83d\udcca</div></div>;
+  if (!data) return <div className="lk-empty"><div className="lk-empty-icon">📊</div></div>;
   const { pendapatanSewa,pendapatanLain,totalPendapatan,beban,totalBeban,totalDepresiasi,labaKotor,labaBersih,mgmtFee } = data;
 
   const rows = [
@@ -260,7 +260,7 @@ function LabaRugi({ data, label }) {
 // ARUS KAS
 // ============================================================
 function ArusKas({ data, kasJurnal, periode }) {
-  if (!data) return <div className="lk-empty"><div className="lk-empty-icon">\ud83d\udca7</div></div>;
+  if (!data) return <div className="lk-empty"><div className="lk-empty-icon">💧</div></div>;
   const { kasIn, kasOut, netKas } = data;
   const { dari, sampai } = periode;
 
@@ -307,11 +307,11 @@ function ArusKas({ data, kasJurnal, periode }) {
 // NERACA
 // ============================================================
 function Neraca({ data }) {
-  if (!data) return <div className="lk-empty"><div className="lk-empty-icon">\u2696\ufe0f</div></div>;
+  if (!data) return <div className="lk-empty"><div className="lk-empty-icon">⚖️</div></div>;
   const { nilaiTanah, nilaiAsetLain, akumDepresiasi, nilaiBukuAset, totalPendapatan, labaBersih, mgmtFee } = data;
 
   const totalAset = nilaiTanah + nilaiBukuAset;
-  const modal     = totalAset; // simplified \u2014 modal = aset (tanpa hutang untuk sekarang)
+  const modal     = totalAset; // simplified — modal = aset (tanpa hutang untuk sekarang)
 
   return (
     <table className="lk-table">
@@ -344,9 +344,9 @@ function Neraca({ data }) {
 // PERUBAHAN MODAL
 // ============================================================
 function PerubahanModal({ data }) {
-  if (!data) return <div className="lk-empty"><div className="lk-empty-icon">\ud83d\udd04</div></div>;
+  if (!data) return <div className="lk-empty"><div className="lk-empty-icon">🔄</div></div>;
   const { totalPendapatan, labaBersih, mgmtFee } = data;
-  const prive = Math.round(labaBersih * 0.1); // asumsi 10% \u2014 bisa diset di Pengaturan nanti
+  const prive = Math.round(labaBersih * 0.1); // asumsi 10% — bisa diset di Pengaturan nanti
 
   return (
     <table className="lk-table">
@@ -368,7 +368,7 @@ function PerubahanModal({ data }) {
 // PERFORMANCE RATIO
 // ============================================================
 function PerformanceRatio({ data, kasJurnal, asetList, periodeVal, periodeTipe }) {
-  if (!data) return <div className="lk-empty"><div className="lk-empty-icon">\ud83d\udcc8</div></div>;
+  if (!data) return <div className="lk-empty"><div className="lk-empty-icon">📈</div></div>;
   const { npm, roa, totalPendapatan, labaBersih, totalBeban, kasIn, kasOut } = data;
 
   // Trend 6 bulan terakhir (untuk chart)
@@ -389,12 +389,12 @@ function PerformanceRatio({ data, kasJurnal, asetList, periodeVal, periodeTipe }
   const maxVal = Math.max(...trend.map(t=>Math.max(t.inc,t.out)), 1);
 
   const ratios = [
-    { label:"Net Profit Margin", val:fmtPct(npm), raw:npm, good:">15%", icon:"\ud83d\udcca", desc:"Laba bersih / pendapatan" },
-    { label:"Tingkat Okupansi",  val:"\u2014", raw:null, good:">80%", icon:"\ud83c\udfe0", desc:"Dari Monitor Kamar" },
-    { label:"Return on Asset",   val:fmtPct(roa), raw:roa, good:">5%", icon:"\ud83c\udfe6", desc:"Laba bersih / total aset" },
-    { label:"Cost Ratio",        val:totalPendapatan>0?fmtPct((totalBeban/totalPendapatan)*100):"\u2014", raw:totalPendapatan>0?(totalBeban/totalPendapatan)*100:null, good:"<60%", icon:"\ud83d\udcc9", desc:"Total beban / pendapatan" },
-    { label:"Cashflow Ratio",    val:kasIn>0?fmtPct((kasOut/kasIn)*100):"\u2014", raw:kasIn>0?(kasOut/kasIn)*100:null, good:"<80%", icon:"\ud83d\udca7", desc:"Kas keluar / kas masuk" },
-    { label:"Mgmt Fee",          val:fmtPct(22), raw:22, good:"22%", icon:"\ud83d\udcbc", desc:"Fixed 22% dari pendapatan" },
+    { label:"Net Profit Margin", val:fmtPct(npm), raw:npm, good:">15%", icon:"📊", desc:"Laba bersih / pendapatan" },
+    { label:"Tingkat Okupansi",  val:"—", raw:null, good:">80%", icon:"🏠", desc:"Dari Monitor Kamar" },
+    { label:"Return on Asset",   val:fmtPct(roa), raw:roa, good:">5%", icon:"🏦", desc:"Laba bersih / total aset" },
+    { label:"Cost Ratio",        val:totalPendapatan>0?fmtPct((totalBeban/totalPendapatan)*100):"—", raw:totalPendapatan>0?(totalBeban/totalPendapatan)*100:null, good:"<60%", icon:"📉", desc:"Total beban / pendapatan" },
+    { label:"Cashflow Ratio",    val:kasIn>0?fmtPct((kasOut/kasIn)*100):"—", raw:kasIn>0?(kasOut/kasIn)*100:null, good:"<80%", icon:"💧", desc:"Kas keluar / kas masuk" },
+    { label:"Mgmt Fee",          val:fmtPct(22), raw:22, good:"22%", icon:"💼", desc:"Fixed 22% dari pendapatan" },
   ];
 
   const getRatioClass = (r) => {
@@ -423,7 +423,7 @@ function PerformanceRatio({ data, kasJurnal, asetList, periodeVal, periodeTipe }
 
       {/* Trend chart 6 bulan */}
       <div style={{padding:"0 16px 16px"}}>
-        <div style={{fontSize:11,fontWeight:700,color:"#374151",marginBottom:10,paddingTop:8}}>\ud83d\udcca Trend 6 Bulan Terakhir</div>
+        <div style={{fontSize:11,fontWeight:700,color:"#374151",marginBottom:10,paddingTop:8}}>📊 Trend 6 Bulan Terakhir</div>
         <div className="lk-chart">
           {trend.map((t,i)=>(
             <div key={i} className="lk-chart-col">
@@ -501,7 +501,7 @@ export default function Laporan({ user, globalData = {} }) {
     tagihanList  = [],
   } = globalData;
 
-  // \u2500\u2500 Periode state
+  // ── Periode state
   const [periodeTipe, setPeriodeTipe] = useState("bulan");
   const [periodeVal,  setPeriodeVal]  = useState({
     tahun:    thisYear,
@@ -514,7 +514,7 @@ export default function Laporan({ user, globalData = {} }) {
 
   const setPV = (k,v) => setPeriodeVal(p=>({...p,[k]:v}));
 
-  // \u2500\u2500 Hitung range periode
+  // ── Hitung range periode
   const getPeriodeRange = () => {
     const { tahun, bulan, semester, dari, sampai } = periodeVal;
     if (periodeTipe==="bulan") {
@@ -569,7 +569,7 @@ export default function Laporan({ user, globalData = {} }) {
 
       {/* Period selector */}
       <div className="lk-period">
-        <span className="lk-period-label">\ud83d\udcc5 Periode:</span>
+        <span className="lk-period-label">📅 Periode:</span>
         <div className="lk-period-tabs">
           {[
             {id:"bulan",    label:"Bulanan"},
@@ -599,33 +599,33 @@ export default function Laporan({ user, globalData = {} }) {
           {/* Semester */}
           {periodeTipe==="semester" && (
             <select className="lk-select" value={periodeVal.semester} onChange={e=>setPV("semester",parseInt(e.target.value))}>
-              <option value={1}>Semester 1 (Jan\u2013Jun)</option>
-              <option value={2}>Semester 2 (Jul\u2013Des)</option>
+              <option value={1}>Semester 1 (Jan–Jun)</option>
+              <option value={2}>Semester 2 (Jul–Des)</option>
             </select>
           )}
           {/* Custom */}
           {periodeTipe==="custom" && (
             <>
               <input type="date" className="lk-select" value={periodeVal.dari}   onChange={e=>setPV("dari",e.target.value)} />
-              <span style={{fontSize:11,color:"#9ca3af"}}>\u2014</span>
+              <span style={{fontSize:11,color:"#9ca3af"}}>—</span>
               <input type="date" className="lk-select" value={periodeVal.sampai} onChange={e=>setPV("sampai",e.target.value)} />
             </>
           )}
         </div>
 
         <div className="lk-period-info">
-          {label} \u00b7 {periode.dari} s/d {periode.sampai}
+          {label} · {periode.dari} s/d {periode.sampai}
         </div>
       </div>
 
       {/* Report tabs */}
       <div className="lk-report-tabs">
         {[
-          {id:"laba-rugi",  label:"\ud83d\udcca Laba Rugi"},
-          {id:"arus-kas",   label:"\ud83d\udca7 Arus Kas"},
-          {id:"neraca",     label:"\u2696\ufe0f Neraca"},
-          {id:"modal",      label:"\ud83d\udd04 Perubahan Modal"},
-          {id:"rasio",      label:"\ud83d\udcc8 Performance"},
+          {id:"laba-rugi",  label:"📊 Laba Rugi"},
+          {id:"arus-kas",   label:"💧 Arus Kas"},
+          {id:"neraca",     label:"⚖️ Neraca"},
+          {id:"modal",      label:"🔄 Perubahan Modal"},
+          {id:"rasio",      label:"📈 Performance"},
         ].map(t=>(
           <div key={t.id} className={`lk-report-tab ${activeReport===t.id?"active":""}`} onClick={()=>setActiveReport(t.id)}>
             {t.label}
@@ -638,21 +638,21 @@ export default function Laporan({ user, globalData = {} }) {
         <div className="lk-widget-head">
           <div>
             <div className="lk-widget-title">
-              {activeReport==="laba-rugi" && "\ud83d\udcca Laporan Laba Rugi"}
-              {activeReport==="arus-kas"  && "\ud83d\udca7 Laporan Arus Kas"}
-              {activeReport==="neraca"    && "\u2696\ufe0f Neraca (Balance Sheet)"}
-              {activeReport==="modal"     && "\ud83d\udd04 Laporan Perubahan Modal"}
-              {activeReport==="rasio"     && "\ud83d\udcc8 Performance & Financial Ratio"}
+              {activeReport==="laba-rugi" && "📊 Laporan Laba Rugi"}
+              {activeReport==="arus-kas"  && "💧 Laporan Arus Kas"}
+              {activeReport==="neraca"    && "⚖️ Neraca (Balance Sheet)"}
+              {activeReport==="modal"     && "🔄 Laporan Perubahan Modal"}
+              {activeReport==="rasio"     && "📈 Performance & Financial Ratio"}
             </div>
             <div className="lk-widget-sub">Periode: {label}</div>
           </div>
           <div style={{display:"flex",gap:8}}>
             <button className="lk-csv-btn" onClick={()=>downloadCSV(data,kasJurnal,periode,activeReport,label)}>
-              \u2b07\ufe0f Export CSV
+              ⬇️ Export CSV
             </button>
-            <button className="lk-pdf-btn" onClick={()=>alert("PDF generation \u2014 coming soon!\
+            <button className="lk-pdf-btn" onClick={()=>alert("PDF generation — coming soon!\
 Integrasi jsPDF akan diimplementasikan bersama semua modul.")}>
-              \ud83d\udcc4 Download PDF
+              📄 Download PDF
             </button>
           </div>
         </div>
@@ -660,7 +660,7 @@ Integrasi jsPDF akan diimplementasikan bersama semua modul.")}>
         <div className="lk-widget-body">
           {kasJurnal.length===0 ? (
             <div className="lk-empty">
-              <div className="lk-empty-icon">\ud83d\udcca</div>
+              <div className="lk-empty-icon">📊</div>
               <div style={{fontSize:14,fontWeight:600,color:"#374151"}}>Belum ada data transaksi</div>
               <div style={{fontSize:12,color:"#9ca3af"}}>Tambahkan transaksi di Kas & Jurnal untuk melihat laporan keuangan</div>
             </div>

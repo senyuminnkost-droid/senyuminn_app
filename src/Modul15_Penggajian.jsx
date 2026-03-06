@@ -134,9 +134,9 @@ const getColor = (id) => AVATAR_COLORS[(id||0) % AVATAR_COLORS.length];
 const defaultGaji = (k) => ({
   gajiPokok:      Number(k?.gajiPokok) || 0,
   insentif:       500000, // default nominal KPI insentif
-  lemburShift:    0,      // jumlah shift lembur \u00d7 Rp 50.000
+  lemburShift:    0,      // jumlah shift lembur × Rp 50.000
   lemburTambahan: 0,      // nominal langsung dari PJ
-  potonganIjin:   0,      // jumlah hari ijin tidak sah \u00d7 Rp 50.000
+  potonganIjin:   0,      // jumlah hari ijin tidak sah × Rp 50.000
   pinjaman:       0,      // maks 700.000 sekali potong
   bpjs:           0,
   pajak:          0,
@@ -198,8 +198,8 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
     <div className="pg-overlay" onClick={onClose}>
       <div className="pg-modal" onClick={e=>e.stopPropagation()}>
         <div className="pg-modal-head">
-          <div className="pg-modal-title">\ud83d\udcc4 Slip Gaji \u2014 {karyawan.nama}</div>
-          <button className="pg-modal-close" onClick={onClose}>\u2715</button>
+          <div className="pg-modal-title">📄 Slip Gaji — {karyawan.nama}</div>
+          <button className="pg-modal-close" onClick={onClose}>✕</button>
         </div>
 
         <div className="pg-modal-body">
@@ -208,18 +208,18 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
               <div>
                 <div className="pg-slip-company">SENYUM INN</div>
-                <div className="pg-slip-sub">Exclusive Kost \u00b7 Slip Gaji Karyawan</div>
+                <div className="pg-slip-sub">Exclusive Kost · Slip Gaji Karyawan</div>
               </div>
               <span className="pg-badge" style={{
                 color:g.status==="dibayar"?"#fff":g.status==="final"?"#1e293b":"#94a3b8",
                 background:g.status==="dibayar"?"#16a34a":g.status==="final"?"#fbbf24":"rgba(255,255,255,.1)",
                 fontSize:11
               }}>
-                {g.status==="dibayar"?"\u2705 Dibayar":g.status==="final"?"\u26a1 Final":"\ud83d\udcdd Draft"}
+                {g.status==="dibayar"?"✅ Dibayar":g.status==="final"?"⚡ Final":"📝 Draft"}
               </span>
             </div>
             <div className="pg-slip-periode">
-              \ud83d\udcc5 {BULAN_FULL[periode.bulan-1]} {periode.tahun}
+              📅 {BULAN_FULL[periode.bulan-1]} {periode.tahun}
             </div>
           </div>
 
@@ -231,9 +231,9 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
               </div>
               <div>
                 <div className="pg-slip-name">{karyawan.nama}</div>
-                <div className="pg-slip-jabatan">{karyawan.jabatan} \u00b7 {karyawan.shift}</div>
+                <div className="pg-slip-jabatan">{karyawan.jabatan} · {karyawan.shift}</div>
                 <div style={{fontSize:10,color:"#9ca3af",marginTop:1,fontFamily:"JetBrains Mono,monospace"}}>
-                  {karyawan.rekeningBank} \u00b7 {karyawan.rekeningNo || "\u2014"}
+                  {karyawan.rekeningBank} · {karyawan.rekeningNo || "—"}
                 </div>
               </div>
             </div>
@@ -249,7 +249,7 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
               <div className="pg-slip-row">
                 <span className="pg-slip-key">
                   Lembur Shift
-                  {isEditable && <span style={{fontSize:10,color:"#9ca3af",marginLeft:4}}>(\u00d7Rp50rb/shift)</span>}
+                  {isEditable && <span style={{fontSize:10,color:"#9ca3af",marginLeft:4}}>(×Rp50rb/shift)</span>}
                 </span>
                 {isEditable ? (
                   <div style={{display:"flex",alignItems:"center",gap:6}}>
@@ -275,11 +275,11 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
 
             {/* Potongan */}
             <div className="pg-slip-section">
-              <div className="pg-slip-section-title">\u2212 Potongan</div>
+              <div className="pg-slip-section-title">− Potongan</div>
               <div className="pg-slip-row">
                 <span className="pg-slip-key">
                   Ijin Tidak Sah
-                  {isEditable && <span style={{fontSize:10,color:"#9ca3af",marginLeft:4}}>(\u00d7Rp50rb/hari)</span>}
+                  {isEditable && <span style={{fontSize:10,color:"#9ca3af",marginLeft:4}}>(×Rp50rb/hari)</span>}
                 </span>
                 {isEditable ? (
                   <div style={{display:"flex",alignItems:"center",gap:6}}>
@@ -331,7 +331,7 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
             )}
             {!isEditable && g.keterangan && (
               <div style={{background:"#f9fafb",borderRadius:8,padding:"8px 12px",fontSize:11,color:"#6b7280",marginBottom:14}}>
-                \ud83d\udcdd {g.keterangan}
+                📝 {g.keterangan}
               </div>
             )}
 
@@ -339,7 +339,7 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
             <div className="pg-slip-total">
               <div>
                 <div className="pg-slip-total-label">GAJI DITERIMA</div>
-                <div style={{fontSize:10,color:"#9ca3af"}}>Transfer ke {karyawan.rekeningBank||"\u2014"} {karyawan.rekeningNo||""}</div>
+                <div style={{fontSize:10,color:"#9ca3af"}}>Transfer ke {karyawan.rekeningBank||"—"} {karyawan.rekeningNo||""}</div>
               </div>
               <div className="pg-slip-total-val">{fmtRp(N)}</div>
             </div>
@@ -361,16 +361,16 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
         <div className="pg-modal-foot">
           {isEditable && g.status==="draft" && (
             <button className="pg-btn primary" onClick={()=>onFinalize({...g,status:"final"})}>
-              \u26a1 Finalisasi Slip
+              ⚡ Finalisasi Slip
             </button>
           )}
           {isEditable && g.status==="final" && (
             <button className="pg-btn success" onClick={()=>onFinalize({...g,status:"dibayar"})}>
-              \u2705 Tandai Dibayar
+              ✅ Tandai Dibayar
             </button>
           )}
-          <button className="pg-btn ghost" onClick={()=>alert("PDF generation \u2014 coming soon!")}>
-            \ud83d\udcc4 Download PDF
+          <button className="pg-btn ghost" onClick={()=>alert("PDF generation — coming soon!")}>
+            📄 Download PDF
           </button>
           <button className="pg-btn ghost" onClick={onClose}>Tutup</button>
         </div>
@@ -409,7 +409,7 @@ export default function Penggajian({ user, globalData = {} }) {
     const key = `${karyawanId}-${periodeKey}`;
     setGajiData(p=>({...p,[key]:data}));
 
-    // Kalau dibayar \u2192 masuk kasJurnal otomatis
+    // Kalau dibayar → masuk kasJurnal otomatis
     if (data.status==="dibayar") {
       const k    = karyawanList.find(k=>k.id===karyawanId);
       const { netto } = hitungTotal(data);
@@ -478,7 +478,7 @@ export default function Penggajian({ user, globalData = {} }) {
 
       {/* Periode */}
       <div className="pg-period">
-        <span className="pg-period-label">\ud83d\udcc5 Periode Penggajian:</span>
+        <span className="pg-period-label">📅 Periode Penggajian:</span>
         <select className="pg-select" value={periode.tahun} onChange={e=>setPV("tahun",parseInt(e.target.value))}>
           {years.map(y=><option key={y} value={y}>{y}</option>)}
         </select>
@@ -508,7 +508,7 @@ export default function Penggajian({ user, globalData = {} }) {
               });
             }}
           >
-            \u2705 Bayar Semua Final ({stats.totalFinal})
+            ✅ Bayar Semua Final ({stats.totalFinal})
           </button>
         )}
       </div>
@@ -517,11 +517,11 @@ export default function Penggajian({ user, globalData = {} }) {
       <div className="pg-widget">
         <div className="pg-widget-head">
           <div className="pg-widget-title">
-            \ud83d\udcb0 Daftar Penggajian \u2014 {BULAN_FULL[periode.bulan-1]} {periode.tahun}
+            💰 Daftar Penggajian — {BULAN_FULL[periode.bulan-1]} {periode.tahun}
           </div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <div style={{display:"flex",alignItems:"center",gap:7,background:"#f9fafb",border:"1.5px solid #e5e7eb",borderRadius:8,padding:"6px 11px"}}>
-              <span>\ud83d\udd0d</span>
+              <span>🔍</span>
               <input
                 style={{border:"none",outline:"none",background:"transparent",fontSize:12,color:"#1f2937",fontFamily:"inherit",width:140}}
                 placeholder="Cari karyawan..."
@@ -533,7 +533,7 @@ export default function Penggajian({ user, globalData = {} }) {
 
         {karyawanList.length === 0 ? (
           <div className="pg-empty">
-            <div style={{fontSize:36,opacity:.4}}>\ud83d\udc65</div>
+            <div style={{fontSize:36,opacity:.4}}>👥</div>
             <div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Belum ada karyawan</div>
             <div style={{fontSize:11,color:"#9ca3af"}}>Tambahkan karyawan di modul Data Karyawan</div>
           </div>
@@ -544,7 +544,7 @@ export default function Penggajian({ user, globalData = {} }) {
                 <th>Karyawan</th>
                 <th className="right">Gaji Pokok</th>
                 <th className="right">+ Tunjangan</th>
-                <th className="right">\u2212 Potongan</th>
+                <th className="right">− Potongan</th>
                 <th className="right">Gaji Netto</th>
                 <th>Status</th>
                 <th>Aksi</th>
@@ -575,7 +575,7 @@ export default function Penggajian({ user, globalData = {} }) {
                     <td className="right orange" style={{fontSize:13}}>{fmtRp(N)}</td>
                     <td>
                       <span className="pg-badge" style={{color:sc.color,background:sc.bg}}>
-                        {g.status==="draft"?"\ud83d\udcdd Draft":g.status==="final"?"\u26a1 Final":"\u2705 Dibayar"}
+                        {g.status==="draft"?"📝 Draft":g.status==="final"?"⚡ Final":"✅ Dibayar"}
                       </span>
                     </td>
                     <td>
@@ -583,7 +583,7 @@ export default function Penggajian({ user, globalData = {} }) {
                         onClick={()=>setShowSlip(k)}
                         style={{padding:"5px 12px",borderRadius:7,background:"#f9fafb",border:"1.5px solid #e5e7eb",fontSize:11,fontWeight:600,color:"#374151",cursor:"pointer"}}
                       >
-                        {isReadOnly?"\ud83d\udc41\ufe0f Lihat":"\u270f\ufe0f Edit"}
+                        {isReadOnly?"👁️ Lihat":"✏️ Edit"}
                       </button>
                     </td>
                   </tr>
@@ -593,7 +593,7 @@ export default function Penggajian({ user, globalData = {} }) {
               {/* Total row */}
               <tr className="total-row">
                 <td colSpan={4} style={{fontSize:12,fontWeight:700,color:"#374151"}}>
-                  TOTAL PENGGAJIAN \u2014 {aktifKaryawan.length} Karyawan
+                  TOTAL PENGGAJIAN — {aktifKaryawan.length} Karyawan
                 </td>
                 <td className="right">{fmtRp(stats.totalNetto)}</td>
                 <td colSpan={2}></td>

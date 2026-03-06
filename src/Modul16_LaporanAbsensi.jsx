@@ -235,7 +235,7 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
       <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
         <div style={{background:"#fff",borderRadius:16,padding:20,width:400,maxHeight:"80vh",overflowY:"auto"}} onClick={e=>e.stopPropagation()}>
           <div style={{fontSize:14,fontWeight:700,color:"#111827",marginBottom:4}}>Input Kode Absensi</div>
-          <div style={{fontSize:11,color:"#9ca3af",marginBottom:16}}>\ud83d\udcc5 {tanggal}</div>
+          <div style={{fontSize:11,color:"#9ca3af",marginBottom:16}}>📅 {tanggal}</div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
             {Object.entries(KODE_ABSENSI).map(([kode,conf])=>(
               <div
@@ -302,7 +302,7 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
 
       {/* Period */}
       <div className="la-period">
-        <span style={{fontSize:12,fontWeight:600,color:"#374151"}}>\ud83d\udcc5 Periode:</span>
+        <span style={{fontSize:12,fontWeight:600,color:"#374151"}}>📅 Periode:</span>
         <select className="la-select" value={periode.tahun} onChange={e=>setPV("tahun",parseInt(e.target.value))}>
           {years.map(y=><option key={y} value={y}>{y}</option>)}
         </select>
@@ -313,16 +313,16 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
           <option value="all">Semua Karyawan</option>
           {aktif.map(k=><option key={k.id} value={k.id}>{k.nama}</option>)}
         </select>
-        <button className="la-btn ghost" onClick={()=>alert("Export CSV \u2014 coming soon!")}>\u2b07\ufe0f Export</button>
-        <button className="la-btn primary" onClick={()=>alert("Download PDF \u2014 coming soon!")}>\ud83d\udcc4 PDF</button>
+        <button className="la-btn ghost" onClick={()=>alert("Export CSV — coming soon!")}>⬇️ Export</button>
+        <button className="la-btn primary" onClick={()=>alert("Download PDF — coming soon!")}>📄 PDF</button>
       </div>
 
       {/* Tabs */}
       <div className="la-tabs">
         {[
-          {id:"rekap",    label:"\ud83d\udcca Rekap Bulanan"},
-          {id:"kalender", label:"\ud83d\udcc5 Kalender Absensi"},
-          {id:"kpi",      label:"\ud83c\udfaf KPI & Performa"},
+          {id:"rekap",    label:"📊 Rekap Bulanan"},
+          {id:"kalender", label:"📅 Kalender Absensi"},
+          {id:"kpi",      label:"🎯 KPI & Performa"},
         ].map(t=>(
           <div key={t.id} className={`la-tab ${activeTab===t.id?"active":""}`} onClick={()=>setActiveTab(t.id)}>
             {t.label}
@@ -330,14 +330,14 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
         ))}
       </div>
 
-      {/* \u2500\u2500 Tab: Rekap Bulanan */}
+      {/* ── Tab: Rekap Bulanan */}
       {activeTab==="rekap" && (
         <div className="la-widget">
           <div className="la-widget-head">
-            <div className="la-widget-title">\ud83d\udcca Rekap Absensi \u2014 {BULAN_FULL[periode.bulan-1]} {periode.tahun}</div>
+            <div className="la-widget-title">📊 Rekap Absensi — {BULAN_FULL[periode.bulan-1]} {periode.tahun}</div>
           </div>
           {aktif.length === 0 ? (
-            <div className="la-empty"><div style={{fontSize:32,opacity:.4}}>\ud83d\udc65</div><div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Belum ada karyawan</div></div>
+            <div className="la-empty"><div style={{fontSize:32,opacity:.4}}>👥</div><div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Belum ada karyawan</div></div>
           ) : (
             <table className="la-table">
               <thead>
@@ -378,7 +378,7 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
                         <td className="center" style={{color:"#ec4899"}}>{r.sakit}</td>
                         <td className="center" style={{color:"#f97316",fontWeight:600}}>{r.lembur}</td>
                         <td className="center" style={{color:r.its>0?"#ef4444":"#9ca3af",fontWeight:r.its>0?700:400}}>
-                          {r.its > 0 ? `\u26a0\ufe0f ${r.its}` : "0"}
+                          {r.its > 0 ? `⚠️ ${r.its}` : "0"}
                         </td>
                         <td style={{minWidth:120}}>
                           <div style={{display:"flex",alignItems:"center",gap:8}}>
@@ -399,13 +399,13 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
         </div>
       )}
 
-      {/* \u2500\u2500 Tab: Kalender Absensi */}
+      {/* ── Tab: Kalender Absensi */}
       {activeTab==="kalender" && (
         <div style={{display:"grid",gridTemplateColumns:aktif.length>1?"200px 1fr":"1fr",gap:14}}>
           {/* List karyawan (kalau lebih dari 1) */}
           {aktif.length > 1 && (
             <div className="la-widget">
-              <div className="la-widget-head"><div className="la-widget-title">\ud83d\udc65 Pilih Karyawan</div></div>
+              <div className="la-widget-head"><div className="la-widget-title">👥 Pilih Karyawan</div></div>
               {aktif.map(k=>(
                 <div
                   key={k.id}
@@ -434,7 +434,7 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
               <>
                 <div className="la-widget-head">
                   <div className="la-widget-title">
-                    \ud83d\udcc5 {(selectedK||aktif[0]).nama} \u2014 {BULAN_FULL[periode.bulan-1]} {periode.tahun}
+                    📅 {(selectedK||aktif[0]).nama} — {BULAN_FULL[periode.bulan-1]} {periode.tahun}
                   </div>
                   {!isReadOnly && <span style={{fontSize:11,color:"#9ca3af"}}>Klik tanggal untuk input</span>}
                 </div>
@@ -457,23 +457,23 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
                 />
               </>
             ) : (
-              <div className="la-empty"><div style={{fontSize:32,opacity:.4}}>\ud83d\udcc5</div><div style={{fontSize:13}}>Pilih karyawan</div></div>
+              <div className="la-empty"><div style={{fontSize:32,opacity:.4}}>📅</div><div style={{fontSize:13}}>Pilih karyawan</div></div>
             )}
           </div>
         </div>
       )}
 
-      {/* \u2500\u2500 Tab: KPI & Performa */}
+      {/* ── Tab: KPI & Performa */}
       {activeTab==="kpi" && (
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
           {/* KPI per karyawan */}
           <div className="la-widget">
             <div className="la-widget-head">
-              <div className="la-widget-title">\ud83c\udfaf KPI Absensi per Karyawan</div>
-              <span style={{fontSize:11,color:"#9ca3af"}}>Threshold: \u226590% = Insentif</span>
+              <div className="la-widget-title">🎯 KPI Absensi per Karyawan</div>
+              <span style={{fontSize:11,color:"#9ca3af"}}>Threshold: ≥90% = Insentif</span>
             </div>
             {aktif.length===0 ? (
-              <div className="la-empty"><div style={{fontSize:28,opacity:.4}}>\ud83c\udfaf</div><div>Belum ada karyawan</div></div>
+              <div className="la-empty"><div style={{fontSize:28,opacity:.4}}>🎯</div><div>Belum ada karyawan</div></div>
             ) : aktif.map(k=>{
               const r = hitungRekap(absensiList, k.id, periode.bulan, periode.tahun);
               const kpiColor = r.kpiAbsensi>=90?"#16a34a":r.kpiAbsensi>=70?"#f97316":"#ef4444";
@@ -487,13 +487,13 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
                       </div>
                       <div>
                         <div style={{fontSize:12,fontWeight:600,color:"#1f2937"}}>{k.nama}</div>
-                        <div style={{fontSize:10,color:"#9ca3af"}}>{r.masuk} masuk \u00b7 {r.its} ITS</div>
+                        <div style={{fontSize:10,color:"#9ca3af"}}>{r.masuk} masuk · {r.its} ITS</div>
                       </div>
                     </div>
                     <div style={{textAlign:"right"}}>
                       <div style={{fontSize:16,fontWeight:800,color:kpiColor}}>{r.kpiAbsensi}%</div>
                       <span className="la-badge" style={{color:lulus?"#16a34a":"#dc2626",background:lulus?"#dcfce7":"#fee2e2"}}>
-                        {lulus?"\u2705 Insentif":"\u2715 Tidak"}
+                        {lulus?"✅ Insentif":"✕ Tidak"}
                       </span>
                     </div>
                   </div>
@@ -508,7 +508,7 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
           {/* Trend 6 bulan */}
           <div className="la-widget">
             <div className="la-widget-head">
-              <div className="la-widget-title">\ud83d\udcc8 Trend Kehadiran 6 Bulan</div>
+              <div className="la-widget-title">📈 Trend Kehadiran 6 Bulan</div>
             </div>
             <div style={{padding:"16px 16px 8px"}}>
               <div style={{display:"flex",alignItems:"flex-end",gap:8,height:100}}>

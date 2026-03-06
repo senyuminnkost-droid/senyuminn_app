@@ -19,13 +19,13 @@ const CSS = `
   .tg-widget-head { padding: 13px 16px 10px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: space-between; }
   .tg-widget-title { font-size: 12px; font-weight: 600; color: #111827; display: flex; align-items: center; gap: 6px; }
 
-  /* \u2500\u2500\u2500 TABS \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── TABS ───────────────────────────────── */
   .tg-tabs { display: flex; gap: 2px; padding: 10px 14px 0; border-bottom: 1px solid #f3f4f6; }
   .tg-tab { padding: 7px 14px; font-size: 11px; font-weight: 600; color: #9ca3af; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.12s; white-space: nowrap; }
   .tg-tab:hover { color: #374151; }
   .tg-tab.active { color: #f97316; border-bottom-color: #f97316; }
 
-  /* \u2500\u2500\u2500 FILTER \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── FILTER ─────────────────────────────── */
   .tg-filterbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #f3f4f6; flex-wrap: wrap; }
   .tg-search { display: flex; align-items: center; gap: 7px; background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 6px 11px; flex: 1; max-width: 240px; transition: border-color 0.12s; }
   .tg-search:focus-within { border-color: #f97316; background: #fff; }
@@ -34,7 +34,7 @@ const CSS = `
   .tg-select { padding: 6px 10px; border-radius: 8px; border: 1.5px solid #e5e7eb; font-size: 12px; color: #374151; background: #fff; outline: none; font-family: inherit; cursor: pointer; }
   .tg-select:focus { border-color: #f97316; }
 
-  /* \u2500\u2500\u2500 LIST \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── LIST ───────────────────────────────── */
   .tg-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #f3f4f6; cursor: pointer; transition: background 0.1s; }
   .tg-item:last-child { border-bottom: none; }
   .tg-item:hover { background: #fafafa; }
@@ -49,7 +49,7 @@ const CSS = `
 
   .tg-badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
 
-  /* \u2500\u2500\u2500 DETAIL PANEL \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── DETAIL PANEL ───────────────────────── */
   .tg-detail { padding: 16px; overflow-y: auto; max-height: calc(100vh - 220px); }
   .tg-detail-name { font-size: 15px; font-weight: 700; color: #111827; margin-bottom: 2px; }
   .tg-detail-sub  { font-size: 11px; color: #9ca3af; }
@@ -73,7 +73,7 @@ const CSS = `
   .tg-nominal-val { font-size: 26px; font-weight: 800; color: #ea580c; font-family: 'JetBrains Mono', monospace; }
   .tg-nominal-sub { font-size: 11px; color: #9a3412; margin-top: 4px; }
 
-  /* \u2500\u2500\u2500 MODAL \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  /* ─── MODAL ───────────────────────────────── */
   .tg-overlay-portal { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(17,24,39,0.65) !important; backdrop-filter: blur(4px) !important; z-index: 9999 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 16px !important; box-sizing: border-box !important; animation: tgFade 0.18s ease; }
   @keyframes tgFade { from { opacity: 0; } to { opacity: 1; } }
   .tg-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 480px; max-height: 88vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.18); animation: tgSlide 0.2s cubic-bezier(0.4,0,0.2,1); }
@@ -138,7 +138,7 @@ function StyleInjector() {
 // HELPERS
 // ============================================================
 const padD   = (n) => String(n).padStart(2, "0");
-const fmtRp  = (n) => n != null ? "Rp " + Number(n).toLocaleString("id-ID") : "\u2014";
+const fmtRp  = (n) => n != null ? "Rp " + Number(n).toLocaleString("id-ID") : "—";
 const todayStr = (() => { const d = new Date(); return `${d.getFullYear()}-${padD(d.getMonth()+1)}-${padD(d.getDate())}`; })();
 const thisMonth = todayStr.slice(0, 7);
 
@@ -151,10 +151,10 @@ const getInisial = (nama) => {
 };
 
 const STATUS_CONFIG = {
-  lunas:    { label: "Lunas",        color: "#16a34a", bg: "#dcfce7", icon: "\u2705" },
-  belum:    { label: "Belum Bayar",  color: "#f97316", bg: "#ffedd5", icon: "\ud83d\udd50" },
-  terlambat:{ label: "Terlambat",    color: "#dc2626", bg: "#fee2e2", icon: "\u26a0\ufe0f" },
-  denda:    { label: "Ada Denda",    color: "#7c3aed", bg: "#ede9fe", icon: "\ud83d\udcb8" },
+  lunas:    { label: "Lunas",        color: "#16a34a", bg: "#dcfce7", icon: "✅" },
+  belum:    { label: "Belum Bayar",  color: "#f97316", bg: "#ffedd5", icon: "🕐" },
+  terlambat:{ label: "Terlambat",    color: "#dc2626", bg: "#fee2e2", icon: "⚠️" },
+  denda:    { label: "Ada Denda",    color: "#7c3aed", bg: "#ede9fe", icon: "💸" },
 };
 
 // Generate tagihan otomatis dari penyewa aktif
@@ -193,7 +193,7 @@ const generateTagihan = (penyewaList, kamarList, existingTagihan) => {
 // MODAL KONFIRMASI BAYAR
 // ============================================================
 function ModalBayar({ tagihan, onClose, onKonfirmasi }) {
-  const denda50k = 50000; // Rp 50.000/hari \u2014 dari Pengaturan nanti
+  const denda50k = 50000; // Rp 50.000/hari — dari Pengaturan nanti
   const totalDenda = tagihan.dendaHari * denda50k;
   const totalBayar = tagihan.nominal + totalDenda;
 
@@ -229,7 +229,7 @@ function ModalBayar({ tagihan, onClose, onKonfirmasi }) {
   const content = done ? (
     <div className="tg-modal-body">
       <div style={{ textAlign: "center", padding: "24px 0 16px" }}>
-        <div style={{ fontSize: 52, marginBottom: 10 }}>\u2705</div>
+        <div style={{ fontSize: 52, marginBottom: 10 }}>✅</div>
         <div style={{ fontSize: 17, fontWeight: 700, color: "#111827", marginBottom: 6 }}>Pembayaran Dikonfirmasi!</div>
         <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 20 }}>
           Tagihan <b>{tagihan.nama}</b> bulan <b>{tagihan.periode}</b><br />
@@ -243,8 +243,8 @@ function ModalBayar({ tagihan, onClose, onKonfirmasi }) {
       <div className="tg-modal-body">
         {/* Info tagihan */}
         <div style={{ background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 10, padding: "12px 14px", marginBottom: 16 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>{tagihan.nama} \u2014 Kamar {tagihan.kamarId}</div>
-          <div style={{ fontSize: 11, color: "#9a3412", marginTop: 2 }}>Periode: {tagihan.periode} \u00b7 Jatuh tempo: {tagihan.jatuhTempo}</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>{tagihan.nama} — Kamar {tagihan.kamarId}</div>
+          <div style={{ fontSize: 11, color: "#9a3412", marginTop: 2 }}>Periode: {tagihan.periode} · Jatuh tempo: {tagihan.jatuhTempo}</div>
         </div>
 
         {/* Ringkasan */}
@@ -255,7 +255,7 @@ function ModalBayar({ tagihan, onClose, onKonfirmasi }) {
           </div>
           {tagihan.dendaHari > 0 && (
             <div className="tg-summary-row">
-              <span className="tg-summary-key">Denda keterlambatan ({tagihan.dendaHari} hari \u00d7 Rp 50.000)</span>
+              <span className="tg-summary-key">Denda keterlambatan ({tagihan.dendaHari} hari × Rp 50.000)</span>
               <span className="tg-summary-val" style={{ color: "#dc2626" }}>{fmtRp(totalDenda)}</span>
             </div>
           )}
@@ -297,11 +297,11 @@ function ModalBayar({ tagihan, onClose, onKonfirmasi }) {
         </div>
 
         <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 8, padding: "8px 12px", fontSize: 11, color: "#15803d" }}>
-          \u2139\ufe0f Setelah dikonfirmasi, data otomatis masuk ke Kas & Jurnal
+          ℹ️ Setelah dikonfirmasi, data otomatis masuk ke Kas & Jurnal
         </div>
       </div>
       <div className="tg-modal-foot">
-        <button className="tg-btn success" onClick={handleSave}>\u2705 Konfirmasi Lunas</button>
+        <button className="tg-btn success" onClick={handleSave}>✅ Konfirmasi Lunas</button>
         <button className="tg-btn ghost"   onClick={onClose}>Batal</button>
       </div>
     </>
@@ -311,8 +311,8 @@ function ModalBayar({ tagihan, onClose, onKonfirmasi }) {
     <div className="tg-overlay-portal" onClick={onClose}>
       <div className="tg-modal" onClick={e => e.stopPropagation()}>
         <div className="tg-modal-head">
-          <div className="tg-modal-title">\ud83d\udcb3 Konfirmasi Pembayaran</div>
-          <button className="tg-modal-close" onClick={onClose}>\u2715</button>
+          <div className="tg-modal-title">💳 Konfirmasi Pembayaran</div>
+          <button className="tg-modal-close" onClick={onClose}>✕</button>
         </div>
         {content}
       </div>
@@ -332,8 +332,8 @@ function DetailPanel({ tagihan, onBayar, onClose }) {
   return (
     <div className="tg-widget">
       <div className="tg-widget-head">
-        <div className="tg-widget-title">\ud83d\udcb3 Detail Tagihan</div>
-        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16 }}>\u2715</button>
+        <div className="tg-widget-title">💳 Detail Tagihan</div>
+        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16 }}>✕</button>
       </div>
       <div className="tg-detail">
 
@@ -342,7 +342,7 @@ function DetailPanel({ tagihan, onBayar, onClose }) {
           <div className="tg-nominal-label">Total Tagihan</div>
           <div className="tg-nominal-val">{fmtRp(totalBayar)}</div>
           <div className="tg-nominal-sub">
-            {tagihan.periode} \u00b7 Jatuh tempo {tagihan.jatuhTempo}
+            {tagihan.periode} · Jatuh tempo {tagihan.jatuhTempo}
           </div>
           <div style={{ marginTop: 8 }}>
             <span className="tg-badge" style={{ color: st.color, background: st.bg, fontSize: 11 }}>
@@ -361,7 +361,7 @@ function DetailPanel({ tagihan, onBayar, onClose }) {
             </div>
             <div className="tg-info-item">
               <div className="tg-info-key">Kamar</div>
-              <div className="tg-info-val orange">K{padD(tagihan.kamarId)} \u2014 {tagihan.kamarTipe}</div>
+              <div className="tg-info-val orange">K{padD(tagihan.kamarId)} — {tagihan.kamarTipe}</div>
             </div>
             <div className="tg-info-item">
               <div className="tg-info-key">Sewa</div>
@@ -384,7 +384,7 @@ function DetailPanel({ tagihan, onBayar, onClose }) {
               <div key={i} className="tg-pay-item">
                 <div>
                   <div className="tg-pay-label">{r.metode === "transfer" ? "Transfer Bank" : r.metode === "qris" ? "QRIS" : "Tunai"}</div>
-                  <div className="tg-pay-tgl">{r.tgl} {r.catatan && `\u00b7 ${r.catatan}`}</div>
+                  <div className="tg-pay-tgl">{r.tgl} {r.catatan && `· ${r.catatan}`}</div>
                 </div>
                 <div className="tg-pay-nominal">{fmtRp(r.nominal)}</div>
               </div>
@@ -395,13 +395,13 @@ function DetailPanel({ tagihan, onBayar, onClose }) {
         {/* Aksi */}
         {tagihan.status !== "lunas" && (
           <button className="tg-btn success" style={{ width: "100%" }} onClick={onBayar}>
-            \u2705 Konfirmasi Pembayaran
+            ✅ Konfirmasi Pembayaran
           </button>
         )}
 
         {tagihan.status === "lunas" && (
           <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 10, padding: "12px 14px", textAlign: "center" }}>
-            <div style={{ fontSize: 22, marginBottom: 4 }}>\u2705</div>
+            <div style={{ fontSize: 22, marginBottom: 4 }}>✅</div>
             <div style={{ fontSize: 13, fontWeight: 700, color: "#15803d" }}>Sudah Lunas</div>
             <div style={{ fontSize: 11, color: "#16a34a", marginTop: 2 }}>Dibayar: {tagihan.tglBayar} via {tagihan.metode}</div>
           </div>
@@ -465,7 +465,7 @@ export default function Tagihan({ user, globalData = {} }) {
     setKasJurnal(prev => [...prev, {
       id:       Date.now(),
       tanggal:  updated.tglBayar,
-      keterangan: `Sewa Kamar ${updated.kamarId} \u2014 ${updated.nama} (${updated.periode})`,
+      keterangan: `Sewa Kamar ${updated.kamarId} — ${updated.nama} (${updated.periode})`,
       kategori: "Sewa Kamar",
       tipe:     "pemasukan",
       nominal:  updated.riwayatBayar?.slice(-1)[0]?.nominal || updated.nominal,
@@ -488,8 +488,8 @@ export default function Tagihan({ user, globalData = {} }) {
         {[
           { label: "Piutang Bulan Ini", val: fmtRp(totalPiutang), color: "#ef4444", sub: `${jumlahBelum} tagihan belum lunas` },
           { label: "Sudah Lunas",       val: fmtRp(totalLunas),   color: "#16a34a", sub: `${semuaTagihan.filter(t=>t.status==="lunas").length} tagihan` },
-          { label: "Terlambat",         val: jumlahTerlambat || (semuaTagihan.length?"0":"\u2014"), color: "#dc2626", sub: "Melewati jatuh tempo" },
-          { label: "Total Tagihan",     val: semuaTagihan.filter(t=>t.periode===filterBln).length || "\u2014", color: "#f97316", sub: `Periode ${filterBln}` },
+          { label: "Terlambat",         val: jumlahTerlambat || (semuaTagihan.length?"0":"—"), color: "#dc2626", sub: "Melewati jatuh tempo" },
+          { label: "Total Tagihan",     val: semuaTagihan.filter(t=>t.periode===filterBln).length || "—", color: "#f97316", sub: `Periode ${filterBln}` },
         ].map((c,i) => (
           <div key={i} className="tg-card">
             <div className="tg-card-bar" style={{ background: c.color }} />
@@ -504,7 +504,7 @@ export default function Tagihan({ user, globalData = {} }) {
       <div className="tg-layout">
         <div className="tg-widget">
           <div className="tg-widget-head">
-            <div className="tg-widget-title">\ud83d\udcb3 Daftar Tagihan</div>
+            <div className="tg-widget-title">💳 Daftar Tagihan</div>
             <div style={{ fontSize: 11, color: "#9ca3af" }}>{semuaTagihan.length} total tagihan</div>
           </div>
 
@@ -512,9 +512,9 @@ export default function Tagihan({ user, globalData = {} }) {
           <div className="tg-tabs">
             {[
               { id: "semua",     label: `Semua (${semuaTagihan.length})` },
-              { id: "belum",     label: `\ud83d\udd50 Belum Bayar (${jumlahBelum})` },
-              { id: "terlambat", label: `\u26a0\ufe0f Terlambat (${jumlahTerlambat})` },
-              { id: "lunas",     label: `\u2705 Lunas (${semuaTagihan.filter(t=>t.status==="lunas").length})` },
+              { id: "belum",     label: `🕐 Belum Bayar (${jumlahBelum})` },
+              { id: "terlambat", label: `⚠️ Terlambat (${jumlahTerlambat})` },
+              { id: "lunas",     label: `✅ Lunas (${semuaTagihan.filter(t=>t.status==="lunas").length})` },
             ].map(t => (
               <div key={t.id} className={`tg-tab ${tab===t.id?"active":""}`} onClick={() => setTab(t.id)}>
                 {t.label}
@@ -525,7 +525,7 @@ export default function Tagihan({ user, globalData = {} }) {
           {/* Filter */}
           <div className="tg-filterbar">
             <div className="tg-search">
-              <span>\ud83d\udd0d</span>
+              <span>🔍</span>
               <input className="tg-search-input" placeholder="Cari nama, kamar..." value={search} onChange={e => setSearch(e.target.value)} />
             </div>
             <select className="tg-select" value={filterBln} onChange={e => setFilterBln(e.target.value)}>
@@ -539,13 +539,13 @@ export default function Tagihan({ user, globalData = {} }) {
           <div>
             {penyewaList.length === 0 ? (
               <div className="tg-empty">
-                <div className="tg-empty-icon">\ud83d\udcb3</div>
+                <div className="tg-empty-icon">💳</div>
                 <div className="tg-empty-title">Belum ada tagihan</div>
                 <div className="tg-empty-sub">Tagihan dibuat otomatis saat ada penyewa aktif</div>
               </div>
             ) : filtered.length === 0 ? (
               <div className="tg-empty">
-                <div className="tg-empty-icon">\u2705</div>
+                <div className="tg-empty-icon">✅</div>
                 <div className="tg-empty-title">Tidak ada tagihan di kategori ini</div>
                 <div className="tg-empty-sub">Semua tagihan sudah lunas atau tidak ada data</div>
               </div>
@@ -561,8 +561,8 @@ export default function Tagihan({ user, globalData = {} }) {
                     <div className="tg-item-info">
                       <div className="tg-item-name">{t.nama}</div>
                       <div className="tg-item-meta">
-                        <span>\ud83c\udfe0 K{padD(t.kamarId)}</span>
-                        <span>\ud83d\udcc5 {t.periode}</span>
+                        <span>🏠 K{padD(t.kamarId)}</span>
+                        <span>📅 {t.periode}</span>
                         {t.dendaHari > 0 && <span style={{ color: "#dc2626", fontWeight: 600 }}>+denda {t.dendaHari}hr</span>}
                       </div>
                     </div>
@@ -574,7 +574,7 @@ export default function Tagihan({ user, globalData = {} }) {
                         </div>
                       )}
                       {t.status === "lunas" && (
-                        <div className="tg-item-jatuh" style={{ color: "#16a34a" }}>\u2713 Lunas</div>
+                        <div className="tg-item-jatuh" style={{ color: "#16a34a" }}>✓ Lunas</div>
                       )}
                     </div>
                   </div>
@@ -594,7 +594,7 @@ export default function Tagihan({ user, globalData = {} }) {
         ) : (
           <div className="tg-widget">
             <div className="tg-empty" style={{ padding: "60px 20px" }}>
-              <div className="tg-empty-icon">\ud83d\udcb3</div>
+              <div className="tg-empty-icon">💳</div>
               <div className="tg-empty-title">Pilih tagihan</div>
               <div className="tg-empty-sub">Klik untuk konfirmasi pembayaran</div>
             </div>

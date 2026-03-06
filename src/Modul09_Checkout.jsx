@@ -378,7 +378,7 @@ export default function Modul09_Checkout({ user }) {
     if (tab === "terlambat" && !(sisa !== null && sisa < 0)) return false;
     if (search) {
       const q = search.toLowerCase();
-      return p.nama?.toLowerCase().includes(q) || String(p.kamarId).includes(q);
+      return p.nama && nama.toLowerCase().includes(q) || String(p.kamarId).includes(q);
     }
     return true;
   });

@@ -240,7 +240,7 @@ export default function Modul17_Profil({ user, globalData = {} }) {
             <div style={{display:"flex",flexDirection:"column",gap:8}}>
               {rekeningList.map(r=>(
                 <div key={r.id} className="pf-rek-card">
-                  <div className="pf-rek-icon">{(r.namaBank||"?")[0]?.toUpperCase()}</div>
+                  <div className="pf-rek-icon">{((r.namaBank||"?")[0] || "").toUpperCase()}</div>
                   <div className="pf-rek-info">
                     <div className="pf-rek-name">{r.namaBank} — {r.atasNama}</div>
                     <div className="pf-rek-no">{r.noRek}</div>

@@ -287,7 +287,7 @@ export default function Modul10_Riwayat({ user, globalData = {} }) {
       if (filterKamar !== "all" && String(p.kamarId) !== filterKamar) return false;
       if (search) {
         const q = search.toLowerCase();
-        return p.nama?.toLowerCase().includes(q) || String(p.kamarId).includes(q) || p.nik?.includes(q) || p.noHP?.includes(q);
+        return p.nama && nama.toLowerCase().includes(q) || String(p.kamarId).includes(q) || p.nik && nik.includes(q) || p.noHP && noHP.includes(q);
       }
       return true;
     })
@@ -321,7 +321,7 @@ export default function Modul10_Riwayat({ user, globalData = {} }) {
       <div className="rw-cards">
         {[
           { label: "Total Alumni",      val: riwayatList.length || "—", color: "#6b7280",  sub: "Pernah tinggal" },
-          { label: "Bulan Ini",         val: riwayatList.filter(p => p.tglCheckout?.startsWith(todayStr.slice(0,7))).length || (riwayatList.length?"0":"—"), color: "#f97316", sub: "Check-out bulan ini" },
+          { label: "Bulan Ini",         val: riwayatList.filter(p => p.tglCheckout && tglCheckout.startsWith(todayStr.slice(0,7))).length || (riwayatList.length?"0":"—"), color: "#f97316", sub: "Check-out bulan ini" },
           { label: "Check-in Ulang",    val: riwayatList.filter(p => p.checkinUlang).length || (riwayatList.length?"0":"—"), color: "#16a34a", sub: "Penyewa kembali" },
           { label: "Kamar Paling Aktif",val: kamarPalingAktif ? `K${padD(kamarPalingAktif)}` : "—", color: "#3b82f6", sub: kamarPalingAktif ? `${kamarTerbanyak[kamarPalingAktif]}x disewa` : "Belum ada data" },
         ].map((c,i) => (

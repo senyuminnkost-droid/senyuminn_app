@@ -292,7 +292,7 @@ export default function Modul04_Absensi({ user }) {
 
   // Stats
   const bulanStr   = `${periodeYear}-${padDate(periodeMonth+1)}`;
-  const hadir      = clockinLog.filter(l => l.tanggal?.startsWith(bulanStr) && l.tipe === "in").length;
+  const hadir      = clockinLog.filter(l => l.tanggal && tanggal.startsWith(bulanStr) && l.tipe === "in").length;
   const totalShift = staffList.length * new Date(periodeYear, periodeMonth + 1, 0).getDate();
 
   const handleKodeChange = (staffId, year, month, day, kode) => {

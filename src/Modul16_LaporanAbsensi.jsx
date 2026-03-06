@@ -19,7 +19,7 @@ const padD = (n) => String(n).padStart(2,"0");
 const KODE_ABSENSI = {
   P:   { label:"Pagi",              color:"#fff", bg:"#3b82f6",  short:"P"  },
   M:   { label:"Malam",             color:"#fff", bg:"#6366f1",  short:"M"  },
-  SM:  { label:"Sore/Malam",        color:"#fff", bg:"#8b5cf6",  short:"SM" },
+  SM:  { label:"Sore-Malam",        color:"#fff", bg:"#8b5cf6",  short:"SM" },
   OFF: { label:"Libur",             color:"#fff", bg:"#9ca3af",  short:"OFF"},
   L:   { label:"Lembur Malam",      color:"#fff", bg:"#f97316",  short:"L"  },
   LL:  { label:"Lembur Lebaran",    color:"#fff", bg:"#f59e0b",  short:"LL" },
@@ -43,7 +43,7 @@ const getColor = (id) => AVATAR_COLORS[(id||0) % AVATAR_COLORS.length];
 // Hitung rekap absensi dari data
 const hitungRekap = (absensiData, karyawanId, bulan, tahun) => {
   const prefix = `${tahun}-${padD(bulan)}`;
-  const entries = absensiData.filter(a=>a.karyawanId===karyawanId && a.tanggal?.startsWith(prefix));
+  const entries = absensiData.filter(a=>a.karyawanId===karyawanId && a.tanggal && tanggal.startsWith(prefix));
 
   let masuk=0, libur=0, ijin=0, sakit=0, cuti=0, lembur=0, its=0;
   entries.forEach(e=>{
@@ -354,7 +354,7 @@ export default function Modul16_LaporanAbsensi({ user, globalData = {} }) {
                   </div>
                   <div>
                     <div style={{fontSize:12,fontWeight:600,color:"#1f2937"}}>{k.nama}</div>
-                    <div style={{fontSize:10,color:"#9ca3af"}}>{k.shift?.split(" ")[0]}</div>
+                    <div style={{fontSize:10,color:"#9ca3af"}}>{k.shift && shift.split(" ")[0]}</div>
                   </div>
                 </div>
               ))}

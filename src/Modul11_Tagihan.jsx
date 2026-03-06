@@ -314,7 +314,7 @@ export default function Modul11_Tagihan({ user, globalData = {} }) {
     if (tab === "terlambat" && t.status !== "terlambat") return false;
     if (search) {
       const q = search.toLowerCase();
-      return t.nama?.toLowerCase().includes(q) || String(t.kamarId).includes(q);
+      return t.nama && nama.toLowerCase().includes(q) || String(t.kamarId).includes(q);
     }
     return true;
   });
@@ -340,7 +340,7 @@ export default function Modul11_Tagihan({ user, globalData = {} }) {
       keterangan: `Sewa Kamar ${updated.kamarId} — ${updated.nama} (${updated.periode})`,
       kategori: "Sewa Kamar",
       tipe:     "pemasukan",
-      nominal:  updated.riwayatBayar?.slice(-1)[0]?.nominal || updated.nominal,
+      nominal:  updated.riwayatBayar && riwayatBayar.slice(-1)[0]?.nominal || updated.nominal,
       metode:   updated.metode,
     }]);
     // Update selected

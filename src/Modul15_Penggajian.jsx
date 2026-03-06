@@ -332,7 +332,7 @@ export default function Modul15_Penggajian({ user, globalData = {} }) {
   const filtered = aktifKaryawan.filter(k=>{
     if (!search) return true;
     const q = search.toLowerCase();
-    return k.nama?.toLowerCase().includes(q) || k.jabatan?.toLowerCase().includes(q);
+    return k.nama && nama.toLowerCase().includes(q) || k.jabatan && jabatan.toLowerCase().includes(q);
   });
 
   // Summary stats

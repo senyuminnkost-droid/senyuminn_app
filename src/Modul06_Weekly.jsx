@@ -1,15 +1,8 @@
 import { useState } from "react";
 
-const JADWAL_DATA = [
-  { id:1, tanggal:"2026-03-03", kamar:[1,4,7], staff:"Muh. Krisna Mukti", status:"selesai", checklist:{ kamar:true, selasar:true, kamamandi:true, parkir:true } },
-  { id:2, tanggal:"2026-03-03", kamar:[2,5,8], staff:"Gurit Yudho Anggoro", status:"selesai", checklist:{ kamar:true, selasar:true, kamamandi:false, parkir:true } },
-  { id:3, tanggal:"2026-03-05", kamar:[3,6,9], staff:"Muh. Krisna Mukti", status:"aktif", checklist:{ kamar:false, selasar:false, kamamandi:false, parkir:false } },
-  { id:4, tanggal:"2026-03-05", kamar:[10,11,12], staff:"Gurit Yudho Anggoro", status:"aktif", checklist:{ kamar:false, selasar:false, kamamandi:false, parkir:false } },
-  { id:5, tanggal:"2026-03-10", kamar:[1,2,3], staff:"Muh. Krisna Mukti", status:"terjadwal", checklist:{} },
-  { id:6, tanggal:"2026-03-10", kamar:[4,5,6], staff:"Gurit Yudho Anggoro", status:"terjadwal", checklist:{} },
-];
+const JADWAL_DATA = [];
 
-const STAFF_LIST = ["Muh. Krisna Mukti", "Gurit Yudho Anggoro"];
+const STAFF_LIST = [];
 
 const CHECKLIST_ITEMS = [
   { key:"kamar", label:"Kebersihan Kamar", icon:"🛏️" },
@@ -144,7 +137,7 @@ function ModalChecklist({ jadwal, onClose }) {
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
           <div>
             <div style={{ fontSize:16, fontWeight:700, color:"#111827" }}>Checklist Service</div>
-            <div style={{ fontSize:12, color:"#9ca3af" }}>Kamar {jadwal.kamar.join(", ")} · {jadwal.tanggal}</div>
+            <div style={{ fontSize:12, color:"#9ca3af" }}>Kamar {jadwal.kamar.join(", ")} - {jadwal.tanggal}</div>
           </div>
           <button onClick={onClose} style={{ background:"#f3f4f6", border:"none", borderRadius:8, padding:"6px 10px", cursor:"pointer", fontSize:14, color:"#6b7280" }}>✕</button>
         </div>

@@ -119,7 +119,7 @@ const SOP_CHECKOUT = [
 ];
 const SOP_KELUHAN = [
   {title:"Terima laporan keluhan",desc:"Via sistem atau langsung dari penyewa"},
-  {title:"Kategorikan dan set prioritas",desc:"Normal: koordinasi jadwal · Urgent: tindak < 1 jam"},
+  {title:"Kategorikan dan set prioritas",desc:"Normal: koordinasi jadwal - Urgent: tindak < 1 jam"},
   {title:"[URGENT] Notifikasi WA langsung ke PJ",desc:"PJ wajib balas konfirmasi dalam 15 menit"},
   {title:"Assign ke staff yang tersedia",desc:"Staff pagi untuk siang, staff malam untuk malam"},
   {title:"Staff tangani dan update progress",desc:"Update status tiket: In Progress"},
@@ -546,7 +546,7 @@ function TabInventaris({ inventaris, setInventaris, setPengaturanConfig, isReadO
 // ============================================================
 // EXPORT DEFAULT
 // ============================================================
-export default function SOP({ user, globalData = {} }) {
+export default function Modul19_SOP({ user, globalData = {} }) {
   const {
     pengaturanConfig = {}, setPengaturanConfig = () => {},
     isReadOnly       = false,

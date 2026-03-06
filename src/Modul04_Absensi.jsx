@@ -461,7 +461,7 @@ function TabelJadwal({ staffList, jadwalData, periodeYear, periodeMonth, onKodeC
 // ============================================================
 // MAIN
 // ============================================================
-export default function Absensi({ user }) {
+export default function Modul04_Absensi({ user }) {
   const isAdmin = user?.role === "superadmin" || user?.role === "admin";
 
   const [periodeMonth, setPeriodeMonth] = useState(today.getMonth());

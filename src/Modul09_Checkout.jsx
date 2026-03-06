@@ -317,7 +317,7 @@ function ModalCheckout({ penyewa, kamarList, onClose, onCheckout }) {
             <div style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>{penyewa.nama} — Kamar {penyewa.kamarId}</div>
             <div style={{ fontSize: 11, color: "#9a3412" }}>
               Kontrak: {penyewa.kontrakMulai} → {penyewa.kontrakSelesai}
-              {sisa !== null && sisa < 0 && <span style={{ color: "#dc2626", fontWeight: 700 }}> · {Math.abs(sisa)} hari melewati kontrak!</span>}
+              {sisa !== null && sisa < 0 && <span style={{ color: "#dc2626", fontWeight: 700 }}> - {Math.abs(sisa)} hari melewati kontrak!</span>}
             </div>
           </div>
         </div>
@@ -375,7 +375,7 @@ function ModalCheckout({ penyewa, kamarList, onClose, onCheckout }) {
 
         {/* After checkout info */}
         <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, padding: "10px 12px", fontSize: 11, color: "#0369a1" }}>
-          ℹ️ Setelah check-out: status kamar → <b>Deep Clean</b> · Notifikasi ke staff pagi · Data penyewa dipindah ke Riwayat
+          ℹ️ Setelah check-out: status kamar → <b>Deep Clean</b> - Notifikasi ke staff pagi - Data penyewa dipindah ke Riwayat
         </div>
       </div>
       <div className="co-modal-foot">
@@ -419,7 +419,7 @@ function ActionPanel({ penyewa, kamarList, onPerpanjang, onCheckout, onClose }) 
           <div className="co-panel-avatar">{getInisial(penyewa.nama)}</div>
           <div style={{ flex: 1 }}>
             <div className="co-panel-name">{penyewa.nama}</div>
-            <div className="co-panel-sub">📞 {penyewa.noHP || "—"} · {penyewa.pekerjaan || "—"}</div>
+            <div className="co-panel-sub">📞 {penyewa.noHP || "—"} - {penyewa.pekerjaan || "—"}</div>
           </div>
         </div>
 
@@ -493,7 +493,7 @@ function ActionPanel({ penyewa, kamarList, onPerpanjang, onCheckout, onClose }) 
 // ============================================================
 // MAIN
 // ============================================================
-export default function Checkout({ user }) {
+export default function Modul09_Checkout({ user }) {
   // Data dari Supabase nanti
   const [penyewaList, setPenyewaList] = useState([]);
   const kamarList = [];

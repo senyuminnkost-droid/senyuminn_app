@@ -154,7 +154,7 @@ function ModalRekening({ rek, onClose, onSave }) {
 // ============================================================
 // EXPORT DEFAULT
 // ============================================================
-export default function ProfilKost({ user, globalData = {} }) {
+export default function Modul17_Profil({ user, globalData = {} }) {
   const {
     pengaturanConfig = {}, setPengaturanConfig = ()=>{},
     isReadOnly = false,

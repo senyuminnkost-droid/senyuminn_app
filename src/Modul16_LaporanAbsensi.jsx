@@ -184,7 +184,7 @@ function KalenderAbsensi({ karyawanId, absensiData, bulan, tahun, onInputKode, i
 // ============================================================
 // MAIN
 // ============================================================
-export default function LaporanAbsensi({ user, globalData = {} }) {
+export default function Modul16_LaporanAbsensi({ user, globalData = {} }) {
   const {
     karyawanList  = [],
     absensiList   = [], setAbsensiList = ()=>{},
@@ -232,7 +232,7 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
   // Modal input kode untuk satu tanggal
   const ModalInputKode = ({ tanggal, karyawanId, onClose }) => {
     const existing = absensiList.find(a=>a.karyawanId===karyawanId&&a.tanggal===tanggal)?.kode;
-    return? (
+    return (
       <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
         <div style={{background:"#fff",borderRadius:16,padding:20,width:400,maxHeight:"80vh",overflowY:"auto"}} onClick={e=>e.stopPropagation()}>
           <div style={{fontSize:14,fontWeight:700,color:"#111827",marginBottom:4}}>Input Kode Absensi</div>
@@ -488,7 +488,7 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
                       </div>
                       <div>
                         <div style={{fontSize:12,fontWeight:600,color:"#1f2937"}}>{k.nama}</div>
-                        <div style={{fontSize:10,color:"#9ca3af"}}>{r.masuk} masuk · {r.its} ITS</div>
+                        <div style={{fontSize:10,color:"#9ca3af"}}>{r.masuk} masuk - {r.its} ITS</div>
                       </div>
                     </div>
                     <div style={{textAlign:"right"}}>

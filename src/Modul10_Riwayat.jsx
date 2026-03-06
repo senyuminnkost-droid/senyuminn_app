@@ -247,7 +247,7 @@ function ModalCheckinUlang({ penyewa, kamarList, onClose, onCheckin }) {
           {form.kontrakSelesai && (
             <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 8, padding: "8px 12px", fontSize: 11, color: "#15803d" }}>
               ✅ Kontrak berakhir: <b>{form.kontrakSelesai}</b>
-              {kamarDipilih && <> · <b>{fmtRp(kamarDipilih.harga)}/bulan</b></>}
+              {kamarDipilih && <> - <b>{fmtRp(kamarDipilih.harga)}/bulan</b></>}
             </div>
           )}
 
@@ -292,7 +292,7 @@ function DetailPanel({ penyewa, kamarList, onCheckinUlang, onClose }) {
           <div className="rw-detail-avatar">{getInisial(penyewa.nama)}</div>
           <div style={{ flex: 1 }}>
             <div className="rw-detail-name">{penyewa.nama}</div>
-            <div className="rw-detail-sub">📞 {penyewa.noHP || "—"} · {penyewa.pekerjaan || "—"}</div>
+            <div className="rw-detail-sub">📞 {penyewa.noHP || "—"} - {penyewa.pekerjaan || "—"}</div>
             <div className="rw-detail-badges">
               <span className="rw-badge" style={{ background: "#f3f4f6", color: "#6b7280" }}>🏠 Kamar {penyewa.kamarId}</span>
               <span className="rw-badge" style={{ background: "#fee2e2", color: "#dc2626" }}>✓ Alumni</span>
@@ -312,7 +312,7 @@ function DetailPanel({ penyewa, kamarList, onCheckinUlang, onClose }) {
             </div>
             <div style={{ fontSize: 11, color: "#9ca3af" }}>
               Check-out: {penyewa.tglCheckout || "—"}
-              {kamar && <> · {fmtRp(kamar.harga)}/bulan</>}
+              {kamar && <> - {fmtRp(kamar.harga)}/bulan</>}
             </div>
           </div>
         </div>
@@ -359,7 +359,7 @@ function DetailPanel({ penyewa, kamarList, onCheckinUlang, onClose }) {
                 <div className="rw-tl-title">
                   {t.type === "checkin" ? "🔑" : t.type === "checkout" ? "🚪" : "📋"} {t.label}
                 </div>
-                <div className="rw-tl-sub">{t.tgl || "—"} · {t.sub}</div>
+                <div className="rw-tl-sub">{t.tgl || "—"} - {t.sub}</div>
               </div>
             ))}
           </div>
@@ -382,7 +382,7 @@ function DetailPanel({ penyewa, kamarList, onCheckinUlang, onClose }) {
 // ============================================================
 // MAIN
 // ============================================================
-export default function Riwayat({ user, globalData = {} }) {
+export default function Modul10_Riwayat({ user, globalData = {} }) {
   const {
     riwayatList  = [], setRiwayatList  = () => {},
     penyewaList  = [], setPenyewaList  = () => {},

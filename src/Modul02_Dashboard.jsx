@@ -1,29 +1,16 @@
 import { useState } from "react";
 
 const STATS = {
-  omzetBulanIni: 21950000, omzetBulanLalu: 19800000,
-  kamarTerisi: 8, kamarKosong: 2, kamarBooked: 1, kamarMaintenance: 1,
-  piutang: 3600000, tiketOpen: 3, tiketUrgent: 1, kontrakHabis: 2, totalKamar: 12,
+  omzetBulanIni: 0, omzetBulanLalu: 0,
+  kamarTerisi: 0, kamarKosong: 0, kamarBooked: 0, kamarMaintenance: 0,
+  piutang: 0, tiketOpen: 0, tiketUrgent: 0, kontrakHabis: 0, totalKamar: 12,
 };
 
-const AGENDA_TAGIHAN = [
-  { kamar: 9, penghuni: "Dewi Lestari", jatuhTempo: "2026-03-01", jumlah: 1800000, status: "jatuh-tempo" },
-  { kamar: 12, penghuni: "Amalia Wulan", jatuhTempo: "2026-03-30", jumlah: 2500000, status: "upcoming" },
-  { kamar: 1, penghuni: "Budi Santoso", jatuhTempo: "2026-04-01", jumlah: 2500000, status: "upcoming" },
-];
+const AGENDA_TAGIHAN = [];
 
-const TIKET_DATA = [
-  { id: "T001", kamar: 9, kategori: "AC Bermasalah", prioritas: "urgent", status: "open", deskripsi: "AC bocor, air menetes ke lantai" },
-  { id: "T002", kamar: 1, kategori: "Listrik", prioritas: "normal", status: "in-progress", deskripsi: "Lampu kamar mandi redup" },
-  { id: "T003", kamar: 5, kategori: "Air", prioritas: "normal", status: "open", deskripsi: "Keran air tidak mau mati" },
-];
+const TIKET_DATA = [];
 
-const KAMAR_MINI = [
-  { id: 1, status: "terisi" }, { id: 2, status: "tersedia" }, { id: 3, status: "booked" },
-  { id: 4, status: "terisi" }, { id: 5, status: "maintenance" }, { id: 6, status: "terisi" },
-  { id: 7, status: "terisi" }, { id: 8, status: "deep-clean" }, { id: 9, status: "terisi" },
-  { id: 10, status: "terisi" }, { id: 11, status: "tersedia" }, { id: 12, status: "terisi" },
-];
+const KAMAR_MINI = Array.from({length:12}, (_,i) => ({ id:i+1, status:"tersedia" }));
 
 const STATUS_COLOR = { tersedia:"#22c55e", booked:"#eab308", terisi:"#ef4444", "deep-clean":"#3b82f6", maintenance:"#f97316" };
 const STATUS_LABEL = { tersedia:"Tersedia", booked:"Booked", terisi:"Terisi", "deep-clean":"Deep Clean", maintenance:"Maintenance" };
@@ -77,7 +64,7 @@ function DashboardAdmin() {
       <div style={{ background:"linear-gradient(135deg,#fff7ed,#ffedd5)", border:"1px solid #fed7aa", borderRadius:10, padding:"12px 16px", marginBottom:20, display:"flex", alignItems:"center", gap:10 }}>
         <span style={{ fontSize:20 }}>💡</span>
         <div style={{ fontSize:13, color:"#9a3412" }}>
-          <b>Insight Hari Ini:</b> {STATS.kontrakHabis} kontrak habis bulan ini · Kamar 8 selesai deep clean, siap disewa · Tiket urgent Kamar 9 perlu penanganan segera
+          <b>Insight Hari Ini:</b> {STATS.kontrakHabis} kontrak habis bulan ini · {STATS.tiketUrgent} tiket urgent menunggu penanganan
         </div>
       </div>
 

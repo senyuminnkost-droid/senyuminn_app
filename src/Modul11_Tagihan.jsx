@@ -244,7 +244,7 @@ function ModalBayar({ tagihan, onClose, onKonfirmasi }) {
         {/* Info tagihan */}
         <div style={{ background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 10, padding: "12px 14px", marginBottom: 16 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>{tagihan.nama} — Kamar {tagihan.kamarId}</div>
-          <div style={{ fontSize: 11, color: "#9a3412", marginTop: 2 }}>Periode: {tagihan.periode} · Jatuh tempo: {tagihan.jatuhTempo}</div>
+          <div style={{ fontSize: 11, color: "#9a3412", marginTop: 2 }}>Periode: {tagihan.periode} - Jatuh tempo: {tagihan.jatuhTempo}</div>
         </div>
 
         {/* Ringkasan */}
@@ -342,7 +342,7 @@ function DetailPanel({ tagihan, onBayar, onClose }) {
           <div className="tg-nominal-label">Total Tagihan</div>
           <div className="tg-nominal-val">{fmtRp(totalBayar)}</div>
           <div className="tg-nominal-sub">
-            {tagihan.periode} · Jatuh tempo {tagihan.jatuhTempo}
+            {tagihan.periode} - Jatuh tempo {tagihan.jatuhTempo}
           </div>
           <div style={{ marginTop: 8 }}>
             <span className="tg-badge" style={{ color: st.color, background: st.bg, fontSize: 11 }}>
@@ -384,7 +384,7 @@ function DetailPanel({ tagihan, onBayar, onClose }) {
               <div key={i} className="tg-pay-item">
                 <div>
                   <div className="tg-pay-label">{r.metode === "transfer" ? "Transfer Bank" : r.metode === "qris" ? "QRIS" : "Tunai"}</div>
-                  <div className="tg-pay-tgl">{r.tgl} {r.catatan && `· ${r.catatan}`}</div>
+                  <div className="tg-pay-tgl">{r.tgl} {r.catatan && `- ${r.catatan}`}</div>
                 </div>
                 <div className="tg-pay-nominal">{fmtRp(r.nominal)}</div>
               </div>
@@ -415,7 +415,7 @@ function DetailPanel({ tagihan, onBayar, onClose }) {
 // ============================================================
 // MAIN
 // ============================================================
-export default function Tagihan({ user, globalData = {} }) {
+export default function Modul11_Tagihan({ user, globalData = {} }) {
   const {
     penyewaList = [],
     kamarList   = [],

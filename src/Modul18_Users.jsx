@@ -282,15 +282,15 @@ function ModalResetPW({ userObj, onClose, onSave }) {
 }
 
 // ─── MAIN ───
-export default function ManajemenUsers({ user, globalData={} }) {
+export default function Modul18_Users({ user, globalData={} }) {
   const { isReadOnly=false } = globalData;
 
   const [users, setUsers] = useState([
     { id:1, nama:"Yusuf Vindra Asmara", jabatan:"Owner",       username:"owner",    password:"owner123",  role:"owner",     aktif:true, permissions:{...DEFAULT_PERMISSIONS["owner"]}     },
     { id:2, nama:"Budi Santosa",        jabatan:"Direktur",    username:"direktur", password:"dir123",    role:"direktur",  aktif:true, permissions:{...DEFAULT_PERMISSIONS["direktur"]}  },
-    { id:3, nama:"Rina Manajemen",      jabatan:"Super Admin", username:"admin",    password:"admin123",  role:"manajemen", aktif:true, permissions:{...DEFAULT_PERMISSIONS["manajemen"]} },
-    { id:4, nama:"Muh. Krisna Mukti",   jabatan:"Clean & Service", username:"staff1", password:"staff123", role:"staff",   aktif:true, permissions:{...DEFAULT_PERMISSIONS["staff"]}     },
-    { id:5, nama:"Gurit Yudho Anggoro", jabatan:"Staf Jaga Malam", username:"staff2", password:"staff123", role:"staff",   aktif:true, permissions:{...DEFAULT_PERMISSIONS["staff"]}     },
+    { id:3, nama:"Admin",       jabatan:"Super Admin",        username:"admin",  password:"admin123",  role:"manajemen", aktif:true, permissions:{...DEFAULT_PERMISSIONS["manajemen"]} },
+    { id:4, nama:"Staff Pagi",  jabatan:"Clean & Service",    username:"staff1", password:"staff123",  role:"staff",   aktif:true, permissions:{...DEFAULT_PERMISSIONS["staff"]}     },
+    { id:5, nama:"Staff Malam", jabatan:"Staf Penjaga Malam", username:"staff2", password:"staff123",  role:"staff",   aktif:true, permissions:{...DEFAULT_PERMISSIONS["staff"]}     },
   ]);
   const [selected,    setSelected]    = useState(null);
   const [showModal,   setShowModal]   = useState(false);
@@ -480,7 +480,7 @@ export default function ManajemenUsers({ user, globalData={} }) {
           </div>
           {activityLog.map(log=>(
             <div key={log.id} className="us-log-item">
-              <div className="us-log-time">🕐 {log.waktu} · <b>@{log.user}</b></div>
+              <div className="us-log-time">🕐 {log.waktu} - <b>@{log.user}</b></div>
               <div className="us-log-action">{log.aksi}</div>
             </div>
           ))}

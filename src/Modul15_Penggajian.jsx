@@ -208,7 +208,7 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
               <div>
                 <div className="pg-slip-company">SENYUM INN</div>
-                <div className="pg-slip-sub">Exclusive Kost · Slip Gaji Karyawan</div>
+                <div className="pg-slip-sub">Exclusive Kost - Slip Gaji Karyawan</div>
               </div>
               <span className="pg-badge" style={{
                 color:g.status==="dibayar"?"#fff":g.status==="final"?"#1e293b":"#94a3b8",
@@ -231,9 +231,9 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
               </div>
               <div>
                 <div className="pg-slip-name">{karyawan.nama}</div>
-                <div className="pg-slip-jabatan">{karyawan.jabatan} · {karyawan.shift}</div>
+                <div className="pg-slip-jabatan">{karyawan.jabatan} - {karyawan.shift}</div>
                 <div style={{fontSize:10,color:"#9ca3af",marginTop:1,fontFamily:"JetBrains Mono,monospace"}}>
-                  {karyawan.rekeningBank} · {karyawan.rekeningNo || "—"}
+                  {karyawan.rekeningBank} - {karyawan.rekeningNo || "—"}
                 </div>
               </div>
             </div>
@@ -382,7 +382,7 @@ function SlipGaji({ karyawan, gaji, periode, onClose, onFinalize, isReadOnly }) 
 // ============================================================
 // MAIN
 // ============================================================
-export default function Penggajian({ user, globalData = {} }) {
+export default function Modul15_Penggajian({ user, globalData = {} }) {
   const {
     karyawanList = [],
     kasJurnal    = [], setKasJurnal = ()=>{},

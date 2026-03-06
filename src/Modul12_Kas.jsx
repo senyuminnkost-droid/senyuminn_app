@@ -439,7 +439,7 @@ function TabJurnal({ kasJurnal, setKasJurnal, rekeningList }) {
                 <div className="ks-row-desc">{t.keterangan}</div>
                 <div className="ks-row-meta">
                   <span>{t.kategori}</span>
-                  {t.catatan && <span>· {t.catatan}</span>}
+                  {t.catatan && <span>- {t.catatan}</span>}
                 </div>
               </div>
               <div className="ks-row-right">
@@ -524,7 +524,7 @@ function TabBudget({ kasJurnal }) {
       <div className="ks-widget">
         <div className="ks-widget-head">
           <div className="ks-widget-title">💰 Budget Planning — {thisMonth}</div>
-          <span style={{fontSize:11,color:"#9ca3af"}}>Cash basis · Single Source of Truth</span>
+          <span style={{fontSize:11,color:"#9ca3af"}}>Cash basis - Single Source of Truth</span>
         </div>
         <div className="ks-widget-body">
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12,marginBottom:16}}>
@@ -654,7 +654,7 @@ function TabAset({ asetList, setAsetList }) {
                     <div>
                       <div style={{fontSize:13,fontWeight:600,color:"#1f2937"}}>{a.nama}</div>
                       <div style={{fontSize:10,color:"#9ca3af",marginTop:1}}>
-                        Dibeli: {a.tanggalBeli} · Umur: {a.umurEkonomis} thn
+                        Dibeli: {a.tanggalBeli} - Umur: {a.umurEkonomis} thn
                       </div>
                     </div>
                     <div style={{textAlign:"right"}}>
@@ -685,7 +685,7 @@ function TabAset({ asetList, setAsetList }) {
 // ============================================================
 // MAIN
 // ============================================================
-export default function Kas({ user, globalData = {} }) {
+export default function Modul12_Kas({ user, globalData = {} }) {
   const {
     kasJurnal    = [], setKasJurnal    = ()=>{},
     tagihanList  = [],

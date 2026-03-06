@@ -9,11 +9,7 @@ const hariSisa = (tgl) => {
   return Math.ceil((new Date(tgl) - new Date()) / 86400000);
 };
 
-const KARYAWAN_DATA = [
-  { id:1, nama:"Muh. Krisna Mukti",   jabatan:"Clean & Service",    shift:"Pagi",       nik:"3271010101900001", tglLahir:"1990-01-01", jenisKelamin:"L", agama:"Islam",   statusNikah:"Menikah", hp:"081234567891", nodarurat:"Ibu Krisna 0811",  alamat:"Jl. Mawar No.1 Solo",   rekeningBank:"BCA",    rekeningNo:"1234567890", tglMulai:"2025-01-01", tglSelesai:"2026-01-01", gajiPokok:2200000, tunjangan:300000, aktif:true,  cutiTerpakai:1, catatan:"" },
-  { id:2, nama:"Gurit Yudho Anggoro", jabatan:"Staf Penjaga Malam", shift:"Sore/Malam", nik:"3271020202910002", tglLahir:"1991-02-02", jenisKelamin:"L", agama:"Islam",   statusNikah:"Belum",   hp:"082345678902", nodarurat:"Ayah Gurit 0812", alamat:"Jl. Melati No.2 Solo",  rekeningBank:"BRI",    rekeningNo:"2345678901", tglMulai:"2025-03-01", tglSelesai:"2026-03-01", gajiPokok:2200000, tunjangan:300000, aktif:true,  cutiTerpakai:0, catatan:"" },
-  { id:3, nama:"Rina Manajemen",      jabatan:"Super Admin",        shift:"Pagi",       nik:"3271030303880003", tglLahir:"1988-03-03", jenisKelamin:"P", agama:"Kristen", statusNikah:"Menikah", hp:"083456789013", nodarurat:"Suami Rina 0813", alamat:"Jl. Anggrek No.3 Solo", rekeningBank:"Mandiri", rekeningNo:"3456789012", tglMulai:"2024-06-01", tglSelesai:"2025-06-01", gajiPokok:3500000, tunjangan:500000, aktif:false, cutiTerpakai:3, catatan:"Kontrak habis, sedang diperpanjang" },
-];
+const KARYAWAN_DATA = [];
 
 const INFO_FIELDS = [
   { key:"nik",          label:"NIK / KTP" },

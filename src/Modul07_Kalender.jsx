@@ -85,7 +85,7 @@ const EVENT_CFG = {
   reminder:    { label:"Reminder",         icon:"⚠️", color:"#ca8a04", bg:"#fef9c3" },
 };
 
-export default function Kalender({ user, globalData = {} }) {
+export default function Modul07_Kalender({ user, globalData = {} }) {
   const {
     isReadOnly    = false,
     tiketList     = [],

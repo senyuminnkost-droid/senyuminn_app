@@ -442,8 +442,6 @@ function PerformanceRatio({ data, kasJurnal, asetList, periodeVal, periodeTipe }
         </div>
       </div>
     </div>
-  </div>
-  </div>
   );
 }
 
@@ -492,7 +490,7 @@ const downloadCSV = (data, kasJurnal, periode, reportType, label) => {
 // ============================================================
 // MAIN
 // ============================================================
-export default function Laporan({ user, globalData = {} }) {
+export default function Modul13_Laporan({ user, globalData = {} }) {
   const {
     kasJurnal    = [],
     asetList     = [],
@@ -614,7 +612,7 @@ export default function Laporan({ user, globalData = {} }) {
         </div>
 
         <div className="lk-period-info">
-          {label} · {periode.dari} s/d {periode.sampai}
+          {label} - {periode.dari} s/d {periode.sampai}
         </div>
       </div>
 

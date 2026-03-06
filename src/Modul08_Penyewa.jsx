@@ -1,15 +1,6 @@
 import { useState } from "react";
 
-const PENYEWA_DATA = [
-  { id:1, kamar:1, nama:"Budi Santoso", ktp:"3271234567890001", telp:"081234567890", tglMasuk:"2026-01-01", kontrakMulai:"2026-01-01", kontrakSelesai:"2026-07-01", durasi:6, harga:2500000, partner:["Sari"], status:"aktif", foto:null, nodarurat:"Ibu Budi - 0812xxx" },
-  { id:2, kamar:3, nama:"Dian Pratiwi", ktp:"3271234567890002", telp:"082345678901", tglMasuk:"2026-03-01", kontrakMulai:"2026-03-01", kontrakSelesai:null, durasi:3, harga:1800000, partner:[], status:"booked", foto:null, nodarurat:"Ayah Dian - 0813xxx" },
-  { id:3, kamar:4, nama:"Ahmad Fauzi", ktp:"3271234567890003", telp:"083456789012", tglMasuk:"2025-12-01", kontrakMulai:"2025-12-01", kontrakSelesai:"2026-06-01", durasi:6, harga:2500000, partner:["Budi","Tono"], status:"aktif", foto:null, nodarurat:"Istri Ahmad - 0814xxx" },
-  { id:4, kamar:6, nama:"Siti Rahayu", ktp:"3271234567890004", telp:"084567890123", tglMasuk:"2026-02-01", kontrakMulai:"2026-02-01", kontrakSelesai:"2026-08-01", durasi:6, harga:1800000, partner:[], status:"aktif", foto:null, nodarurat:"Ibu Siti - 0815xxx" },
-  { id:5, kamar:7, nama:"Rudi Hartono", ktp:"3271234567890005", telp:"085678901234", tglMasuk:"2026-01-15", kontrakMulai:"2026-01-15", kontrakSelesai:"2027-01-15", durasi:12, harga:2650000, partner:["Lia"], status:"aktif", foto:null, nodarurat:"Ortu Rudi - 0816xxx" },
-  { id:6, kamar:9, nama:"Dewi Lestari", ktp:"3271234567890006", telp:"086789012345", tglMasuk:"2026-01-01", kontrakMulai:"2026-01-01", kontrakSelesai:"2026-04-01", durasi:3, harga:1800000, partner:[], status:"aktif", foto:null, nodarurat:"Ibu Dewi - 0817xxx" },
-  { id:7, kamar:10, nama:"Prisca Aprilia", ktp:"3271234567890007", telp:"087890123456", tglMasuk:"2026-01-12", kontrakMulai:"2026-01-12", kontrakSelesai:"2026-07-12", durasi:6, harga:2500000, partner:[], status:"aktif", foto:null, nodarurat:"Mama Prisca - 0818xxx" },
-  { id:8, kamar:12, nama:"Amalia Wulan", ktp:"3271234567890008", telp:"088901234567", tglMasuk:"2026-01-01", kontrakMulai:"2026-01-01", kontrakSelesai:"2026-06-30", durasi:6, harga:2500000, partner:["Tari"], status:"aktif", foto:null, nodarurat:"Ibu Amalia - 0819xxx" },
-];
+const PENYEWA_DATA = [];
 
 const fmt = (n) => "Rp " + n.toLocaleString("id-ID");
 

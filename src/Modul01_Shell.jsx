@@ -19,10 +19,10 @@ import Modul18_Users from "./Modul18_Users";
 import Modul19_SOP from "./Modul19_SOP";
 
 const USERS = [
-  { id: 1, username: "owner",  password: "owner123",  role: "admin", name: "Yusuf Vindra Asmara", jabatan: "Owner" },
-  { id: 2, username: "admin",  password: "admin123",  role: "admin", name: "Rina Manajemen",       jabatan: "Super Admin" },
-  { id: 3, username: "staff1", password: "staff123",  role: "staff", name: "Muh. Krisna Mukti",    jabatan: "Clean & Service" },
-  { id: 4, username: "staff2", password: "staff123",  role: "staff", name: "Gurit Yudho Anggoro",  jabatan: "Staf Penjaga Malam" },
+  { id: 1, username: "owner",  password: "owner123",  role: "admin", name: "Owner",       jabatan: "Owner" },
+  { id: 2, username: "admin",  password: "admin123",  role: "admin", name: "Admin",       jabatan: "Super Admin" },
+  { id: 3, username: "staff1", password: "staff123",  role: "staff", name: "Staff Pagi",  jabatan: "Clean & Service" },
+  { id: 4, username: "staff2", password: "staff123",  role: "staff", name: "Staff Malam", jabatan: "Staf Penjaga Malam" },
 ];
 
 const MENU_ADMIN = [
@@ -151,7 +151,8 @@ function LoginPage({ onLogin }) {
         </button>
         <div style={{ marginTop: 20, padding: 12, background: "#f8fafc", borderRadius: 8, fontSize: 11, color: "#94a3b8" }}>
           <div style={{ fontWeight: 600, marginBottom: 4 }}>Demo Login:</div>
-          <div>Admin: <b>owner</b> / <b>owner123</b></div>
+          <div>Admin: <b>admin</b> / <b>admin123</b></div>
+          <div>Owner: <b>owner</b> / <b>owner123</b></div>
           <div>Staff: <b>staff1</b> / <b>staff123</b></div>
         </div>
       </div>

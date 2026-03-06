@@ -1,5 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 
+const divBy = (a, b) => b === 0 ? 0 : a / b;
+
+
 // ============================================================
 // CSS
 // ============================================================
@@ -156,9 +159,9 @@ export default function Modul16_LaporanAbsensi({ user, globalData = {} }) {
       totalITS    += r.its;
       totalLembur += r.lembur;
     });
-    const avgKPI = aktif.length > 0
-      ? Math.round(aktif.reduce((s,k)=>s+hitungRekap(absensiList,k.id,periode.bulan,periode.tahun).kpiAbsensi,0)/aktif.length)
-      : 0;
+    const sumKPI = aktif.reduce((s,k)=>s+hitungRekap(absensiList,k.id,periode.bulan,periode.tahun).kpiAbsensi,0);
+    const avgLen = aktif.length || 1;
+    const avgKPI = aktif.length > 0 ? Math.round(divBy(sumKPI, avgLen)) : 0;
     return {totalMasuk,totalITS,totalLembur,avgKPI};
   },[absensiList,karyawanList,periode]);
 
@@ -206,7 +209,8 @@ export default function Modul16_LaporanAbsensi({ user, globalData = {} }) {
         totalM   += r.masuk;
         totalAll += r.masuk+r.libur+r.ijin+r.sakit+r.its;
       });
-      const pct = totalAll>0 ? Math.round((totalM/totalAll)*100) : 0;
+      const safeTotalAll = totalAll || 1;
+      const pct = totalAll>0 ? Math.round(divBy(totalM*100, safeTotalAll)) : 0;
       return { label:BULAN_SHORT[d.getMonth()], pct };
     });
   },[absensiList,karyawanList]);
@@ -446,7 +450,9 @@ export default function Modul16_LaporanAbsensi({ user, globalData = {} }) {
             <div style={{padding:"16px 16px 8px"}}>
               <div style={{display:"flex",alignItems:"flex-end",gap:8,height:100}}>
                 {trendData.map((t,i)=>{
-                  const barH = Math.max(4, maxTrend>0 ? Math.round((t.pct/maxTrend)*80) : 4);
+                  const safeMax = maxTrend>0 ? maxTrend : 1;
+                  const barPct = (t.pct*80);
+                  const barH = Math.max(4, Math.round(divBy(barPct, safeMax)));
                   const barColor = t.pct>=90?"#16a34a":t.pct>=70?"#f97316":"#ef4444";
                   return (
                   <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>

@@ -182,6 +182,7 @@ function Sidebar({ user, active, onChange, onLogout }) {
           <div style={{ fontSize:11, color:"#94a3b8" }}>{user.jabatan}</div>
         </div>
         <button onClick={onLogout} style={{ background:"none", border:"none", cursor:"pointer", color:"#94a3b8", fontSize:16 }} title="Logout">⏻</button>
+      </div>
     </aside>
   );
 }

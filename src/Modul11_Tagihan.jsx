@@ -18,14 +18,10 @@ const CSS = `
   .tg-widget { background: #fff; border-radius: 12px; border: 1px solid #e5e7eb; display: flex; flex-direction: column; overflow: hidden; }
   .tg-widget-head { padding: 13px 16px 10px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: space-between; }
   .tg-widget-title { font-size: 12px; font-weight: 600; color: #111827; display: flex; align-items: center; gap: 6px; }
-
-  /* ─── TABS ───────────────────────────────── */
   .tg-tabs { display: flex; gap: 2px; padding: 10px 14px 0; border-bottom: 1px solid #f3f4f6; }
   .tg-tab { padding: 7px 14px; font-size: 11px; font-weight: 600; color: #9ca3af; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.12s; white-space: nowrap; }
   .tg-tab:hover { color: #374151; }
   .tg-tab.active { color: #f97316; border-bottom-color: #f97316; }
-
-  /* ─── FILTER ─────────────────────────────── */
   .tg-filterbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #f3f4f6; flex-wrap: wrap; }
   .tg-search { display: flex; align-items: center; gap: 7px; background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 6px 11px; flex: 1; max-width: 240px; transition: border-color 0.12s; }
   .tg-search:focus-within { border-color: #f97316; background: #fff; }
@@ -33,8 +29,6 @@ const CSS = `
   .tg-search-input::placeholder { color: #9ca3af; }
   .tg-select { padding: 6px 10px; border-radius: 8px; border: 1.5px solid #e5e7eb; font-size: 12px; color: #374151; background: #fff; outline: none; font-family: inherit; cursor: pointer; }
   .tg-select:focus { border-color: #f97316; }
-
-  /* ─── LIST ───────────────────────────────── */
   .tg-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #f3f4f6; cursor: pointer; transition: background 0.1s; }
   .tg-item:last-child { border-bottom: none; }
   .tg-item:hover { background: #fafafa; }
@@ -48,8 +42,6 @@ const CSS = `
   .tg-item-jatuh { font-size: 10px; margin-top: 2px; font-weight: 500; }
 
   .tg-badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
-
-  /* ─── DETAIL PANEL ───────────────────────── */
   .tg-detail { padding: 16px; overflow-y: auto; max-height: calc(100vh - 220px); }
   .tg-detail-name { font-size: 15px; font-weight: 700; color: #111827; margin-bottom: 2px; }
   .tg-detail-sub  { font-size: 11px; color: #9ca3af; }
@@ -66,14 +58,10 @@ const CSS = `
   .tg-info-val.red    { color: #dc2626; }
   .tg-info-val.green  { color: #16a34a; }
   .tg-info-val.mono   { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
-
-  /* Nominal box */
   .tg-nominal-box { background: linear-gradient(135deg, #fff7ed, #fff); border: 1.5px solid #fed7aa; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 14px; }
   .tg-nominal-label { font-size: 10px; font-weight: 600; color: #9a3412; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
   .tg-nominal-val { font-size: 26px; font-weight: 800; color: #ea580c; font-family: 'JetBrains Mono', monospace; }
   .tg-nominal-sub { font-size: 11px; color: #9a3412; margin-top: 4px; }
-
-  /* ─── MODAL ───────────────────────────────── */
   .tg-overlay-portal { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(17,24,39,0.65) !important; backdrop-filter: blur(4px) !important; z-index: 9999 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 16px !important; box-sizing: border-box !important; animation: tgFade 0.18s ease; }
   @keyframes tgFade { from { opacity: 0; } to { opacity: 1; } }
   .tg-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 480px; max-height: 88vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.18); animation: tgSlide 0.2s cubic-bezier(0.4,0,0.2,1); }
@@ -105,8 +93,6 @@ const CSS = `
   .tg-btn.ghost   { background: #f3f4f6; color: #4b5563; }
   .tg-btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .tg-btn:hover:not(:disabled) { filter: brightness(1.04); transform: translateY(-1px); }
-
-  /* Riwayat pembayaran */
   .tg-pay-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: #f9fafb; border-radius: 8px; margin-bottom: 6px; }
   .tg-pay-label { font-size: 12px; font-weight: 500; color: #374151; }
   .tg-pay-tgl { font-size: 10px; color: #9ca3af; margin-top: 1px; }

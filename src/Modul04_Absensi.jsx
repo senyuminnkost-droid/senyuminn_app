@@ -5,8 +5,6 @@ import { useState, useEffect } from "react";
 // ============================================================
 const CSS = `
   .ab-wrap { display: flex; flex-direction: column; gap: 16px; }
-
-  /* \u2500\u2500\u2500 TOP CARDS \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
   .ab-card {
     background: #fff; border-radius: 12px; border: 1px solid #e5e7eb;
@@ -16,11 +14,7 @@ const CSS = `
   .ab-card-label { font-size: 10px; font-weight: 500; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; margin-top: 8px; }
   .ab-card-val { font-size: 22px; font-weight: 700; color: #111827; font-family: 'JetBrains Mono', monospace; }
   .ab-card-sub { font-size: 11px; color: #6b7280; margin-top: 3px; }
-
-  /* \u2500\u2500\u2500 LAYOUT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-layout { display: grid; grid-template-columns: 1fr 340px; gap: 14px; }
-
-  /* \u2500\u2500\u2500 WIDGET \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-widget {
     background: #fff; border-radius: 12px; border: 1px solid #e5e7eb;
     display: flex; flex-direction: column; overflow: hidden;
@@ -33,8 +27,6 @@ const CSS = `
   .ab-widget-action { font-size: 10px; font-weight: 500; color: #f97316; cursor: pointer; padding: 3px 8px; border-radius: 5px; }
   .ab-widget-action:hover { background: #fff7ed; }
   .ab-widget-body { padding: 14px 16px; flex: 1; }
-
-  /* \u2500\u2500\u2500 JADWAL BULAN \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-period {
     display: flex; align-items: center; gap: 8px;
     background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;
@@ -46,8 +38,6 @@ const CSS = `
     transition: all 0.12s;
   }
   .ab-period-btn:hover { background: #f3f4f6; }
-
-  /* \u2500\u2500\u2500 TABLE ABSENSI \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-table-wrap { overflow-x: auto; }
   .ab-table {
     width: 100%; border-collapse: collapse; font-size: 11px;
@@ -91,8 +81,6 @@ const CSS = `
   .ab-staff-jabatan { font-size: 9px; color: #9ca3af; }
 
   .ab-rekap-cell { font-size: 10px; font-weight: 600; color: #374151; }
-
-  /* \u2500\u2500\u2500 CLOCK-IN PANEL \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-clockin-card {
     background: linear-gradient(135deg, #fff7ed, #fff);
     border: 1.5px solid #fed7aa; border-radius: 12px; padding: 18px;
@@ -131,8 +119,6 @@ const CSS = `
   .ab-gps.valid   { color: #16a34a; }
   .ab-gps.invalid { color: #dc2626; }
   .ab-gps.loading { color: #9ca3af; }
-
-  /* \u2500\u2500\u2500 LOG CLOCKIN \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-log-item {
     display: flex; align-items: center; gap: 9px;
     padding: 8px 0; border-bottom: 1px solid #f3f4f6;
@@ -143,8 +129,6 @@ const CSS = `
   .ab-log-name { font-size: 12px; font-weight: 500; color: #1f2937; }
   .ab-log-time { font-size: 10px; color: #9ca3af; font-family: 'JetBrains Mono', monospace; }
   .ab-log-kode { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 6px; }
-
-  /* \u2500\u2500\u2500 LEMBUR INPUT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-lembur-form {
     background: #f9fafb; border-radius: 10px; padding: 12px 14px;
   }
@@ -161,14 +145,10 @@ const CSS = `
     background: linear-gradient(135deg, #f97316, #ea580c);
     color: #fff; border: none; cursor: pointer; white-space: nowrap; font-family: inherit;
   }
-
-  /* \u2500\u2500\u2500 EMPTY \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 16px; color: #9ca3af; text-align: center; gap: 6px; }
   .ab-empty-icon { font-size: 32px; opacity: 0.4; }
   .ab-empty-text { font-size: 12px; }
   .ab-empty-hint { font-size: 11px; color: #f97316; }
-
-  /* \u2500\u2500\u2500 RESPONSIVE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   @media (max-width: 1024px) {
     .ab-layout { grid-template-columns: 1fr; }
     .ab-cards { grid-template-columns: repeat(2, 1fr); }

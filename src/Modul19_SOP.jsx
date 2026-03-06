@@ -57,15 +57,11 @@ const CSS = `
   .sp-info-box { background:#f0fdf4; border:1px solid #86efac; border-radius:9px; padding:10px 14px; font-size:11px; color:#15803d; }
   .sp-warn-box { background:#fff7ed; border:1px solid #fed7aa; border-radius:9px; padding:10px 14px; font-size:11px; color:#9a3412; }
   .sp-save-bar { position:sticky; bottom:0; background:#fff; border-top:1px solid #e5e7eb; padding:12px 18px; display:flex; gap:8px; justify-content:flex-end; }
-
-  /* Modal */
   .sp-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; z-index:1000; }
   .sp-modal { background:#fff; border-radius:16px; padding:28px; width:420px; max-width:95vw; box-shadow:0 20px 60px rgba(0,0,0,.18); }
   .sp-modal-title { font-size:16px; font-weight:800; color:#111827; margin-bottom:20px; }
   .sp-modal-field { margin-bottom:14px; }
   .sp-modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
-
-  /* KPI edit input */
   .sp-kpi-input { width:120px; padding:6px 10px; border-radius:7px; border:1.5px solid #e5e7eb; font-size:12px; font-family:inherit; text-align:right; font-weight:700; color:#f97316; outline:none; }
   .sp-kpi-input:focus { border-color:#f97316; }
 

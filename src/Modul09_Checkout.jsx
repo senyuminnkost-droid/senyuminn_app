@@ -19,14 +19,10 @@ const CSS = `
   .co-widget-head { padding: 13px 16px 10px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: space-between; }
   .co-widget-title { font-size: 12px; font-weight: 600; color: #111827; display: flex; align-items: center; gap: 6px; }
   .co-widget-body { padding: 0; flex: 1; }
-
-  /* ─── TABS ───────────────────────────────── */
   .co-tabs { display: flex; gap: 2px; padding: 10px 14px 0; border-bottom: 1px solid #f3f4f6; }
   .co-tab { padding: 7px 14px; font-size: 11px; font-weight: 600; color: #9ca3af; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.12s; white-space: nowrap; }
   .co-tab:hover { color: #374151; }
   .co-tab.active { color: #f97316; border-bottom-color: #f97316; }
-
-  /* ─── PENYEWA ITEM ───────────────────────── */
   .co-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #f3f4f6; cursor: pointer; transition: background 0.1s; }
   .co-item:last-child { border-bottom: none; }
   .co-item:hover { background: #fafafa; }
@@ -40,8 +36,6 @@ const CSS = `
   .co-item-sisa { font-size: 10px; margin-top: 2px; font-weight: 600; }
 
   .co-badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
-
-  /* ─── ACTION PANEL ───────────────────────── */
   .co-panel { padding: 16px; overflow-y: auto; max-height: calc(100vh - 220px); }
   .co-panel-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
   .co-panel-avatar { width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0; background: linear-gradient(135deg, #f97316, #ea580c); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; }
@@ -64,8 +58,6 @@ const CSS = `
   .co-kontrak-dates { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #374151; font-family: 'JetBrains Mono', monospace; margin-bottom: 8px; }
   .co-progress { height: 6px; background: #f3f4f6; border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
   .co-progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #f97316, #16a34a); }
-
-  /* Action buttons */
   .co-action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
   .co-action-btn { padding: 12px; border-radius: 10px; border: 1.5px solid #e5e7eb; cursor: pointer; text-align: center; transition: all 0.15s; background: #fff; font-family: inherit; }
   .co-action-btn:hover { border-color: #f97316; background: #fff7ed; }
@@ -74,8 +66,6 @@ const CSS = `
   .co-action-btn-label { font-size: 12px; font-weight: 600; color: #374151; }
   .co-action-btn.danger .co-action-btn-label { color: #dc2626; }
   .co-action-btn-sub { font-size: 10px; color: #9ca3af; margin-top: 2px; }
-
-  /* ─── MODAL ───────────────────────────────── */
   .co-overlay-portal { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(17,24,39,0.65) !important; backdrop-filter: blur(4px) !important; z-index: 9999 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 16px !important; box-sizing: border-box !important; animation: coFade 0.18s ease; }
   @keyframes coFade { from { opacity: 0; } to { opacity: 1; } }
   .co-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.18); animation: coSlide 0.2s cubic-bezier(0.4,0,0.2,1); }
@@ -111,8 +101,6 @@ const CSS = `
   .co-btn.ghost   { background: #f3f4f6; color: #4b5563; }
   .co-btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .co-btn:hover:not(:disabled) { filter: brightness(1.04); transform: translateY(-1px); }
-
-  /* Success screen */
   .co-success { text-align: center; padding: 24px 0 16px; }
   .co-success-icon { font-size: 52px; margin-bottom: 10px; }
   .co-success-title { font-size: 17px; font-weight: 700; color: #111827; margin-bottom: 6px; }

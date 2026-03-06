@@ -12,15 +12,11 @@ const CSS = `
   .pg-card-label { font-size:10px; font-weight:500; color:#9ca3af; text-transform:uppercase; letter-spacing:.8px; margin-bottom:4px; margin-top:8px; }
   .pg-card-val { font-size:20px; font-weight:700; color:#111827; font-family:'JetBrains Mono',monospace; }
   .pg-card-sub { font-size:11px; color:#6b7280; margin-top:3px; }
-
-  /* Period bar */
   .pg-period { background:#fff; border-radius:12px; border:1px solid #e5e7eb; padding:12px 16px; display:flex; align-items:center; gap:12px; }
   .pg-period-label { font-size:12px; font-weight:600; color:#374151; }
   .pg-select { padding:6px 10px; border-radius:8px; border:1.5px solid #e5e7eb; font-size:12px; color:#374151; background:#fff; outline:none; font-family:inherit; cursor:pointer; }
   .pg-select:focus { border-color:#f97316; }
   .pg-period-badge { margin-left:auto; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:600; }
-
-  /* Table */
   .pg-widget { background:#fff; border-radius:12px; border:1px solid #e5e7eb; overflow:hidden; }
   .pg-widget-head { padding:13px 16px 10px; border-bottom:1px solid #f3f4f6; display:flex; align-items:center; justify-content:space-between; }
   .pg-widget-title { font-size:13px; font-weight:700; color:#111827; }
@@ -37,8 +33,6 @@ const CSS = `
   .pg-table tr:hover td { background:#fafafa; }
   .pg-table tr.total-row td { background:#fff7ed; font-weight:700; border-top:2px solid #fed7aa; }
   .pg-table tr.total-row td.right { color:#f97316; font-size:13px; }
-
-  /* Slip modal */
   .pg-overlay { position:fixed !important; top:0 !important; left:0 !important; width:100vw !important; height:100vh !important; background:rgba(17,24,39,.65) !important; backdrop-filter:blur(4px) !important; z-index:9999 !important; display:flex !important; align-items:center !important; justify-content:center !important; padding:16px !important; box-sizing:border-box !important; animation:pgFade .18s ease; }
   @keyframes pgFade { from{opacity:0}to{opacity:1} }
   .pg-modal { background:#fff; border-radius:16px; width:100%; max-width:540px; max-height:92vh; overflow-y:auto; box-shadow:0 24px 64px rgba(0,0,0,.18); animation:pgSlide .2s cubic-bezier(.4,0,.2,1); }
@@ -48,8 +42,6 @@ const CSS = `
   .pg-modal-close { width:28px; height:28px; border-radius:7px; background:#f3f4f6; border:none; cursor:pointer; font-size:14px; color:#6b7280; display:flex; align-items:center; justify-content:center; }
   .pg-modal-body { padding:0; }
   .pg-modal-foot { padding:12px 20px; border-top:1px solid #f3f4f6; display:flex; gap:8px; }
-
-  /* Slip gaji design */
   .pg-slip-header { background:linear-gradient(135deg,#1e293b,#0f172a); padding:20px 24px; color:#fff; }
   .pg-slip-company { font-size:16px; font-weight:800; letter-spacing:.5px; }
   .pg-slip-sub { font-size:11px; color:#94a3b8; margin-top:2px; }
@@ -75,8 +67,6 @@ const CSS = `
   .pg-slip-ttd-box { text-align:center; }
   .pg-slip-ttd-line { height:40px; border-bottom:1px solid #e5e7eb; margin-bottom:6px; }
   .pg-slip-ttd-label { font-size:10px; color:#9ca3af; }
-
-  /* Input form inline */
   .pg-inline-input { padding:5px 9px; border-radius:7px; border:1.5px solid #e5e7eb; font-size:12px; font-family:'JetBrains Mono',monospace; color:#1f2937; outline:none; background:#fff; width:110px; text-align:right; transition:border-color .12s; }
   .pg-inline-input:focus { border-color:#f97316; background:#fff7ed; }
 

@@ -20,18 +20,12 @@ const CSS = `
   .la-widget { background:#fff; border-radius:12px; border:1px solid #e5e7eb; overflow:hidden; }
   .la-widget-head { padding:13px 16px 10px; border-bottom:1px solid #f3f4f6; display:flex; align-items:center; justify-content:space-between; }
   .la-widget-title { font-size:13px; font-weight:700; color:#111827; }
-
-  /* Kalender absensi */
   .la-cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; padding:12px; }
   .la-cal-head { text-align:center; font-size:10px; font-weight:700; color:#9ca3af; padding:4px 0; }
   .la-cal-day  { min-height:42px; border-radius:7px; padding:4px; font-size:11px; cursor:default; }
   .la-cal-day.empty { background:transparent; }
   .la-cal-day.today { outline:2px solid #f97316; }
-
-  /* Kode absensi */
   .la-kode { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:6px; font-size:9px; font-weight:700; }
-
-  /* Table */
   .la-table { width:100%; border-collapse:collapse; }
   .la-table th { padding:9px 14px; font-size:10px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.8px; background:#f9fafb; text-align:left; white-space:nowrap; }
   .la-table th.center { text-align:center; }
@@ -39,12 +33,8 @@ const CSS = `
   .la-table td.center { text-align:center; }
   .la-table tr:last-child td { border-bottom:none; }
   .la-table tr:hover td { background:#fafafa; }
-
-  /* KPI bar */
   .la-kpi-bar { height:6px; background:#f3f4f6; border-radius:3px; overflow:hidden; margin-top:4px; }
   .la-kpi-fill { height:100%; border-radius:3px; transition:width .4s; }
-
-  /* Badge */
   .la-badge { display:inline-flex; align-items:center; gap:3px; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:600; }
 
   .la-btn { display:flex; align-items:center; gap:5px; padding:7px 14px; border-radius:8px; font-size:12px; font-weight:600; border:none; cursor:pointer; font-family:inherit; transition:all .15s; }
@@ -52,8 +42,6 @@ const CSS = `
   .la-btn.ghost   { background:#f3f4f6; color:#4b5563; border:1.5px solid #e5e7eb; }
 
   .la-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 16px; color:#9ca3af; text-align:center; gap:8px; }
-
-  /* Tab */
   .la-tabs { display:flex; gap:4px; background:#fff; border-radius:12px; border:1px solid #e5e7eb; padding:5px; }
   .la-tab  { flex:1; padding:"8px 12px"; border-radius:8px; text-align:center; font-size:12px; font-weight:600; cursor:pointer; color:#9ca3af; transition:all .15s; padding:8px 12px; }
   .la-tab.active { color:#fff; background:linear-gradient(135deg,#f97316,#ea580c); }

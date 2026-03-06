@@ -5,16 +5,12 @@ import { useState, useEffect, useMemo } from "react";
 // ============================================================
 const CSS = `
   .lk-wrap { display:flex; flex-direction:column; gap:16px; }
-
-  /* Cards */
   .lk-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
   .lk-card  { background:#fff; border-radius:12px; border:1px solid #e5e7eb; padding:14px 16px; position:relative; overflow:hidden; }
   .lk-card-bar { position:absolute; top:0; left:0; right:0; height:3px; }
   .lk-card-label { font-size:10px; font-weight:500; color:#9ca3af; text-transform:uppercase; letter-spacing:.8px; margin-bottom:4px; margin-top:8px; }
   .lk-card-val { font-size:17px; font-weight:700; color:#111827; font-family:'JetBrains Mono',monospace; }
   .lk-card-sub { font-size:11px; color:#6b7280; margin-top:3px; }
-
-  /* Period selector */
   .lk-period { background:#fff; border-radius:12px; border:1px solid #e5e7eb; padding:14px 16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
   .lk-period-label { font-size:12px; font-weight:600; color:#374151; white-space:nowrap; }
   .lk-period-tabs  { display:flex; gap:4px; }
@@ -24,22 +20,16 @@ const CSS = `
   .lk-select { padding:6px 10px; border-radius:8px; border:1.5px solid #e5e7eb; font-size:12px; color:#374151; background:#fff; outline:none; font-family:inherit; cursor:pointer; }
   .lk-select:focus { border-color:#f97316; }
   .lk-period-info { margin-left:auto; font-size:11px; color:#9ca3af; font-style:italic; }
-
-  /* Report tabs */
   .lk-report-tabs { display:flex; gap:0; background:#fff; border-radius:12px; border:1px solid #e5e7eb; overflow:hidden; }
   .lk-report-tab { flex:1; padding:10px 8px; font-size:11px; font-weight:600; color:#9ca3af; cursor:pointer; text-align:center; border-right:1px solid #f3f4f6; transition:all .12s; }
   .lk-report-tab:last-child { border-right:none; }
   .lk-report-tab:hover { background:#f9fafb; color:#374151; }
   .lk-report-tab.active { color:#ea580c; background:#fff7ed; }
-
-  /* Widget */
   .lk-widget { background:#fff; border-radius:12px; border:1px solid #e5e7eb; overflow:hidden; }
   .lk-widget-head { padding:14px 18px 12px; border-bottom:1px solid #f3f4f6; display:flex; align-items:center; justify-content:space-between; }
   .lk-widget-title { font-size:13px; font-weight:700; color:#111827; }
   .lk-widget-sub   { font-size:11px; color:#9ca3af; margin-top:2px; }
   .lk-widget-body  { padding:0; }
-
-  /* Report table */
   .lk-table { width:100%; border-collapse:collapse; }
   .lk-table th { padding:8px 16px; font-size:10px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.8px; background:#f9fafb; text-align:left; }
   .lk-table th.right { text-align:right; }
@@ -53,8 +43,6 @@ const CSS = `
   .lk-table tr.indent td:first-child { padding-left:32px; }
   .lk-table tr.positive td.right { color:#16a34a; }
   .lk-table tr.negative td.right { color:#dc2626; }
-
-  /* Ratio cards */
   .lk-ratio-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; padding:16px; }
   .lk-ratio-card { background:#f9fafb; border-radius:10px; padding:14px; border:1px solid #e5e7eb; text-align:center; }
   .lk-ratio-val  { font-size:22px; font-weight:800; color:#111827; font-family:'JetBrains Mono',monospace; margin-bottom:4px; }
@@ -63,14 +51,10 @@ const CSS = `
   .lk-ratio-good { color:#16a34a; }
   .lk-ratio-warn { color:#f97316; }
   .lk-ratio-bad  { color:#dc2626; }
-
-  /* PDF btn */
   .lk-pdf-btn { display:flex; align-items:center; gap:6px; padding:7px 14px; border-radius:8px; border:none; background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; box-shadow:0 2px 8px rgba(249,115,22,.25); transition:all .15s; }
   .lk-pdf-btn:hover { filter:brightness(1.05); transform:translateY(-1px); }
   .lk-csv-btn { display:flex; align-items:center; gap:6px; padding:7px 14px; border-radius:8px; border:1.5px solid #e5e7eb; background:#fff; color:#374151; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; transition:all .12s; }
   .lk-csv-btn:hover { border-color:#f97316; color:#ea580c; }
-
-  /* Chart bar */
   .lk-chart { display:flex; align-items:flex-end; gap:8px; height:120px; padding:0 16px 8px; }
   .lk-chart-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
   .lk-chart-bar-wrap { flex:1; display:flex; align-items:flex-end; gap:3px; width:100%; }

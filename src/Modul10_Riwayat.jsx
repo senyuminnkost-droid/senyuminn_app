@@ -18,8 +18,6 @@ const CSS = `
   .rw-widget { background: #fff; border-radius: 12px; border: 1px solid #e5e7eb; display: flex; flex-direction: column; overflow: hidden; }
   .rw-widget-head { padding: 13px 16px 10px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: space-between; }
   .rw-widget-title { font-size: 12px; font-weight: 600; color: #111827; display: flex; align-items: center; gap: 6px; }
-
-  /* ─── FILTER BAR ─────────────────────────── */
   .rw-filterbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #f3f4f6; flex-wrap: wrap; }
   .rw-search { display: flex; align-items: center; gap: 7px; background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 6px 11px; flex: 1; max-width: 240px; transition: border-color 0.12s; }
   .rw-search:focus-within { border-color: #f97316; background: #fff; }
@@ -29,8 +27,6 @@ const CSS = `
   .rw-select:focus { border-color: #f97316; }
   .rw-tag { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; cursor: pointer; border: 1.5px solid #e5e7eb; color: #6b7280; background: #fff; transition: all 0.12s; white-space: nowrap; }
   .rw-tag.active { background: #111827; border-color: #111827; color: #fff; font-weight: 600; }
-
-  /* ─── LIST ───────────────────────────────── */
   .rw-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #f3f4f6; cursor: pointer; transition: background 0.1s; }
   .rw-item:last-child { border-bottom: none; }
   .rw-item:hover { background: #fafafa; }
@@ -45,8 +41,6 @@ const CSS = `
   .rw-item-dur { font-size: 10px; color: #9ca3af; margin-top: 2px; }
 
   .rw-badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
-
-  /* ─── DETAIL PANEL ───────────────────────── */
   .rw-detail { padding: 16px; overflow-y: auto; max-height: calc(100vh - 220px); }
   .rw-detail-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
   .rw-detail-avatar { width: 52px; height: 52px; border-radius: 12px; flex-shrink: 0; background: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: #6b7280; }
@@ -65,8 +59,6 @@ const CSS = `
   .rw-info-val { font-size: 12px; font-weight: 600; color: #1f2937; word-break: break-word; }
   .rw-info-val.mono { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
   .rw-info-val.orange { color: #ea580c; }
-
-  /* Timeline riwayat kamar */
   .rw-timeline { position: relative; padding-left: 20px; }
   .rw-timeline::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 2px; background: #f3f4f6; }
   .rw-tl-item { position: relative; padding: 0 0 14px 14px; }
@@ -76,8 +68,6 @@ const CSS = `
   .rw-tl-item.perpanjang::before { background: #3b82f6; }
   .rw-tl-title { font-size: 12px; font-weight: 600; color: #1f2937; }
   .rw-tl-sub   { font-size: 11px; color: #9ca3af; margin-top: 2px; }
-
-  /* ─── MODAL CHECKIN ULANG ────────────────── */
   .rw-overlay-portal { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(17,24,39,0.65) !important; backdrop-filter: blur(4px) !important; z-index: 9999 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 16px !important; box-sizing: border-box !important; animation: rwFade 0.18s ease; }
   @keyframes rwFade { from { opacity: 0; } to { opacity: 1; } }
   .rw-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 480px; max-height: 88vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.18); animation: rwSlide 0.2s cubic-bezier(0.4,0,0.2,1); }

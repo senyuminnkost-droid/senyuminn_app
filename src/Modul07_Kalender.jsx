@@ -50,8 +50,6 @@ const CSS = `
   .kal-select { padding:8px 10px; border-radius:8px; border:1.5px solid #e5e7eb; font-size:13px; color:#111827; outline:none; width:100%; box-sizing:border-box; background:#fff; }
   .kal-select:focus { border-color:#f97316; }
   @media(max-width:900px){ .kal-layout{grid-template-columns:1fr} .kal-stats{grid-template-columns:repeat(2,1fr)} }
-
-  /* ── PENGAJUAN ANGGARAN ── */
   .kal-angg-bar { background:linear-gradient(135deg,#eff6ff,#dbeafe); border:1px solid #bfdbfe; border-radius:10px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
   .kal-angg-form { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:14px 16px; }
   .kal-angg-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from \"react\";
+import { useState, useEffect, useMemo } from "react";
 
 // ============================================================
 // CSS
@@ -55,7 +55,7 @@ const CSS = `
 
   /* Tab */
   .la-tabs { display:flex; gap:4px; background:#fff; border-radius:12px; border:1px solid #e5e7eb; padding:5px; }
-  .la-tab  { flex:1; padding:\"8px 12px\"; border-radius:8px; text-align:center; font-size:12px; font-weight:600; cursor:pointer; color:#9ca3af; transition:all .15s; padding:8px 12px; }
+  .la-tab  { flex:1; padding:"8px 12px"; border-radius:8px; text-align:center; font-size:12px; font-weight:600; cursor:pointer; color:#9ca3af; transition:all .15s; padding:8px 12px; }
   .la-tab.active { color:#fff; background:linear-gradient(135deg,#f97316,#ea580c); }
 
   @media(max-width:768px) { .la-cards{grid-template-columns:repeat(2,1fr)} }
@@ -63,9 +63,9 @@ const CSS = `
 
 function StyleInjector() {
   useEffect(() => {
-    const id = \"senyuminn-lapabsensi-css\";
+    const id = "senyuminn-lapabsensi-css";
     if (document.getElementById(id)) return;
-    const el = document.createElement(\"style\");
+    const el = document.createElement("style");
     el.id = id; el.textContent = CSS;
     document.head.appendChild(el);
     return () => { const e=document.getElementById(id); if(e) e.remove(); };
@@ -76,35 +76,35 @@ function StyleInjector() {
 // ============================================================
 // CONSTANTS
 // ============================================================
-const BULAN_FULL = [\"Januari\",\"Februari\",\"Maret\",\"April\",\"Mei\",\"Juni\",\"Juli\",\"Agustus\",\"September\",\"Oktober\",\"November\",\"Desember\"];
-const BULAN_SHORT = [\"Jan\",\"Feb\",\"Mar\",\"Apr\",\"Mei\",\"Jun\",\"Jul\",\"Agu\",\"Sep\",\"Okt\",\"Nov\",\"Des\"];
+const BULAN_FULL = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+const BULAN_SHORT = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
 const thisYear  = new Date().getFullYear();
 const thisMonth = new Date().getMonth() + 1;
-const padD = (n) => String(n).padStart(2,\"0\");
+const padD = (n) => String(n).padStart(2,"0");
 
 // Kode absensi lengkap
 const KODE_ABSENSI = {
-  P:   { label:\"Pagi\",              color:\"#fff\", bg:\"#3b82f6\",  short:\"P\"  },
-  M:   { label:\"Malam\",             color:\"#fff\", bg:\"#6366f1\",  short:\"M\"  },
-  SM:  { label:\"Sore/Malam\",        color:\"#fff\", bg:\"#8b5cf6\",  short:\"SM\" },
-  OFF: { label:\"Libur\",             color:\"#fff\", bg:\"#9ca3af\",  short:\"OFF\"},
-  L:   { label:\"Lembur Malam\",      color:\"#fff\", bg:\"#f97316\",  short:\"L\"  },
-  LL:  { label:\"Lembur Lebaran\",    color:\"#fff\", bg:\"#f59e0b\",  short:\"LL\" },
-  PL:  { label:\"Pagi+Lembur Malam\", color:\"#fff\", bg:\"#ea580c\",  short:\"P+L\"},
-  C:   { label:\"Cuti\",              color:\"#fff\", bg:\"#22c55e\",  short:\"C\"  },
-  IJ:  { label:\"Ijin\",              color:\"#fff\", bg:\"#06b6d4\",  short:\"IJ\" },
-  ITS: { label:\"Ijin Tidak Sah\",    color:\"#fff\", bg:\"#ef4444\",  short:\"ITS\"},
-  SKT: { label:\"Sakit\",             color:\"#fff\", bg:\"#ec4899\",  short:\"SKT\"},
-  LS:  { label:\"Lembur Tambahan\",   color:\"#fff\", bg:\"#f97316\",  short:\"LS\" },
-  IN:  { label:\"Masuk (checklist)\", color:\"#fff\", bg:\"#16a34a\",  short:\"IN\" },
+  P:   { label:"Pagi",              color:"#fff", bg:"#3b82f6",  short:"P"  },
+  M:   { label:"Malam",             color:"#fff", bg:"#6366f1",  short:"M"  },
+  SM:  { label:"Sore/Malam",        color:"#fff", bg:"#8b5cf6",  short:"SM" },
+  OFF: { label:"Libur",             color:"#fff", bg:"#9ca3af",  short:"OFF"},
+  L:   { label:"Lembur Malam",      color:"#fff", bg:"#f97316",  short:"L"  },
+  LL:  { label:"Lembur Lebaran",    color:"#fff", bg:"#f59e0b",  short:"LL" },
+  PL:  { label:"Pagi+Lembur Malam", color:"#fff", bg:"#ea580c",  short:"P+L"},
+  C:   { label:"Cuti",              color:"#fff", bg:"#22c55e",  short:"C"  },
+  IJ:  { label:"Ijin",              color:"#fff", bg:"#06b6d4",  short:"IJ" },
+  ITS: { label:"Ijin Tidak Sah",    color:"#fff", bg:"#ef4444",  short:"ITS"},
+  SKT: { label:"Sakit",             color:"#fff", bg:"#ec4899",  short:"SKT"},
+  LS:  { label:"Lembur Tambahan",   color:"#fff", bg:"#f97316",  short:"LS" },
+  IN:  { label:"Masuk (checklist)", color:"#fff", bg:"#16a34a",  short:"IN" },
 };
 
 const getInisial = (nama) => {
-  if (!nama) return \"?\";
-  const p = nama.trim().split(\" \");
+  if (!nama) return "?";
+  const p = nama.trim().split(" ");
   return (p.length>=2 ? p[0][0]+p[1][0] : nama.slice(0,2)).toUpperCase();
 };
-const AVATAR_COLORS = [\"#f97316\",\"#3b82f6\",\"#8b5cf6\",\"#16a34a\",\"#ec4899\",\"#06b6d4\"];
+const AVATAR_COLORS = ["#f97316","#3b82f6","#8b5cf6","#16a34a","#ec4899","#06b6d4"];
 const getColor = (id) => AVATAR_COLORS[(id||0) % AVATAR_COLORS.length];
 
 // Hitung rekap absensi dari data
@@ -115,13 +115,13 @@ const hitungRekap = (absensiData, karyawanId, bulan, tahun) => {
   let masuk=0, libur=0, ijin=0, sakit=0, cuti=0, lembur=0, its=0;
   entries.forEach(e=>{
     const k = e.kode;
-    if ([\"P\",\"M\",\"SM\",\"IN\"].includes(k)) masuk++;
-    if (k===\"OFF\") libur++;
-    if (k===\"IJ\")  ijin++;
-    if (k===\"SKT\") sakit++;
-    if (k===\"C\")   cuti++;
-    if ([\"L\",\"LL\",\"PL\",\"LS\"].includes(k)) lembur++;
-    if (k===\"ITS\") its++;
+    if (["P","M","SM","IN"].includes(k)) masuk++;
+    if (k==="OFF") libur++;
+    if (k==="IJ")  ijin++;
+    if (k==="SKT") sakit++;
+    if (k==="C")   cuti++;
+    if (["L","LL","PL","LS"].includes(k)) lembur++;
+    if (k==="ITS") its++;
   });
 
   const totalHariKerja = entries.length;
@@ -132,7 +132,7 @@ const hitungRekap = (absensiData, karyawanId, bulan, tahun) => {
 
 // Kalender absensi satu karyawan
 function KalenderAbsensi({ karyawanId, absensiData, bulan, tahun, onInputKode, isReadOnly }) {
-  const HARI = [\"MIN\",\"SEN\",\"SEL\",\"RAB\",\"KAM\",\"JUM\",\"SAB\"];
+  const HARI = ["MIN","SEN","SEL","RAB","KAM","JUM","SAB"];
   const daysInMonth = new Date(tahun, bulan, 0).getDate();
   const firstDay    = new Date(tahun, bulan-1, 1).getDay();
   const todayStr    = new Date().toISOString().slice(0,10);
@@ -148,10 +148,10 @@ function KalenderAbsensi({ karyawanId, absensiData, bulan, tahun, onInputKode, i
 
   return (
     <div>
-      <div style={{display:\"grid\",gridTemplateColumns:\"repeat(7,1fr)\",gap:2,padding:\"10px 12px 0\"}}>
-        {HARI.map(h=><div key={h} className=\"la-cal-head\">{h}</div>)}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,padding:"10px 12px 0"}}>
+        {HARI.map(h=><div key={h} className="la-cal-head">{h}</div>)}
       </div>
-      <div style={{display:\"grid\",gridTemplateColumns:\"repeat(7,1fr)\",gap:2,padding:\"4px 12px 12px\"}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,padding:"4px 12px 12px"}}>
         {cells.map((day,i)=>{
           if (!day) return <div key={`e-${i}`} />;
           const tgl   = `${tahun}-${padD(bulan)}-${padD(day)}`;
@@ -162,14 +162,14 @@ function KalenderAbsensi({ karyawanId, absensiData, bulan, tahun, onInputKode, i
           return (
             <div
               key={day}
-              className={`la-cal-day ${isToday?\"today\":\"\"}`}
-              style={{background:conf?conf.bg+\"22\":\"#f9fafb\",cursor:isReadOnly?\"default\":\"pointer\",border:`1px solid ${conf?conf.bg+\"44\":\"#f3f4f6\"}`}}
+              className={`la-cal-day ${isToday?"today":""}`}
+              style={{background:conf?conf.bg+"22":"#f9fafb",cursor:isReadOnly?"default":"pointer",border:`1px solid ${conf?conf.bg+"44":"#f3f4f6"}`}}
               onClick={()=>{ if (!isReadOnly) onInputKode(tgl); }}
-              title={conf ? `${conf.label}` : \"Klik untuk input\"}
+              title={conf ? `${conf.label}` : "Klik untuk input"}
             >
-              <div style={{fontSize:10,color:\"#374151\",fontWeight:isToday?700:400,marginBottom:2}}>{day}</div>
+              <div style={{fontSize:10,color:"#374151",fontWeight:isToday?700:400,marginBottom:2}}>{day}</div>
               {conf && (
-                <div className=\"la-kode\" style={{background:conf.bg,color:conf.color,width:\"auto\",padding:\"1px 4px\",borderRadius:4,fontSize:9}}>
+                <div className="la-kode" style={{background:conf.bg,color:conf.color,width:"auto",padding:"1px 4px",borderRadius:4,fontSize:9}}>
                   {conf.short}
                 </div>
               )}
@@ -191,10 +191,10 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
   } = globalData;
 
   const [periode,     setPeriode]    = useState({ tahun:thisYear, bulan:thisMonth });
-  const [activeTab,   setActiveTab]  = useState(\"rekap\");
+  const [activeTab,   setActiveTab]  = useState("rekap");
   const [selectedK,   setSelectedK]  = useState(null);
   const [showInput,   setShowInput]  = useState(null); // tanggal string
-  const [filterK,     setFilterK]    = useState(\"all\");
+  const [filterK,     setFilterK]    = useState("all");
   const setPV = (k,v) => setPeriode(p=>({...p,[k]:v}));
   const years = [thisYear-1, thisYear, thisYear+1];
 
@@ -232,28 +232,28 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
   const ModalInputKode = ({ tanggal, karyawanId, onClose }) => {
     const existing = absensiList.find(a=>a.karyawanId===karyawanId&&a.tanggal===tanggal)?.kode;
     return? (
-      <div style={{position:\"fixed\",inset:0,background:\"rgba(0,0,0,.5)\",zIndex:9999,display:\"flex\",alignItems:\"center\",justifyContent:\"center\",padding:16}} onClick={onClose}>
-        <div style={{background:\"#fff\",borderRadius:16,padding:20,width:400,maxHeight:\"80vh\",overflowY:\"auto\"}} onClick={e=>e.stopPropagation()}>
-          <div style={{fontSize:14,fontWeight:700,color:\"#111827\",marginBottom:4}}>Input Kode Absensi</div>
-          <div style={{fontSize:11,color:\"#9ca3af\",marginBottom:16}}>\ud83d\udcc5 {tanggal}</div>
-          <div style={{display:\"grid\",gridTemplateColumns:\"repeat(3,1fr)\",gap:8}}>
+      <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
+        <div style={{background:"#fff",borderRadius:16,padding:20,width:400,maxHeight:"80vh",overflowY:"auto"}} onClick={e=>e.stopPropagation()}>
+          <div style={{fontSize:14,fontWeight:700,color:"#111827",marginBottom:4}}>Input Kode Absensi</div>
+          <div style={{fontSize:11,color:"#9ca3af",marginBottom:16}}>\ud83d\udcc5 {tanggal}</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
             {Object.entries(KODE_ABSENSI).map(([kode,conf])=>(
               <div
                 key={kode}
                 onClick={()=>{ handleInputKode(tanggal,karyawanId,kode); onClose(); }}
                 style={{
-                  padding:\"9px 8px\", borderRadius:9, cursor:\"pointer\", textAlign:\"center\",
-                  background:existing===kode?conf.bg:conf.bg+\"22\",
-                  border:`1.5px solid ${existing===kode?conf.bg:conf.bg+\"55\"}`,
-                  transition:\"all .12s\"
+                  padding:"9px 8px", borderRadius:9, cursor:"pointer", textAlign:"center",
+                  background:existing===kode?conf.bg:conf.bg+"22",
+                  border:`1.5px solid ${existing===kode?conf.bg:conf.bg+"55"}`,
+                  transition:"all .12s"
                 }}
               >
-                <div style={{fontSize:13,fontWeight:700,color:existing===kode?\"#fff\":conf.bg}}>{conf.short}</div>
-                <div style={{fontSize:9,color:existing===kode?\"rgba(255,255,255,.8)\":conf.bg,marginTop:2,lineHeight:1.2}}>{conf.label}</div>
+                <div style={{fontSize:13,fontWeight:700,color:existing===kode?"#fff":conf.bg}}>{conf.short}</div>
+                <div style={{fontSize:9,color:existing===kode?"rgba(255,255,255,.8)":conf.bg,marginTop:2,lineHeight:1.2}}>{conf.label}</div>
               </div>
             ))}
           </div>
-          <button style={{marginTop:14,width:\"100%\",padding:\"9px\",borderRadius:9,background:\"#f3f4f6\",border:\"none\",fontSize:12,fontWeight:600,color:\"#6b7280\",cursor:\"pointer\"}} onClick={onClose}>
+          <button style={{marginTop:14,width:"100%",padding:"9px",borderRadius:9,background:"#f3f4f6",border:"none",fontSize:12,fontWeight:600,color:"#6b7280",cursor:"pointer"}} onClick={onClose}>
             Tutup
           </button>
         </div>
@@ -280,112 +280,112 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
   const maxTrend = Math.max(...trendData.map(t=>t.pct),1);
 
   return (
-    <div className=\"la-wrap\">
+    <div className="la-wrap">
       <StyleInjector />
 
       {/* Cards */}
-      <div className=\"la-cards\">
+      <div className="la-cards">
         {[
-          {label:\"Total Masuk\",     val:stats.totalMasuk,  color:\"#16a34a\", sub:`${BULAN_FULL[periode.bulan-1]} ${periode.tahun}`},
-          {label:\"KPI Rata-rata\",   val:`${stats.avgKPI}%`,color:\"#f97316\", sub:\"Kehadiran periode ini\"},
-          {label:\"Ijin Tidak Sah\",  val:stats.totalITS,    color:\"#ef4444\", sub:\"Potongan aktif\"},
-          {label:\"Lembur\",          val:stats.totalLembur, color:\"#3b82f6\", sub:\"Shift lembur\"},
+          {label:"Total Masuk",     val:stats.totalMasuk,  color:"#16a34a", sub:`${BULAN_FULL[periode.bulan-1]} ${periode.tahun}`},
+          {label:"KPI Rata-rata",   val:`${stats.avgKPI}%`,color:"#f97316", sub:"Kehadiran periode ini"},
+          {label:"Ijin Tidak Sah",  val:stats.totalITS,    color:"#ef4444", sub:"Potongan aktif"},
+          {label:"Lembur",          val:stats.totalLembur, color:"#3b82f6", sub:"Shift lembur"},
         ].map((c,i)=>(
-          <div key={i} className=\"la-card\">
-            <div className=\"la-card-bar\" style={{background:c.color}} />
-            <div className=\"la-card-label\">{c.label}</div>
-            <div className=\"la-card-val\" style={{color:c.color}}>{c.val}</div>
-            <div className=\"la-card-sub\">{c.sub}</div>
+          <div key={i} className="la-card">
+            <div className="la-card-bar" style={{background:c.color}} />
+            <div className="la-card-label">{c.label}</div>
+            <div className="la-card-val" style={{color:c.color}}>{c.val}</div>
+            <div className="la-card-sub">{c.sub}</div>
           </div>
         ))}
       </div>
 
       {/* Period */}
-      <div className=\"la-period\">
-        <span style={{fontSize:12,fontWeight:600,color:\"#374151\"}}>\ud83d\udcc5 Periode:</span>
-        <select className=\"la-select\" value={periode.tahun} onChange={e=>setPV(\"tahun\",parseInt(e.target.value))}>
+      <div className="la-period">
+        <span style={{fontSize:12,fontWeight:600,color:"#374151"}}>\ud83d\udcc5 Periode:</span>
+        <select className="la-select" value={periode.tahun} onChange={e=>setPV("tahun",parseInt(e.target.value))}>
           {years.map(y=><option key={y} value={y}>{y}</option>)}
         </select>
-        <select className=\"la-select\" value={periode.bulan} onChange={e=>setPV(\"bulan\",parseInt(e.target.value))}>
+        <select className="la-select" value={periode.bulan} onChange={e=>setPV("bulan",parseInt(e.target.value))}>
           {BULAN_FULL.map((b,i)=><option key={i} value={i+1}>{b}</option>)}
         </select>
-        <select className=\"la-select\" value={filterK} onChange={e=>setFilterK(e.target.value)}>
-          <option value=\"all\">Semua Karyawan</option>
+        <select className="la-select" value={filterK} onChange={e=>setFilterK(e.target.value)}>
+          <option value="all">Semua Karyawan</option>
           {aktif.map(k=><option key={k.id} value={k.id}>{k.nama}</option>)}
         </select>
-        <button className=\"la-btn ghost\" onClick={()=>alert(\"Export CSV \u2014 coming soon!\")}>\u2b07\ufe0f Export</button>
-        <button className=\"la-btn primary\" onClick={()=>alert(\"Download PDF \u2014 coming soon!\")}>\ud83d\udcc4 PDF</button>
+        <button className="la-btn ghost" onClick={()=>alert("Export CSV \u2014 coming soon!")}>\u2b07\ufe0f Export</button>
+        <button className="la-btn primary" onClick={()=>alert("Download PDF \u2014 coming soon!")}>\ud83d\udcc4 PDF</button>
       </div>
 
       {/* Tabs */}
-      <div className=\"la-tabs\">
+      <div className="la-tabs">
         {[
-          {id:\"rekap\",    label:\"\ud83d\udcca Rekap Bulanan\"},
-          {id:\"kalender\", label:\"\ud83d\udcc5 Kalender Absensi\"},
-          {id:\"kpi\",      label:\"\ud83c\udfaf KPI & Performa\"},
+          {id:"rekap",    label:"\ud83d\udcca Rekap Bulanan"},
+          {id:"kalender", label:"\ud83d\udcc5 Kalender Absensi"},
+          {id:"kpi",      label:"\ud83c\udfaf KPI & Performa"},
         ].map(t=>(
-          <div key={t.id} className={`la-tab ${activeTab===t.id?\"active\":\"\"}`} onClick={()=>setActiveTab(t.id)}>
+          <div key={t.id} className={`la-tab ${activeTab===t.id?"active":""}`} onClick={()=>setActiveTab(t.id)}>
             {t.label}
           </div>
         ))}
       </div>
 
       {/* \u2500\u2500 Tab: Rekap Bulanan */}
-      {activeTab===\"rekap\" && (
-        <div className=\"la-widget\">
-          <div className=\"la-widget-head\">
-            <div className=\"la-widget-title\">\ud83d\udcca Rekap Absensi \u2014 {BULAN_FULL[periode.bulan-1]} {periode.tahun}</div>
+      {activeTab==="rekap" && (
+        <div className="la-widget">
+          <div className="la-widget-head">
+            <div className="la-widget-title">\ud83d\udcca Rekap Absensi \u2014 {BULAN_FULL[periode.bulan-1]} {periode.tahun}</div>
           </div>
           {aktif.length === 0 ? (
-            <div className=\"la-empty\"><div style={{fontSize:32,opacity:.4}}>\ud83d\udc65</div><div style={{fontSize:13,fontWeight:600,color:\"#374151\"}}>Belum ada karyawan</div></div>
+            <div className="la-empty"><div style={{fontSize:32,opacity:.4}}>\ud83d\udc65</div><div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Belum ada karyawan</div></div>
           ) : (
-            <table className=\"la-table\">
+            <table className="la-table">
               <thead>
                 <tr>
                   <th>Karyawan</th>
-                  <th className=\"center\">Masuk</th>
-                  <th className=\"center\">Libur</th>
-                  <th className=\"center\">Cuti</th>
-                  <th className=\"center\">Ijin</th>
-                  <th className=\"center\">Sakit</th>
-                  <th className=\"center\">Lembur</th>
-                  <th className=\"center\" style={{color:\"#ef4444\"}}>ITS</th>
+                  <th className="center">Masuk</th>
+                  <th className="center">Libur</th>
+                  <th className="center">Cuti</th>
+                  <th className="center">Ijin</th>
+                  <th className="center">Sakit</th>
+                  <th className="center">Lembur</th>
+                  <th className="center" style={{color:"#ef4444"}}>ITS</th>
                   <th>KPI Absensi</th>
                 </tr>
               </thead>
               <tbody>
                 {aktif
-                  .filter(k=>filterK===\"all\"||String(k.id)===String(filterK))
+                  .filter(k=>filterK==="all"||String(k.id)===String(filterK))
                   .map(k=>{
                     const r = hitungRekap(absensiList, k.id, periode.bulan, periode.tahun);
                     return (
                       <tr key={k.id}>
                         <td>
-                          <div style={{display:\"flex\",alignItems:\"center\",gap:9}}>
-                            <div style={{width:30,height:30,borderRadius:8,background:getColor(k.id),display:\"flex\",alignItems:\"center\",justifyContent:\"center\",fontSize:11,fontWeight:700,color:\"#fff\",flexShrink:0}}>
+                          <div style={{display:"flex",alignItems:"center",gap:9}}>
+                            <div style={{width:30,height:30,borderRadius:8,background:getColor(k.id),display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:"#fff",flexShrink:0}}>
                               {getInisial(k.nama)}
                             </div>
                             <div>
-                              <div style={{fontSize:12,fontWeight:600,color:\"#1f2937\"}}>{k.nama}</div>
-                              <div style={{fontSize:10,color:\"#9ca3af\"}}>{k.jabatan}</div>
+                              <div style={{fontSize:12,fontWeight:600,color:"#1f2937"}}>{k.nama}</div>
+                              <div style={{fontSize:10,color:"#9ca3af"}}>{k.jabatan}</div>
                             </div>
                           </div>
                         </td>
-                        <td className=\"center\" style={{color:\"#16a34a\",fontWeight:700}}>{r.masuk}</td>
-                        <td className=\"center\" style={{color:\"#9ca3af\"}}>{r.libur}</td>
-                        <td className=\"center\" style={{color:\"#22c55e\"}}>{r.cuti}</td>
-                        <td className=\"center\" style={{color:\"#06b6d4\"}}>{r.ijin}</td>
-                        <td className=\"center\" style={{color:\"#ec4899\"}}>{r.sakit}</td>
-                        <td className=\"center\" style={{color:\"#f97316\",fontWeight:600}}>{r.lembur}</td>
-                        <td className=\"center\" style={{color:r.its>0?\"#ef4444\":\"#9ca3af\",fontWeight:r.its>0?700:400}}>
-                          {r.its > 0 ? `\u26a0\ufe0f ${r.its}` : \"0\"}
+                        <td className="center" style={{color:"#16a34a",fontWeight:700}}>{r.masuk}</td>
+                        <td className="center" style={{color:"#9ca3af"}}>{r.libur}</td>
+                        <td className="center" style={{color:"#22c55e"}}>{r.cuti}</td>
+                        <td className="center" style={{color:"#06b6d4"}}>{r.ijin}</td>
+                        <td className="center" style={{color:"#ec4899"}}>{r.sakit}</td>
+                        <td className="center" style={{color:"#f97316",fontWeight:600}}>{r.lembur}</td>
+                        <td className="center" style={{color:r.its>0?"#ef4444":"#9ca3af",fontWeight:r.its>0?700:400}}>
+                          {r.its > 0 ? `\u26a0\ufe0f ${r.its}` : "0"}
                         </td>
                         <td style={{minWidth:120}}>
-                          <div style={{display:\"flex\",alignItems:\"center\",gap:8}}>
-                            <div className=\"la-kpi-bar\" style={{flex:1}}>
-                              <div className=\"la-kpi-fill\" style={{width:`${r.kpiAbsensi}%`,background:r.kpiAbsensi>=90?\"#16a34a\":r.kpiAbsensi>=70?\"#f97316\":\"#ef4444\"}} />
+                          <div style={{display:"flex",alignItems:"center",gap:8}}>
+                            <div className="la-kpi-bar" style={{flex:1}}>
+                              <div className="la-kpi-fill" style={{width:`${r.kpiAbsensi}%`,background:r.kpiAbsensi>=90?"#16a34a":r.kpiAbsensi>=70?"#f97316":"#ef4444"}} />
                             </div>
-                            <span style={{fontSize:11,fontWeight:700,color:r.kpiAbsensi>=90?\"#16a34a\":r.kpiAbsensi>=70?\"#f97316\":\"#ef4444\",minWidth:32}}>
+                            <span style={{fontSize:11,fontWeight:700,color:r.kpiAbsensi>=90?"#16a34a":r.kpiAbsensi>=70?"#f97316":"#ef4444",minWidth:32}}>
                               {r.kpiAbsensi}%
                             </span>
                           </div>
@@ -400,28 +400,28 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
       )}
 
       {/* \u2500\u2500 Tab: Kalender Absensi */}
-      {activeTab===\"kalender\" && (
-        <div style={{display:\"grid\",gridTemplateColumns:aktif.length>1?\"200px 1fr\":\"1fr\",gap:14}}>
+      {activeTab==="kalender" && (
+        <div style={{display:"grid",gridTemplateColumns:aktif.length>1?"200px 1fr":"1fr",gap:14}}>
           {/* List karyawan (kalau lebih dari 1) */}
           {aktif.length > 1 && (
-            <div className=\"la-widget\">
-              <div className=\"la-widget-head\"><div className=\"la-widget-title\">\ud83d\udc65 Pilih Karyawan</div></div>
+            <div className="la-widget">
+              <div className="la-widget-head"><div className="la-widget-title">\ud83d\udc65 Pilih Karyawan</div></div>
               {aktif.map(k=>(
                 <div
                   key={k.id}
                   onClick={()=>setSelectedK(k)}
                   style={{
-                    display:\"flex\",alignItems:\"center\",gap:9,padding:\"9px 12px\",cursor:\"pointer\",borderBottom:\"1px solid #f3f4f6\",
-                    background:selectedK?.id===k.id?\"#fff7ed\":\"#fff\",
-                    borderLeft:selectedK?.id===k.id?\"3px solid #f97316\":\"3px solid transparent\",
+                    display:"flex",alignItems:"center",gap:9,padding:"9px 12px",cursor:"pointer",borderBottom:"1px solid #f3f4f6",
+                    background:selectedK?.id===k.id?"#fff7ed":"#fff",
+                    borderLeft:selectedK?.id===k.id?"3px solid #f97316":"3px solid transparent",
                   }}
                 >
-                  <div style={{width:28,height:28,borderRadius:7,background:getColor(k.id),display:\"flex\",alignItems:\"center\",justifyContent:\"center\",fontSize:11,fontWeight:700,color:\"#fff\"}}>
+                  <div style={{width:28,height:28,borderRadius:7,background:getColor(k.id),display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:"#fff"}}>
                     {getInisial(k.nama)}
                   </div>
                   <div>
-                    <div style={{fontSize:12,fontWeight:600,color:\"#1f2937\"}}>{k.nama}</div>
-                    <div style={{fontSize:10,color:\"#9ca3af\"}}>{k.shift?.split(\" \")[0]}</div>
+                    <div style={{fontSize:12,fontWeight:600,color:"#1f2937"}}>{k.nama}</div>
+                    <div style={{fontSize:10,color:"#9ca3af"}}>{k.shift?.split(" ")[0]}</div>
                   </div>
                 </div>
               ))}
@@ -429,21 +429,21 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
           )}
 
           {/* Kalender */}
-          <div className=\"la-widget\">
+          <div className="la-widget">
             {(selectedK || aktif[0]) ? (
               <>
-                <div className=\"la-widget-head\">
-                  <div className=\"la-widget-title\">
+                <div className="la-widget-head">
+                  <div className="la-widget-title">
                     \ud83d\udcc5 {(selectedK||aktif[0]).nama} \u2014 {BULAN_FULL[periode.bulan-1]} {periode.tahun}
                   </div>
-                  {!isReadOnly && <span style={{fontSize:11,color:\"#9ca3af\"}}>Klik tanggal untuk input</span>}
+                  {!isReadOnly && <span style={{fontSize:11,color:"#9ca3af"}}>Klik tanggal untuk input</span>}
                 </div>
                 {/* Legenda */}
-                <div style={{padding:\"8px 12px\",display:\"flex\",gap:6,flexWrap:\"wrap\",borderBottom:\"1px solid #f3f4f6\"}}>
+                <div style={{padding:"8px 12px",display:"flex",gap:6,flexWrap:"wrap",borderBottom:"1px solid #f3f4f6"}}>
                   {Object.entries(KODE_ABSENSI).map(([k,v])=>(
-                    <div key={k} style={{display:\"flex\",alignItems:\"center\",gap:3}}>
-                      <div style={{width:18,height:18,borderRadius:4,background:v.bg,display:\"flex\",alignItems:\"center\",justifyContent:\"center\",fontSize:8,fontWeight:700,color:\"#fff\"}}>{v.short}</div>
-                      <span style={{fontSize:9,color:\"#6b7280\"}}>{v.label}</span>
+                    <div key={k} style={{display:"flex",alignItems:"center",gap:3}}>
+                      <div style={{width:18,height:18,borderRadius:4,background:v.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:700,color:"#fff"}}>{v.short}</div>
+                      <span style={{fontSize:9,color:"#6b7280"}}>{v.label}</span>
                     </div>
                   ))}
                 </div>
@@ -457,48 +457,48 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
                 />
               </>
             ) : (
-              <div className=\"la-empty\"><div style={{fontSize:32,opacity:.4}}>\ud83d\udcc5</div><div style={{fontSize:13}}>Pilih karyawan</div></div>
+              <div className="la-empty"><div style={{fontSize:32,opacity:.4}}>\ud83d\udcc5</div><div style={{fontSize:13}}>Pilih karyawan</div></div>
             )}
           </div>
         </div>
       )}
 
       {/* \u2500\u2500 Tab: KPI & Performa */}
-      {activeTab===\"kpi\" && (
-        <div style={{display:\"grid\",gridTemplateColumns:\"1fr 1fr\",gap:14}}>
+      {activeTab==="kpi" && (
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
           {/* KPI per karyawan */}
-          <div className=\"la-widget\">
-            <div className=\"la-widget-head\">
-              <div className=\"la-widget-title\">\ud83c\udfaf KPI Absensi per Karyawan</div>
-              <span style={{fontSize:11,color:\"#9ca3af\"}}>Threshold: \u226590% = Insentif</span>
+          <div className="la-widget">
+            <div className="la-widget-head">
+              <div className="la-widget-title">\ud83c\udfaf KPI Absensi per Karyawan</div>
+              <span style={{fontSize:11,color:"#9ca3af"}}>Threshold: \u226590% = Insentif</span>
             </div>
             {aktif.length===0 ? (
-              <div className=\"la-empty\"><div style={{fontSize:28,opacity:.4}}>\ud83c\udfaf</div><div>Belum ada karyawan</div></div>
+              <div className="la-empty"><div style={{fontSize:28,opacity:.4}}>\ud83c\udfaf</div><div>Belum ada karyawan</div></div>
             ) : aktif.map(k=>{
               const r = hitungRekap(absensiList, k.id, periode.bulan, periode.tahun);
-              const kpiColor = r.kpiAbsensi>=90?\"#16a34a\":r.kpiAbsensi>=70?\"#f97316\":\"#ef4444\";
+              const kpiColor = r.kpiAbsensi>=90?"#16a34a":r.kpiAbsensi>=70?"#f97316":"#ef4444";
               const lulus = r.kpiAbsensi >= 90;
               return (
-                <div key={k.id} style={{padding:\"12px 14px\",borderBottom:\"1px solid #f9fafb\"}}>
-                  <div style={{display:\"flex\",justifyContent:\"space-between\",alignItems:\"center\",marginBottom:6}}>
-                    <div style={{display:\"flex\",alignItems:\"center\",gap:8}}>
-                      <div style={{width:28,height:28,borderRadius:7,background:getColor(k.id),display:\"flex\",alignItems:\"center\",justifyContent:\"center\",fontSize:11,fontWeight:700,color:\"#fff\"}}>
+                <div key={k.id} style={{padding:"12px 14px",borderBottom:"1px solid #f9fafb"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8}}>
+                      <div style={{width:28,height:28,borderRadius:7,background:getColor(k.id),display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:"#fff"}}>
                         {getInisial(k.nama)}
                       </div>
                       <div>
-                        <div style={{fontSize:12,fontWeight:600,color:\"#1f2937\"}}>{k.nama}</div>
-                        <div style={{fontSize:10,color:\"#9ca3af\"}}>{r.masuk} masuk \u00b7 {r.its} ITS</div>
+                        <div style={{fontSize:12,fontWeight:600,color:"#1f2937"}}>{k.nama}</div>
+                        <div style={{fontSize:10,color:"#9ca3af"}}>{r.masuk} masuk \u00b7 {r.its} ITS</div>
                       </div>
                     </div>
-                    <div style={{textAlign:\"right\"}}>
+                    <div style={{textAlign:"right"}}>
                       <div style={{fontSize:16,fontWeight:800,color:kpiColor}}>{r.kpiAbsensi}%</div>
-                      <span className=\"la-badge\" style={{color:lulus?\"#16a34a\":\"#dc2626\",background:lulus?\"#dcfce7\":\"#fee2e2\"}}>
-                        {lulus?\"\u2705 Insentif\":\"\u2715 Tidak\"}
+                      <span className="la-badge" style={{color:lulus?"#16a34a":"#dc2626",background:lulus?"#dcfce7":"#fee2e2"}}>
+                        {lulus?"\u2705 Insentif":"\u2715 Tidak"}
                       </span>
                     </div>
                   </div>
-                  <div className=\"la-kpi-bar\">
-                    <div className=\"la-kpi-fill\" style={{width:`${r.kpiAbsensi}%`,background:kpiColor}} />
+                  <div className="la-kpi-bar">
+                    <div className="la-kpi-fill" style={{width:`${r.kpiAbsensi}%`,background:kpiColor}} />
                   </div>
                 </div>
               );
@@ -506,34 +506,34 @@ export default function LaporanAbsensi({ user, globalData = {} }) {
           </div>
 
           {/* Trend 6 bulan */}
-          <div className=\"la-widget\">
-            <div className=\"la-widget-head\">
-              <div className=\"la-widget-title\">\ud83d\udcc8 Trend Kehadiran 6 Bulan</div>
+          <div className="la-widget">
+            <div className="la-widget-head">
+              <div className="la-widget-title">\ud83d\udcc8 Trend Kehadiran 6 Bulan</div>
             </div>
-            <div style={{padding:\"16px 16px 8px\"}}>
-              <div style={{display:\"flex\",alignItems:\"flex-end\",gap:8,height:100}}>
+            <div style={{padding:"16px 16px 8px"}}>
+              <div style={{display:"flex",alignItems:"flex-end",gap:8,height:100}}>
                 {trendData.map((t,i)=>(
-                  <div key={i} style={{flex:1,display:\"flex\",flexDirection:\"column\",alignItems:\"center\",gap:4}}>
-                    <div style={{fontSize:9,color:\"#374151\",fontWeight:600}}>{t.pct}%</div>
+                  <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
+                    <div style={{fontSize:9,color:"#374151",fontWeight:600}}>{t.pct}%</div>
                     <div style={{
-                      width:\"100%\",borderRadius:\"4px 4px 0 0\",
+                      width:"100%",borderRadius:"4px 4px 0 0",
                       height:`${Math.max(4,(t.pct/maxTrend)*80)}px`,
-                      background:t.pct>=90?\"#16a34a\":t.pct>=70?\"#f97316\":\"#ef4444\",
-                      transition:\"height .4s\"
+                      background:t.pct>=90?"#16a34a":t.pct>=70?"#f97316":"#ef4444",
+                      transition:"height .4s"
                     }} />
-                    <div style={{fontSize:9,color:\"#9ca3af\",fontWeight:600}}>{t.label}</div>
+                    <div style={{fontSize:9,color:"#9ca3af",fontWeight:600}}>{t.label}</div>
                   </div>
                 ))}
               </div>
             </div>
             {/* Legenda kode absensi */}
-            <div style={{padding:\"10px 14px\",borderTop:\"1px solid #f3f4f6\"}}>
-              <div style={{fontSize:10,fontWeight:700,color:\"#9ca3af\",textTransform:\"uppercase\",letterSpacing:.8,marginBottom:8}}>Legenda Kode</div>
-              <div style={{display:\"grid\",gridTemplateColumns:\"repeat(3,1fr)\",gap:4}}>
+            <div style={{padding:"10px 14px",borderTop:"1px solid #f3f4f6"}}>
+              <div style={{fontSize:10,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",letterSpacing:.8,marginBottom:8}}>Legenda Kode</div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:4}}>
                 {Object.entries(KODE_ABSENSI).map(([k,v])=>(
-                  <div key={k} style={{display:\"flex\",alignItems:\"center\",gap:5,padding:\"3px 0\"}}>
-                    <div style={{width:20,height:20,borderRadius:5,background:v.bg,display:\"flex\",alignItems:\"center\",justifyContent:\"center\",fontSize:8,fontWeight:700,color:\"#fff\",flexShrink:0}}>{v.short}</div>
-                    <span style={{fontSize:10,color:\"#6b7280\"}}>{v.label}</span>
+                  <div key={k} style={{display:"flex",alignItems:"center",gap:5,padding:"3px 0"}}>
+                    <div style={{width:20,height:20,borderRadius:5,background:v.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:700,color:"#fff",flexShrink:0}}>{v.short}</div>
+                    <span style={{fontSize:10,color:"#6b7280"}}>{v.label}</span>
                   </div>
                 ))}
               </div>

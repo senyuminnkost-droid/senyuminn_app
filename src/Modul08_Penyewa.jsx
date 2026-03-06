@@ -1,4 +1,4 @@
-import { useState, useEffect } from \"react\";
+import { useState, useEffect } from "react";
 
 // ============================================================
 // CSS
@@ -152,9 +152,9 @@ const CSS = `
 
 function StyleInjector() {
   useEffect(() => {
-    const id = \"senyuminn-penyewa-css\";
+    const id = "senyuminn-penyewa-css";
     if (document.getElementById(id)) return;
-    const el = document.createElement(\"style\");
+    const el = document.createElement("style");
     el.id = id; el.textContent = CSS;
     document.head.appendChild(el);
     return () => { const e = document.getElementById(id); if (e) e.remove(); };
@@ -165,17 +165,17 @@ function StyleInjector() {
 // ============================================================
 // HELPERS
 // ============================================================
-const padD = (n) => String(n).padStart(2, \"0\");
+const padD = (n) => String(n).padStart(2, "0");
 const todayStr = (() => { const d = new Date(); return `${d.getFullYear()}-${padD(d.getMonth()+1)}-${padD(d.getDate())}`; })();
-const fmtRp = (n) => n ? \"Rp \" + Number(n).toLocaleString(\"id-ID\") : \"\u2014\";
+const fmtRp = (n) => n ? "Rp " + Number(n).toLocaleString("id-ID") : "\u2014";
 const hariSisa = (tgl) => tgl ? Math.ceil((new Date(tgl) - new Date()) / 86400000) : null;
 const progressKontrak = (mulai, selesai) => {
   if (!mulai || !selesai) return 0;
   return Math.min(100, Math.max(0, Math.round(((new Date() - new Date(mulai)) / (new Date(selesai) - new Date(mulai))) * 100)));
 };
 const getInisial = (nama) => {
-  if (!nama) return \"?\";
-  const p = nama.trim().split(\" \");
+  if (!nama) return "?";
+  const p = nama.trim().split(" ");
   return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : nama.slice(0,2).toUpperCase();
 };
 const addMonths = (dateStr, n) => {
@@ -187,7 +187,7 @@ const addMonths = (dateStr, n) => {
 // ============================================================
 // CHECKIN MODAL \u2014 3 STEPS
 // ============================================================
-const STEPS = [\"Data Penyewa\", \"Kamar & Kontrak\", \"Konfirmasi\"];
+const STEPS = ["Data Penyewa", "Kamar & Kontrak", "Konfirmasi"];
 
 function CheckinModal({ kamarList, onClose, onCheckin }) {
   const [step, setStep] = useState(0);
@@ -196,31 +196,31 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
 
   const [form, setForm] = useState({
     // Step 1
-    nama: \"\", nik: \"\", jenisKelamin: \"L\", tglLahir: \"\",
-    noHP: \"\", noHPDarurat: \"\", namaDarurat: \"\",
-    alamat: \"\", pekerjaan: \"\",
-    partner1: \"\", partner2: \"\",
+    nama: "", nik: "", jenisKelamin: "L", tglLahir: "",
+    noHP: "", noHPDarurat: "", namaDarurat: "",
+    alamat: "", pekerjaan: "",
+    partner1: "", partner2: "",
     // Step 2
-    kamarId: \"\", durasi: \"6\", kontrakMulai: todayStr, kontrakSelesai: \"\",
+    kamarId: "", durasi: "6", kontrakMulai: todayStr, kontrakSelesai: "",
   });
 
   const set = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
 
   const handleKamar = (id) => {
-    set(\"kamarId\", id);
+    set("kamarId", id);
   };
   const handleDurasi = (dur) => {
-    set(\"durasi\", dur);
-    if (form.kontrakMulai) set(\"kontrakSelesai\", addMonths(form.kontrakMulai, dur));
+    set("durasi", dur);
+    if (form.kontrakMulai) set("kontrakSelesai", addMonths(form.kontrakMulai, dur));
   };
   const handleMulai = (tgl) => {
-    set(\"kontrakMulai\", tgl);
-    if (form.durasi) set(\"kontrakSelesai\", addMonths(tgl, form.durasi));
+    set("kontrakMulai", tgl);
+    if (form.durasi) set("kontrakSelesai", addMonths(tgl, form.durasi));
   };
 
   useEffect(() => {
     if (form.kontrakMulai && form.durasi)
-      set(\"kontrakSelesai\", addMonths(form.kontrakMulai, form.durasi));
+      set("kontrakSelesai", addMonths(form.kontrakMulai, form.durasi));
   }, []);
 
   const kamarDipilih = kamarList.find(k => k.id === form.kamarId);
@@ -234,29 +234,29 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
       partner: [form.partner1, form.partner2].filter(Boolean),
       ktpFile: ktpFile?.name || null,
       tglCheckin: todayStr,
-      status: \"aktif\",
+      status: "aktif",
     };
     onCheckin(data);
     setDone(true);
   };
 
   if (done) return (
-    <div className=\"py-overlay\" onClick={onClose}>
-      <div className=\"py-modal\" onClick={e => e.stopPropagation()} style={{ maxWidth: 440 }}>
-        <div className=\"py-modal-body\">
-          <div className=\"py-success\">
-            <div className=\"py-success-icon\">\ud83c\udf89</div>
-            <div className=\"py-success-title\">Check-in Berhasil!</div>
-            <div className=\"py-success-sub\">
+    <div className="py-overlay" onClick={onClose}>
+      <div className="py-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 440 }}>
+        <div className="py-modal-body">
+          <div className="py-success">
+            <div className="py-success-icon">\ud83c\udf89</div>
+            <div className="py-success-title">Check-in Berhasil!</div>
+            <div className="py-success-sub">
               <b>{form.nama}</b> telah check-in di Kamar {form.kamarId}.<br />
               Status kamar diperbarui \u2192 <b>Terisi</b>.<br />
               Tagihan pertama telah dibuat.
             </div>
-            <div style={{ display: \"flex\", flexDirection: \"column\", gap: 8, width: \"100%\", maxWidth: 300, margin: \"0 auto\" }}>
-              <button className=\"py-btn primary\" onClick={() => alert(\"Generate PDF Surat Perjanjian...\")}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, width: "100%", maxWidth: 300, margin: "0 auto" }}>
+              <button className="py-btn primary" onClick={() => alert("Generate PDF Surat Perjanjian...")}>
                 \ud83d\udcc4 Download Surat Perjanjian
               </button>
-              <button className=\"py-btn ghost\" onClick={onClose}>Tutup</button>
+              <button className="py-btn ghost" onClick={onClose}>Tutup</button>
             </div>
           </div>
         </div>
@@ -265,23 +265,23 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
   );
 
   return (
-    <div className=\"py-overlay\" onClick={onClose}>
-      <div className=\"py-modal\" onClick={e => e.stopPropagation()}>
-        <div className=\"py-modal-head\">
-          <div className=\"py-modal-title\">\ud83d\udd11 Check-in Penyewa Baru</div>
-          <button className=\"py-modal-close\" onClick={onClose}>\u2715</button>
+    <div className="py-overlay" onClick={onClose}>
+      <div className="py-modal" onClick={e => e.stopPropagation()}>
+        <div className="py-modal-head">
+          <div className="py-modal-title">\ud83d\udd11 Check-in Penyewa Baru</div>
+          <button className="py-modal-close" onClick={onClose}>\u2715</button>
         </div>
-        <div className=\"py-modal-body\">
+        <div className="py-modal-body">
 
           {/* Steps indicator */}
-          <div className=\"py-steps\">
+          <div className="py-steps">
             {STEPS.map((s, i) => (
-              <div key={i} className=\"py-step\" style={{ flex: i < STEPS.length-1 ? \"1\" : \"0 0 auto\" }}>
-                <div className={`py-step-num ${i < step ? \"done\" : i === step ? \"active\" : \"idle\"}`}>
-                  {i < step ? \"\u2713\" : i + 1}
+              <div key={i} className="py-step" style={{ flex: i < STEPS.length-1 ? "1" : "0 0 auto" }}>
+                <div className={`py-step-num ${i < step ? "done" : i === step ? "active" : "idle"}`}>
+                  {i < step ? "\u2713" : i + 1}
                 </div>
-                <div className={`py-step-label ${i === step ? \"active\" : \"\"}`}>{s}</div>
-                {i < STEPS.length - 1 && <div className={`py-step-line ${i < step ? \"done\" : \"\"}`} />}
+                <div className={`py-step-label ${i === step ? "active" : ""}`}>{s}</div>
+                {i < STEPS.length - 1 && <div className={`py-step-line ${i < step ? "done" : ""}`} />}
               </div>
             ))}
           </div>
@@ -289,81 +289,81 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
           {/* \u2500\u2500 STEP 0: Data Penyewa \u2500\u2500 */}
           {step === 0 && (
             <div>
-              <div className=\"py-divider\">Identitas</div>
-              <div className=\"py-field\">
-                <label className=\"py-field-label\">Nama Lengkap <span className=\"py-field-req\">*</span></label>
-                <input className=\"py-input\" placeholder=\"Sesuai KTP\" value={form.nama} onChange={e => set(\"nama\", e.target.value)} />
+              <div className="py-divider">Identitas</div>
+              <div className="py-field">
+                <label className="py-field-label">Nama Lengkap <span className="py-field-req">*</span></label>
+                <input className="py-input" placeholder="Sesuai KTP" value={form.nama} onChange={e => set("nama", e.target.value)} />
               </div>
-              <div className=\"py-input-row\">
-                <div className=\"py-field\">
-                  <label className=\"py-field-label\">NIK / No. KTP <span className=\"py-field-req\">*</span></label>
-                  <input className=\"py-input\" placeholder=\"16 digit NIK\" maxLength={16} value={form.nik} onChange={e => set(\"nik\", e.target.value)} />
+              <div className="py-input-row">
+                <div className="py-field">
+                  <label className="py-field-label">NIK / No. KTP <span className="py-field-req">*</span></label>
+                  <input className="py-input" placeholder="16 digit NIK" maxLength={16} value={form.nik} onChange={e => set("nik", e.target.value)} />
                 </div>
-                <div className=\"py-field\">
-                  <label className=\"py-field-label\">Jenis Kelamin</label>
-                  <select className=\"py-input\" value={form.jenisKelamin} onChange={e => set(\"jenisKelamin\", e.target.value)}>
-                    <option value=\"L\">Laki-laki</option>
-                    <option value=\"P\">Perempuan</option>
+                <div className="py-field">
+                  <label className="py-field-label">Jenis Kelamin</label>
+                  <select className="py-input" value={form.jenisKelamin} onChange={e => set("jenisKelamin", e.target.value)}>
+                    <option value="L">Laki-laki</option>
+                    <option value="P">Perempuan</option>
                   </select>
                 </div>
               </div>
-              <div className=\"py-input-row\">
-                <div className=\"py-field\">
-                  <label className=\"py-field-label\">Tanggal Lahir <span className=\"py-field-req\">*</span></label>
-                  <input type=\"date\" className=\"py-input\" value={form.tglLahir} onChange={e => set(\"tglLahir\", e.target.value)} />
+              <div className="py-input-row">
+                <div className="py-field">
+                  <label className="py-field-label">Tanggal Lahir <span className="py-field-req">*</span></label>
+                  <input type="date" className="py-input" value={form.tglLahir} onChange={e => set("tglLahir", e.target.value)} />
                 </div>
-                <div className=\"py-field\">
-                  <label className=\"py-field-label\">Pekerjaan / Instansi</label>
-                  <input className=\"py-input\" placeholder=\"Mahasiswa, Karyawan...\" value={form.pekerjaan} onChange={e => set(\"pekerjaan\", e.target.value)} />
-                </div>
-              </div>
-              <div className=\"py-field\">
-                <label className=\"py-field-label\">Alamat Lengkap <span className=\"py-field-req\">*</span></label>
-                <textarea className=\"py-input\" rows={2} placeholder=\"Jl. ..., Kelurahan, Kecamatan, Kota\" value={form.alamat} onChange={e => set(\"alamat\", e.target.value)} style={{ resize: \"none\" }} />
-              </div>
-
-              <div className=\"py-divider\">Kontak</div>
-              <div className=\"py-input-row\">
-                <div className=\"py-field\">
-                  <label className=\"py-field-label\">No. HP Penyewa <span className=\"py-field-req\">*</span></label>
-                  <input className=\"py-input\" placeholder=\"08xx-xxxx-xxxx\" value={form.noHP} onChange={e => set(\"noHP\", e.target.value)} />
-                </div>
-                <div className=\"py-field\">
-                  <label className=\"py-field-label\">No. HP Darurat</label>
-                  <input className=\"py-input\" placeholder=\"08xx-xxxx-xxxx\" value={form.noHPDarurat} onChange={e => set(\"noHPDarurat\", e.target.value)} />
+                <div className="py-field">
+                  <label className="py-field-label">Pekerjaan / Instansi</label>
+                  <input className="py-input" placeholder="Mahasiswa, Karyawan..." value={form.pekerjaan} onChange={e => set("pekerjaan", e.target.value)} />
                 </div>
               </div>
-              <div className=\"py-field\">
-                <label className=\"py-field-label\">Nama Kontak Darurat</label>
-                <input className=\"py-input\" placeholder=\"Nama orang tua / keluarga\" value={form.namaDarurat} onChange={e => set(\"namaDarurat\", e.target.value)} />
+              <div className="py-field">
+                <label className="py-field-label">Alamat Lengkap <span className="py-field-req">*</span></label>
+                <textarea className="py-input" rows={2} placeholder="Jl. ..., Kelurahan, Kecamatan, Kota" value={form.alamat} onChange={e => set("alamat", e.target.value)} style={{ resize: "none" }} />
               </div>
 
-              <div className=\"py-divider\">Foto KTP</div>
+              <div className="py-divider">Kontak</div>
+              <div className="py-input-row">
+                <div className="py-field">
+                  <label className="py-field-label">No. HP Penyewa <span className="py-field-req">*</span></label>
+                  <input className="py-input" placeholder="08xx-xxxx-xxxx" value={form.noHP} onChange={e => set("noHP", e.target.value)} />
+                </div>
+                <div className="py-field">
+                  <label className="py-field-label">No. HP Darurat</label>
+                  <input className="py-input" placeholder="08xx-xxxx-xxxx" value={form.noHPDarurat} onChange={e => set("noHPDarurat", e.target.value)} />
+                </div>
+              </div>
+              <div className="py-field">
+                <label className="py-field-label">Nama Kontak Darurat</label>
+                <input className="py-input" placeholder="Nama orang tua / keluarga" value={form.namaDarurat} onChange={e => set("namaDarurat", e.target.value)} />
+              </div>
+
+              <div className="py-divider">Foto KTP</div>
               <div
-                className={`py-ktp-upload ${ktpFile ? \"has-file\" : \"\"}`}
-                onClick={() => document.getElementById(\"ktp-input\").click()}
+                className={`py-ktp-upload ${ktpFile ? "has-file" : ""}`}
+                onClick={() => document.getElementById("ktp-input").click()}
               >
-                <input id=\"ktp-input\" type=\"file\" accept=\"image/*,.pdf\" style={{ display: \"none\" }} onChange={e => setKtpFile(e.target.files[0])} />
+                <input id="ktp-input" type="file" accept="image/*,.pdf" style={{ display: "none" }} onChange={e => setKtpFile(e.target.files[0])} />
                 {ktpFile ? (
-                  <div style={{ fontSize: 13, color: \"#15803d\", fontWeight: 600 }}>\u2705 {ktpFile.name}</div>
+                  <div style={{ fontSize: 13, color: "#15803d", fontWeight: 600 }}>\u2705 {ktpFile.name}</div>
                 ) : (
                   <div>
                     <div style={{ fontSize: 24, marginBottom: 6 }}>\ud83e\udeaa</div>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: \"#6b7280\" }}>Klik untuk upload foto KTP</div>
-                    <div style={{ fontSize: 10, color: \"#9ca3af\", marginTop: 2 }}>JPG, PNG, atau PDF</div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "#6b7280" }}>Klik untuk upload foto KTP</div>
+                    <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 2 }}>JPG, PNG, atau PDF</div>
                   </div>
                 )}
               </div>
 
-              <div className=\"py-divider\">Partner (maks 2)</div>
-              <div className=\"py-input-row\">
-                <div className=\"py-field\">
-                  <label className=\"py-field-label\">Partner 1</label>
-                  <input className=\"py-input\" placeholder=\"Nama partner 1\" value={form.partner1} onChange={e => set(\"partner1\", e.target.value)} />
+              <div className="py-divider">Partner (maks 2)</div>
+              <div className="py-input-row">
+                <div className="py-field">
+                  <label className="py-field-label">Partner 1</label>
+                  <input className="py-input" placeholder="Nama partner 1" value={form.partner1} onChange={e => set("partner1", e.target.value)} />
                 </div>
-                <div className=\"py-field\">
-                  <label className=\"py-field-label\">Partner 2</label>
-                  <input className=\"py-input\" placeholder=\"Nama partner 2\" value={form.partner2} onChange={e => set(\"partner2\", e.target.value)} />
+                <div className="py-field">
+                  <label className="py-field-label">Partner 2</label>
+                  <input className="py-input" placeholder="Nama partner 2" value={form.partner2} onChange={e => set("partner2", e.target.value)} />
                 </div>
               </div>
             </div>
@@ -372,51 +372,51 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
           {/* \u2500\u2500 STEP 1: Kamar & Kontrak \u2500\u2500 */}
           {step === 1 && (
             <div>
-              <div className=\"py-divider\">Pilih Kamar</div>
+              <div className="py-divider">Pilih Kamar</div>
               {kamarList.length === 0 ? (
-                <div style={{ fontSize: 12, color: \"#9ca3af\", padding: \"12px 0\" }}>Belum ada data kamar \u2014 tambah di Pengaturan \u2192 Profil Kost</div>
+                <div style={{ fontSize: 12, color: "#9ca3af", padding: "12px 0" }}>Belum ada data kamar \u2014 tambah di Pengaturan \u2192 Profil Kost</div>
               ) : (
-                <div className=\"py-kamar-grid\">
+                <div className="py-kamar-grid">
                   {kamarList.map(k => {
-                    const avail = k.status === \"tersedia\" || k.status === \"booked\";
+                    const avail = k.status === "tersedia" || k.status === "booked";
                     return (
                       <div
                         key={k.id}
-                        className={`py-kamar-opt ${form.kamarId === k.id ? \"selected\" : \"\"} ${!avail ? \"unavailable\" : \"\"}`}
+                        className={`py-kamar-opt ${form.kamarId === k.id ? "selected" : ""} ${!avail ? "unavailable" : ""}`}
                         onClick={() => avail && handleKamar(k.id)}
                         title={!avail ? `Status: ${k.status}` : `Kamar ${k.id}`}
                       >
-                        <div className=\"py-kamar-num\">K{padD(k.id)}</div>
-                        <div className=\"py-kamar-tipe\">{k.tipe}</div>
-                        <div className=\"py-kamar-harga\">{fmtRp(k.harga)}</div>
+                        <div className="py-kamar-num">K{padD(k.id)}</div>
+                        <div className="py-kamar-tipe">{k.tipe}</div>
+                        <div className="py-kamar-harga">{fmtRp(k.harga)}</div>
                       </div>
                     );
                   })}
                 </div>
               )}
               {kamarDipilih && (
-                <div style={{ marginTop: 8, padding: \"8px 12px\", background: \"#fff7ed\", borderRadius: 8, fontSize: 12, color: \"#92400e\", fontWeight: 500 }}>
+                <div style={{ marginTop: 8, padding: "8px 12px", background: "#fff7ed", borderRadius: 8, fontSize: 12, color: "#92400e", fontWeight: 500 }}>
                   \u2705 Kamar {kamarDipilih.id} \u2014 {kamarDipilih.tipe} \u00b7 {fmtRp(kamarDipilih.harga)}/bulan
                 </div>
               )}
 
-              <div className=\"py-divider\">Durasi Kontrak</div>
-              <div className=\"py-input-row\">
-                <div className=\"py-field\">
-                  <label className=\"py-field-label\">Mulai Kontrak <span className=\"py-field-req\">*</span></label>
-                  <input type=\"date\" className=\"py-input\" value={form.kontrakMulai} onChange={e => handleMulai(e.target.value)} />
+              <div className="py-divider">Durasi Kontrak</div>
+              <div className="py-input-row">
+                <div className="py-field">
+                  <label className="py-field-label">Mulai Kontrak <span className="py-field-req">*</span></label>
+                  <input type="date" className="py-input" value={form.kontrakMulai} onChange={e => handleMulai(e.target.value)} />
                 </div>
-                <div className=\"py-field\">
-                  <label className=\"py-field-label\">Durasi</label>
-                  <select className=\"py-input\" value={form.durasi} onChange={e => handleDurasi(e.target.value)}>
-                    <option value=\"3\">3 bulan</option>
-                    <option value=\"6\">6 bulan</option>
-                    <option value=\"12\">12 bulan</option>
+                <div className="py-field">
+                  <label className="py-field-label">Durasi</label>
+                  <select className="py-input" value={form.durasi} onChange={e => handleDurasi(e.target.value)}>
+                    <option value="3">3 bulan</option>
+                    <option value="6">6 bulan</option>
+                    <option value="12">12 bulan</option>
                   </select>
                 </div>
               </div>
               {form.kontrakSelesai && (
-                <div style={{ background: \"#f0fdf4\", border: \"1px solid #86efac\", borderRadius: 8, padding: \"9px 12px\", fontSize: 12, color: \"#15803d\", fontWeight: 500 }}>
+                <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 8, padding: "9px 12px", fontSize: 12, color: "#15803d", fontWeight: 500 }}>
                   \u2705 Kontrak berakhir: <b>{form.kontrakSelesai}</b>
                 </div>
               )}
@@ -426,28 +426,28 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
           {/* \u2500\u2500 STEP 2: Konfirmasi \u2500\u2500 */}
           {step === 2 && (
             <div>
-              <div style={{ marginBottom: 14, padding: \"10px 14px\", background: \"#f0fdf4\", border: \"1px solid #86efac\", borderRadius: 10, fontSize: 12, color: \"#15803d\", fontWeight: 500 }}>
+              <div style={{ marginBottom: 14, padding: "10px 14px", background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 10, fontSize: 12, color: "#15803d", fontWeight: 500 }}>
                 \u2705 Periksa kembali data sebelum konfirmasi. Setelah disimpan, kamar akan langsung berstatus <b>Terisi</b> dan tagihan pertama dibuat.
               </div>
-              <div className=\"py-summary\">
+              <div className="py-summary">
                 {[
-                  { k: \"Nama\",          v: form.nama },
-                  { k: \"NIK\",           v: form.nik || \"\u2014\" },
-                  { k: \"Jenis Kelamin\", v: form.jenisKelamin === \"L\" ? \"Laki-laki\" : \"Perempuan\" },
-                  { k: \"Tanggal Lahir\", v: form.tglLahir || \"\u2014\" },
-                  { k: \"No. HP\",        v: form.noHP },
-                  { k: \"Kontak Darurat\",v: `${form.namaDarurat || \"\u2014\"} (${form.noHPDarurat || \"\u2014\"})` },
-                  { k: \"Alamat\",        v: form.alamat },
-                  { k: \"Pekerjaan\",     v: form.pekerjaan || \"\u2014\" },
-                  { k: \"Partner\",       v: [form.partner1, form.partner2].filter(Boolean).join(\", \") || \"\u2014\" },
-                  { k: \"Kamar\",         v: `Kamar ${form.kamarId} \u2014 ${kamarDipilih?.tipe || \"\"}`, cls: \"orange\" },
-                  { k: \"Kontrak\",       v: `${form.kontrakMulai} \u2192 ${form.kontrakSelesai} (${form.durasi} bln)`, cls: \"orange\" },
-                  { k: \"Tagihan/bln\",   v: fmtRp(kamarDipilih?.harga), cls: \"orange\" },
-                  { k: \"Foto KTP\",      v: ktpFile ? `\u2705 ${ktpFile.name}` : \"Belum diupload\" },
+                  { k: "Nama",          v: form.nama },
+                  { k: "NIK",           v: form.nik || "\u2014" },
+                  { k: "Jenis Kelamin", v: form.jenisKelamin === "L" ? "Laki-laki" : "Perempuan" },
+                  { k: "Tanggal Lahir", v: form.tglLahir || "\u2014" },
+                  { k: "No. HP",        v: form.noHP },
+                  { k: "Kontak Darurat",v: `${form.namaDarurat || "\u2014"} (${form.noHPDarurat || "\u2014"})` },
+                  { k: "Alamat",        v: form.alamat },
+                  { k: "Pekerjaan",     v: form.pekerjaan || "\u2014" },
+                  { k: "Partner",       v: [form.partner1, form.partner2].filter(Boolean).join(", ") || "\u2014" },
+                  { k: "Kamar",         v: `Kamar ${form.kamarId} \u2014 ${kamarDipilih?.tipe || ""}`, cls: "orange" },
+                  { k: "Kontrak",       v: `${form.kontrakMulai} \u2192 ${form.kontrakSelesai} (${form.durasi} bln)`, cls: "orange" },
+                  { k: "Tagihan/bln",   v: fmtRp(kamarDipilih?.harga), cls: "orange" },
+                  { k: "Foto KTP",      v: ktpFile ? `\u2705 ${ktpFile.name}` : "Belum diupload" },
                 ].map((r, i) => (
-                  <div key={i} className=\"py-summary-row\">
-                    <span className=\"py-summary-key\">{r.k}</span>
-                    <span className={`py-summary-val ${r.cls || \"\"}`} style={{ textAlign: \"right\", maxWidth: \"60%\" }}>{r.v}</span>
+                  <div key={i} className="py-summary-row">
+                    <span className="py-summary-key">{r.k}</span>
+                    <span className={`py-summary-val ${r.cls || ""}`} style={{ textAlign: "right", maxWidth: "60%" }}>{r.v}</span>
                   </div>
                 ))}
               </div>
@@ -456,16 +456,16 @@ function CheckinModal({ kamarList, onClose, onCheckin }) {
 
         </div>
 
-        <div className=\"py-modal-foot\">
-          {step > 0 && <button className=\"py-btn ghost\" style={{ flex: \"0 0 80px\" }} onClick={() => setStep(s => s-1)}>\u2190 Kembali</button>}
+        <div className="py-modal-foot">
+          {step > 0 && <button className="py-btn ghost" style={{ flex: "0 0 80px" }} onClick={() => setStep(s => s-1)}>\u2190 Kembali</button>}
           {step < 2 ? (
-            <button className=\"py-btn primary\"
+            <button className="py-btn primary"
               disabled={step === 0 ? !validStep0 : !validStep1}
               onClick={() => setStep(s => s+1)}>
               Lanjut \u2192
             </button>
           ) : (
-            <button className=\"py-btn success\" onClick={handleFinish}>
+            <button className="py-btn success" onClick={handleFinish}>
               \u2705 Konfirmasi Check-in
             </button>
           )}
@@ -480,62 +480,62 @@ function DetailPanel({ penyewa, onEdit, onClose }) {
   const sisa    = hariSisa(penyewa.kontrakSelesai);
   const progres = progressKontrak(penyewa.kontrakMulai, penyewa.kontrakSelesai);
   return (
-    <div className=\"py-widget\">
-      <div className=\"py-widget-head\">
-        <div className=\"py-widget-title\">\ud83d\udc64 Detail Penyewa</div>
-        <div style={{ display: \"flex\", gap: 6 }}>
-          <button onClick={onEdit} style={{ padding: \"4px 10px\", borderRadius: 7, border: \"1.5px solid #e5e7eb\", background: \"#fff\", fontSize: 11, fontWeight: 600, cursor: \"pointer\" }}>\u270f\ufe0f Edit</button>
-          <button onClick={onClose} style={{ background: \"none\", border: \"none\", cursor: \"pointer\", color: \"#9ca3af\", fontSize: 16 }}>\u2715</button>
+    <div className="py-widget">
+      <div className="py-widget-head">
+        <div className="py-widget-title">\ud83d\udc64 Detail Penyewa</div>
+        <div style={{ display: "flex", gap: 6 }}>
+          <button onClick={onEdit} style={{ padding: "4px 10px", borderRadius: 7, border: "1.5px solid #e5e7eb", background: "#fff", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>\u270f\ufe0f Edit</button>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16 }}>\u2715</button>
         </div>
       </div>
-      <div className=\"py-detail\">
+      <div className="py-detail">
         {/* Header */}
-        <div className=\"py-detail-header\">
-          <div className=\"py-detail-avatar\">{getInisial(penyewa.nama)}</div>
+        <div className="py-detail-header">
+          <div className="py-detail-avatar">{getInisial(penyewa.nama)}</div>
           <div style={{ flex: 1 }}>
-            <div className=\"py-detail-name\">{penyewa.nama}</div>
-            <div className=\"py-detail-sub\">\ud83d\udcde {penyewa.noHP || \"\u2014\"} \u00b7 {penyewa.pekerjaan || \"\u2014\"}</div>
-            <div className=\"py-detail-badges\">
-              <span className=\"py-badge\" style={{ background: \"#fff7ed\", color: \"#ea580c\" }}>\ud83c\udfe0 Kamar {penyewa.kamarId}</span>
-              {penyewa.partner?.length > 0 && <span className=\"py-badge\" style={{ background: \"#f3f4f6\", color: \"#6b7280\" }}>\ud83d\udc65 +{penyewa.partner.length} partner</span>}
-              <span className=\"py-badge\" style={{ background: \"#f3f4f6\", color: \"#6b7280\" }}>{penyewa.jenisKelamin === \"L\" ? \"\u2642\" : \"\u2640\"}</span>
+            <div className="py-detail-name">{penyewa.nama}</div>
+            <div className="py-detail-sub">\ud83d\udcde {penyewa.noHP || "\u2014"} \u00b7 {penyewa.pekerjaan || "\u2014"}</div>
+            <div className="py-detail-badges">
+              <span className="py-badge" style={{ background: "#fff7ed", color: "#ea580c" }}>\ud83c\udfe0 Kamar {penyewa.kamarId}</span>
+              {penyewa.partner?.length > 0 && <span className="py-badge" style={{ background: "#f3f4f6", color: "#6b7280" }}>\ud83d\udc65 +{penyewa.partner.length} partner</span>}
+              <span className="py-badge" style={{ background: "#f3f4f6", color: "#6b7280" }}>{penyewa.jenisKelamin === "L" ? "\u2642" : "\u2640"}</span>
             </div>
           </div>
         </div>
 
         {/* Kontrak */}
-        <div className=\"py-section\">
-          <div className=\"py-section-label\">Kontrak Sewa</div>
-          <div className=\"py-kontrak-bar\">
-            <div className=\"py-kontrak-dates\">
-              <span>{penyewa.kontrakMulai || \"\u2014\"}</span>
-              <span className=\"py-kontrak-arrow\">\u2192</span>
-              <span style={{ color: sisa !== null && sisa <= 30 ? \"#dc2626\" : \"#374151\" }}>{penyewa.kontrakSelesai || \"\u2014\"}</span>
+        <div className="py-section">
+          <div className="py-section-label">Kontrak Sewa</div>
+          <div className="py-kontrak-bar">
+            <div className="py-kontrak-dates">
+              <span>{penyewa.kontrakMulai || "\u2014"}</span>
+              <span className="py-kontrak-arrow">\u2192</span>
+              <span style={{ color: sisa !== null && sisa <= 30 ? "#dc2626" : "#374151" }}>{penyewa.kontrakSelesai || "\u2014"}</span>
             </div>
-            <div className=\"py-progress\"><div className=\"py-progress-fill\" style={{ width: `${progres}%` }} /></div>
+            <div className="py-progress"><div className="py-progress-fill" style={{ width: `${progres}%` }} /></div>
             {sisa !== null && (
-              <div style={{ fontSize: 11, marginTop: 6, fontWeight: 500, color: sisa <= 7 ? \"#dc2626\" : sisa <= 30 ? \"#d97706\" : \"#16a34a\" }}>
-                {sisa <= 0 ? \"\u26a0\ufe0f Kontrak habis!\" : sisa <= 7 ? `\ud83d\udd34 ${sisa} hari lagi` : sisa <= 30 ? `\u26a0\ufe0f ${sisa} hari lagi` : `\u2705 ${sisa} hari tersisa`}
+              <div style={{ fontSize: 11, marginTop: 6, fontWeight: 500, color: sisa <= 7 ? "#dc2626" : sisa <= 30 ? "#d97706" : "#16a34a" }}>
+                {sisa <= 0 ? "\u26a0\ufe0f Kontrak habis!" : sisa <= 7 ? `\ud83d\udd34 ${sisa} hari lagi` : sisa <= 30 ? `\u26a0\ufe0f ${sisa} hari lagi` : `\u2705 ${sisa} hari tersisa`}
               </div>
             )}
           </div>
         </div>
 
         {/* Info Grid */}
-        <div className=\"py-section\">
-          <div className=\"py-section-label\">Identitas & Kontak</div>
-          <div className=\"py-info-grid\">
+        <div className="py-section">
+          <div className="py-section-label">Identitas & Kontak</div>
+          <div className="py-info-grid">
             {[
-              { k: \"NIK / KTP\",      v: penyewa.nik           || \"\u2014\", mono: true },
-              { k: \"Tanggal Lahir\",  v: penyewa.tglLahir      || \"\u2014\" },
-              { k: \"Alamat\",         v: penyewa.alamat         || \"\u2014\" },
-              { k: \"No. Darurat\",    v: penyewa.noHPDarurat    || \"\u2014\" },
-              { k: \"Nama Darurat\",   v: penyewa.namaDarurat    || \"\u2014\" },
-              { k: \"Foto KTP\",       v: penyewa.ktpFile ? `\u2705 ${penyewa.ktpFile}` : \"Belum diupload\" },
+              { k: "NIK / KTP",      v: penyewa.nik           || "\u2014", mono: true },
+              { k: "Tanggal Lahir",  v: penyewa.tglLahir      || "\u2014" },
+              { k: "Alamat",         v: penyewa.alamat         || "\u2014" },
+              { k: "No. Darurat",    v: penyewa.noHPDarurat    || "\u2014" },
+              { k: "Nama Darurat",   v: penyewa.namaDarurat    || "\u2014" },
+              { k: "Foto KTP",       v: penyewa.ktpFile ? `\u2705 ${penyewa.ktpFile}` : "Belum diupload" },
             ].map((i, idx) => (
-              <div key={idx} className=\"py-info-item\" style={i.k === \"Alamat\" ? { gridColumn: \"1 / -1\" } : {}}>
-                <div className=\"py-info-key\">{i.k}</div>
-                <div className={`py-info-val ${i.mono ? \"mono\" : \"\"}`} style={{ wordBreak: \"break-word\" }}>{i.v}</div>
+              <div key={idx} className="py-info-item" style={i.k === "Alamat" ? { gridColumn: "1 / -1" } : {}}>
+                <div className="py-info-key">{i.k}</div>
+                <div className={`py-info-val ${i.mono ? "mono" : ""}`} style={{ wordBreak: "break-word" }}>{i.v}</div>
               </div>
             ))}
           </div>
@@ -543,21 +543,21 @@ function DetailPanel({ penyewa, onEdit, onClose }) {
 
         {/* Partner */}
         {penyewa.partner?.length > 0 && (
-          <div className=\"py-section\">
-            <div className=\"py-section-label\">Partner</div>
+          <div className="py-section">
+            <div className="py-section-label">Partner</div>
             {penyewa.partner.map((p, i) => (
-              <div key={i} className=\"py-partner-item\">
-                <div className=\"py-partner-icon\">\ud83d\udc65</div>
-                <div className=\"py-partner-name\">{p}</div>
+              <div key={i} className="py-partner-item">
+                <div className="py-partner-icon">\ud83d\udc65</div>
+                <div className="py-partner-name">{p}</div>
               </div>
             ))}
           </div>
         )}
 
         {/* Aksi */}
-        <div style={{ display: \"flex\", gap: 8, marginTop: 4 }}>
-          <button className=\"py-btn primary\" style={{ flex: 2 }}>\ud83d\udccb Perpanjang</button>
-          <button className=\"py-btn ghost\"   style={{ flex: 1 }}>\ud83d\udeaa Check-out</button>
+        <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+          <button className="py-btn primary" style={{ flex: 2 }}>\ud83d\udccb Perpanjang</button>
+          <button className="py-btn ghost"   style={{ flex: 1 }}>\ud83d\udeaa Check-out</button>
         </div>
       </div>
     </div>
@@ -572,13 +572,13 @@ export default function Penyewa({ user }) {
   const kamarList = []; // dari Supabase nanti
   const [selected,  setSelected]  = useState(null);
   const [showForm,  setShowForm]  = useState(false);
-  const [search,    setSearch]    = useState(\"\");
-  const [filterK,   setFilterK]   = useState(\"all\");
+  const [search,    setSearch]    = useState("");
+  const [filterK,   setFilterK]   = useState("all");
 
-  const isAdmin = user?.role === \"superadmin\" || user?.role === \"admin\";
+  const isAdmin = user?.role === "superadmin" || user?.role === "admin";
 
   const filtered = penyewaList.filter(p => {
-    if (filterK !== \"all\" && String(p.kamarId) !== filterK) return false;
+    if (filterK !== "all" && String(p.kamarId) !== filterK) return false;
     if (search) {
       const q = search.toLowerCase();
       return p.nama?.toLowerCase().includes(q) || String(p.kamarId).includes(q) || p.noHP?.includes(q) || p.nik?.includes(q);
@@ -594,81 +594,81 @@ export default function Penyewa({ user }) {
   };
 
   return (
-    <div className=\"py-wrap\">
+    <div className="py-wrap">
       <StyleInjector />
 
       {/* Cards */}
-      <div className=\"py-cards\">
+      <div className="py-cards">
         {[
-          { label: \"Total Penyewa\",    val: penyewaList.length || \"\u2014\",    color: \"#3b82f6\", sub: \"Kontrak aktif\" },
-          { label: \"Kontrak Habis\",    val: kontrakHabis || (penyewaList.length ? \"0\" : \"\u2014\"), color: \"#ef4444\", sub: \"\u2264 30 hari\" },
-          { label: \"Total Penghuni\",   val: penyewaList.reduce((s,p) => s+1+(p.partner?.length||0), 0) || \"\u2014\", color: \"#f97316\", sub: \"Termasuk partner\" },
-          { label: \"Kamar Terisi\",     val: new Set(penyewaList.map(p=>p.kamarId)).size || (penyewaList.length ? \"0\" : \"\u2014\"), color: \"#16a34a\", sub: \"Unit berpenghuni\" },
+          { label: "Total Penyewa",    val: penyewaList.length || "\u2014",    color: "#3b82f6", sub: "Kontrak aktif" },
+          { label: "Kontrak Habis",    val: kontrakHabis || (penyewaList.length ? "0" : "\u2014"), color: "#ef4444", sub: "\u2264 30 hari" },
+          { label: "Total Penghuni",   val: penyewaList.reduce((s,p) => s+1+(p.partner?.length||0), 0) || "\u2014", color: "#f97316", sub: "Termasuk partner" },
+          { label: "Kamar Terisi",     val: new Set(penyewaList.map(p=>p.kamarId)).size || (penyewaList.length ? "0" : "\u2014"), color: "#16a34a", sub: "Unit berpenghuni" },
         ].map((c, i) => (
-          <div key={i} className=\"py-card\">
-            <div className=\"py-card-bar\" style={{ background: c.color }} />
-            <div className=\"py-card-label\">{c.label}</div>
-            <div className=\"py-card-val\">{c.val}</div>
-            <div className=\"py-card-sub\">{c.sub}</div>
+          <div key={i} className="py-card">
+            <div className="py-card-bar" style={{ background: c.color }} />
+            <div className="py-card-label">{c.label}</div>
+            <div className="py-card-val">{c.val}</div>
+            <div className="py-card-sub">{c.sub}</div>
           </div>
         ))}
       </div>
 
       {/* Layout */}
-      <div className=\"py-layout\">
-        <div className=\"py-widget\">
-          <div className=\"py-widget-head\">
-            <div className=\"py-widget-title\">\ud83d\udc65 Data Penyewa</div>
+      <div className="py-layout">
+        <div className="py-widget">
+          <div className="py-widget-head">
+            <div className="py-widget-title">\ud83d\udc65 Data Penyewa</div>
             {isAdmin && (
-              <button onClick={() => setShowForm(true)} style={{ background: \"linear-gradient(135deg,#f97316,#ea580c)\", color: \"#fff\", border: \"none\", borderRadius: 8, padding: \"6px 12px\", fontSize: 11, fontWeight: 600, cursor: \"pointer\" }}>
+              <button onClick={() => setShowForm(true)} style={{ background: "linear-gradient(135deg,#f97316,#ea580c)", color: "#fff", border: "none", borderRadius: 8, padding: "6px 12px", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
                 \ud83d\udd11 Check-in Baru
               </button>
             )}
           </div>
 
-          <div className=\"py-filterbar\">
-            <div className=\"py-search\">
+          <div className="py-filterbar">
+            <div className="py-search">
               <span>\ud83d\udd0d</span>
-              <input className=\"py-search-input\" placeholder=\"Cari nama, NIK, kamar...\" value={search} onChange={e => setSearch(e.target.value)} />
+              <input className="py-search-input" placeholder="Cari nama, NIK, kamar..." value={search} onChange={e => setSearch(e.target.value)} />
             </div>
-            <div className={`py-tag ${filterK===\"all\"?\"active\":\"\"}`} onClick={() => setFilterK(\"all\")}>Semua</div>
+            <div className={`py-tag ${filterK==="all"?"active":""}`} onClick={() => setFilterK("all")}>Semua</div>
             {[...new Set(penyewaList.map(p=>p.kamarId))].sort().map(k => (
-              <div key={k} className={`py-tag ${filterK===String(k)?\"active\":\"\"}`} onClick={() => setFilterK(String(k))}>K{padD(k)}</div>
+              <div key={k} className={`py-tag ${filterK===String(k)?"active":""}`} onClick={() => setFilterK(String(k))}>K{padD(k)}</div>
             ))}
           </div>
 
-          <div className=\"py-widget-body\">
+          <div className="py-widget-body">
             {penyewaList.length === 0 ? (
-              <div className=\"py-empty\">
-                <div className=\"py-empty-icon\">\ud83d\udc65</div>
-                <div className=\"py-empty-title\">Belum ada data penyewa</div>
-                <div className=\"py-empty-sub\">{isAdmin ? 'Klik \"\ud83d\udd11 Check-in Baru\" untuk menambahkan penyewa' : \"Data penyewa akan muncul di sini\"}</div>
+              <div className="py-empty">
+                <div className="py-empty-icon">\ud83d\udc65</div>
+                <div className="py-empty-title">Belum ada data penyewa</div>
+                <div className="py-empty-sub">{isAdmin ? 'Klik "\ud83d\udd11 Check-in Baru" untuk menambahkan penyewa' : "Data penyewa akan muncul di sini"}</div>
               </div>
             ) : filtered.length === 0 ? (
-              <div className=\"py-empty\">
-                <div className=\"py-empty-icon\">\ud83d\udd0d</div>
-                <div className=\"py-empty-title\">Tidak ditemukan</div>
-                <div className=\"py-empty-sub\">Coba ubah kata kunci</div>
+              <div className="py-empty">
+                <div className="py-empty-icon">\ud83d\udd0d</div>
+                <div className="py-empty-title">Tidak ditemukan</div>
+                <div className="py-empty-sub">Coba ubah kata kunci</div>
               </div>
             ) : (
               filtered.map(p => {
                 const sisa = hariSisa(p.kontrakSelesai);
                 return (
-                  <div key={p.id} className={`py-item ${selected?.id===p.id?\"selected\":\"\"}`} onClick={() => setSelected(p)}>
-                    <div className=\"py-avatar\">{getInisial(p.nama)}</div>
-                    <div className=\"py-item-info\">
-                      <div className=\"py-item-name\">{p.nama}</div>
-                      <div className=\"py-item-meta\">
-                        <span>\ud83d\udcde {p.noHP||\"\u2014\"}</span>
-                        <span>\ud83e\udeaa {p.nik ? p.nik.slice(0,8)+\"...\" : \"\u2014\"}</span>
+                  <div key={p.id} className={`py-item ${selected?.id===p.id?"selected":""}`} onClick={() => setSelected(p)}>
+                    <div className="py-avatar">{getInisial(p.nama)}</div>
+                    <div className="py-item-info">
+                      <div className="py-item-name">{p.nama}</div>
+                      <div className="py-item-meta">
+                        <span>\ud83d\udcde {p.noHP||"\u2014"}</span>
+                        <span>\ud83e\udeaa {p.nik ? p.nik.slice(0,8)+"..." : "\u2014"}</span>
                         {p.partner?.length > 0 && <span>\ud83d\udc65 +{p.partner.length}</span>}
                       </div>
                     </div>
-                    <div className=\"py-item-right\">
-                      <div className=\"py-item-kamar\">K{padD(p.kamarId)}</div>
+                    <div className="py-item-right">
+                      <div className="py-item-kamar">K{padD(p.kamarId)}</div>
                       {sisa !== null && (
-                        <div className=\"py-item-sisa\" style={{ color: sisa<=7?\"#dc2626\":sisa<=30?\"#d97706\":\"#9ca3af\" }}>
-                          {sisa<=0?\"Habis!\":`${sisa}h lagi`}
+                        <div className="py-item-sisa" style={{ color: sisa<=7?"#dc2626":sisa<=30?"#d97706":"#9ca3af" }}>
+                          {sisa<=0?"Habis!":`${sisa}h lagi`}
                         </div>
                       )}
                     </div>
@@ -682,11 +682,11 @@ export default function Penyewa({ user }) {
         {selected ? (
           <DetailPanel penyewa={selected} onEdit={() => {}} onClose={() => setSelected(null)} />
         ) : (
-          <div className=\"py-widget\">
-            <div className=\"py-empty\" style={{ padding: \"60px 20px\" }}>
-              <div className=\"py-empty-icon\">\ud83d\udc64</div>
-              <div className=\"py-empty-title\">Pilih penyewa</div>
-              <div className=\"py-empty-sub\">Klik nama untuk melihat detail lengkap</div>
+          <div className="py-widget">
+            <div className="py-empty" style={{ padding: "60px 20px" }}>
+              <div className="py-empty-icon">\ud83d\udc64</div>
+              <div className="py-empty-title">Pilih penyewa</div>
+              <div className="py-empty-sub">Klik nama untuk melihat detail lengkap</div>
             </div>
           </div>
         )}

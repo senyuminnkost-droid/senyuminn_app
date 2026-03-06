@@ -1,5 +1,4 @@
-import { useState, useEffect } from \"react\";
-import {} from \"react-dom\";
+import { useState, useEffect } from "react";
 
 // ============================================================
 // CSS
@@ -131,9 +130,9 @@ const CSS = `
 
 function StyleInjector() {
   useEffect(() => {
-    const id = \"senyuminn-checkout-css\";
+    const id = "senyuminn-checkout-css";
     if (document.getElementById(id)) return;
-    const el = document.createElement(\"style\");
+    const el = document.createElement("style");
     el.id = id; el.textContent = CSS;
     document.head.appendChild(el);
     return () => { const e = document.getElementById(id); if (e) e.remove(); };
@@ -144,17 +143,17 @@ function StyleInjector() {
 // ============================================================
 // HELPERS
 // ============================================================
-const padD = (n) => String(n).padStart(2, \"0\");
+const padD = (n) => String(n).padStart(2, "0");
 const todayStr = (() => { const d = new Date(); return `${d.getFullYear()}-${padD(d.getMonth()+1)}-${padD(d.getDate())}`; })();
-const fmtRp = (n) => n ? \"Rp \" + Number(n).toLocaleString(\"id-ID\") : \"\u2014\";
+const fmtRp = (n) => n ? "Rp " + Number(n).toLocaleString("id-ID") : "\u2014";
 const hariSisa = (tgl) => tgl ? Math.ceil((new Date(tgl) - new Date()) / 86400000) : null;
 const progressKontrak = (mulai, selesai) => {
   if (!mulai || !selesai) return 0;
   return Math.min(100, Math.max(0, Math.round(((new Date() - new Date(mulai)) / (new Date(selesai) - new Date(mulai))) * 100)));
 };
 const getInisial = (nama) => {
-  if (!nama) return \"?\";
-  const p = nama.trim().split(\" \");
+  if (!nama) return "?";
+  const p = nama.trim().split(" ");
   return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : nama.slice(0,2).toUpperCase();
 };
 const addMonths = (dateStr, n) => {
@@ -168,11 +167,11 @@ const addMonths = (dateStr, n) => {
 // ============================================================
 function ModalPerpanjang({ penyewa, kamarList, onClose, onSave }) {
   const kamar = kamarList.find(k => k.id === penyewa.kamarId);
-  const [durasi, setDurasi] = useState(\"6\");
+  const [durasi, setDurasi] = useState("6");
   const [mulai,  setMulai]  = useState(penyewa.kontrakSelesai || todayStr);
   const [done,   setDone]   = useState(false);
 
-  const selesai = mulai && durasi ? addMonths(mulai, durasi) : \"\";
+  const selesai = mulai && durasi ? addMonths(mulai, durasi) : "";
   const harga   = kamar?.harga || 0;
   const total   = harga * parseInt(durasi);
 
@@ -182,82 +181,82 @@ function ModalPerpanjang({ penyewa, kamarList, onClose, onSave }) {
   };
 
   const content = done ? (
-    <div className=\"co-modal-body\">
-      <div className=\"co-success\">
-        <div className=\"co-success-icon\">\u2705</div>
-        <div className=\"co-success-title\">Kontrak Diperpanjang!</div>
-        <div className=\"co-success-sub\">
+    <div className="co-modal-body">
+      <div className="co-success">
+        <div className="co-success-icon">\u2705</div>
+        <div className="co-success-title">Kontrak Diperpanjang!</div>
+        <div className="co-success-sub">
           Kontrak <b>{penyewa.nama}</b> berhasil diperpanjang.<br />
           Periode baru: <b>{mulai} \u2192 {selesai}</b>.<br />
           Tagihan baru telah dibuat otomatis.
         </div>
-        <div style={{ display: \"flex\", gap: 8, justifyContent: \"center\" }}>
-          <button className=\"co-btn primary\" style={{ maxWidth: 180 }} onClick={() => alert(\"Generate surat perpanjangan...\")}>\ud83d\udcc4 Surat Perpanjangan</button>
-          <button className=\"co-btn ghost\"   style={{ maxWidth: 100 }} onClick={onClose}>Tutup</button>
+        <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+          <button className="co-btn primary" style={{ maxWidth: 180 }} onClick={() => alert("Generate surat perpanjangan...")}>\ud83d\udcc4 Surat Perpanjangan</button>
+          <button className="co-btn ghost"   style={{ maxWidth: 100 }} onClick={onClose}>Tutup</button>
         </div>
       </div>
     </div>
   ) : (
     <>
-      <div className=\"co-modal-body\">
-        <div style={{ display: \"flex\", gap: 10, alignItems: \"center\", background: \"#fff7ed\", border: \"1px solid #fed7aa\", borderRadius: 10, padding: \"10px 14px\", marginBottom: 16 }}>
+      <div className="co-modal-body">
+        <div style={{ display: "flex", gap: 10, alignItems: "center", background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 10, padding: "10px 14px", marginBottom: 16 }}>
           <div style={{ fontSize: 24 }}>\ud83c\udfe0</div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: \"#111827\" }}>{penyewa.nama} \u2014 Kamar {penyewa.kamarId}</div>
-            <div style={{ fontSize: 11, color: \"#9a3412\" }}>Kontrak lama: {penyewa.kontrakMulai} \u2192 {penyewa.kontrakSelesai}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>{penyewa.nama} \u2014 Kamar {penyewa.kamarId}</div>
+            <div style={{ fontSize: 11, color: "#9a3412" }}>Kontrak lama: {penyewa.kontrakMulai} \u2192 {penyewa.kontrakSelesai}</div>
           </div>
         </div>
 
-        <div className=\"co-divider\">Periode Baru</div>
-        <div className=\"co-input-row\">
-          <div className=\"co-field\">
-            <label className=\"co-field-label\">Mulai Kontrak Baru</label>
-            <input type=\"date\" className=\"co-input\" value={mulai} onChange={e => setMulai(e.target.value)} />
+        <div className="co-divider">Periode Baru</div>
+        <div className="co-input-row">
+          <div className="co-field">
+            <label className="co-field-label">Mulai Kontrak Baru</label>
+            <input type="date" className="co-input" value={mulai} onChange={e => setMulai(e.target.value)} />
           </div>
-          <div className=\"co-field\">
-            <label className=\"co-field-label\">Durasi</label>
-            <select className=\"co-input\" value={durasi} onChange={e => setDurasi(e.target.value)}>
-              <option value=\"3\">3 bulan</option>
-              <option value=\"6\">6 bulan</option>
-              <option value=\"12\">12 bulan</option>
+          <div className="co-field">
+            <label className="co-field-label">Durasi</label>
+            <select className="co-input" value={durasi} onChange={e => setDurasi(e.target.value)}>
+              <option value="3">3 bulan</option>
+              <option value="6">6 bulan</option>
+              <option value="12">12 bulan</option>
             </select>
           </div>
         </div>
 
         {selesai && (
-          <div style={{ background: \"#f0fdf4\", border: \"1px solid #86efac\", borderRadius: 8, padding: \"8px 12px\", fontSize: 12, color: \"#15803d\", marginBottom: 14 }}>
+          <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#15803d", marginBottom: 14 }}>
             \u2705 Kontrak baru berakhir: <b>{selesai}</b>
           </div>
         )}
 
-        <div className=\"co-divider\">Ringkasan Tagihan</div>
-        <div className=\"co-summary\">
+        <div className="co-divider">Ringkasan Tagihan</div>
+        <div className="co-summary">
           {[
-            { k: \"Harga/bulan\",  v: fmtRp(harga) },
-            { k: \"Durasi\",       v: `${durasi} bulan` },
-            { k: \"Periode\",      v: `${mulai} \u2192 ${selesai}` },
-            { k: \"Total Tagihan\",v: fmtRp(total), cls: \"orange\" },
+            { k: "Harga/bulan",  v: fmtRp(harga) },
+            { k: "Durasi",       v: `${durasi} bulan` },
+            { k: "Periode",      v: `${mulai} \u2192 ${selesai}` },
+            { k: "Total Tagihan",v: fmtRp(total), cls: "orange" },
           ].map((r, i) => (
-            <div key={i} className=\"co-summary-row\">
-              <span className=\"co-summary-key\">{r.k}</span>
-              <span className={`co-summary-val ${r.cls||\"\"}`}>{r.v}</span>
+            <div key={i} className="co-summary-row">
+              <span className="co-summary-key">{r.k}</span>
+              <span className={`co-summary-val ${r.cls||""}`}>{r.v}</span>
             </div>
           ))}
         </div>
       </div>
-      <div className=\"co-modal-foot\">
-        <button className=\"co-btn success\" onClick={handleSave}>\u2705 Konfirmasi Perpanjang</button>
-        <button className=\"co-btn ghost\"   onClick={onClose}>Batal</button>
+      <div className="co-modal-foot">
+        <button className="co-btn success" onClick={handleSave}>\u2705 Konfirmasi Perpanjang</button>
+        <button className="co-btn ghost"   onClick={onClose}>Batal</button>
       </div>
     </>
   );
 
   return(
-    <div className=\"co-overlay-portal\" onClick={onClose}>
-      <div className=\"co-modal\" onClick={e => e.stopPropagation()}>
-        <div className=\"co-modal-head\">
-          <div className=\"co-modal-title\">\ud83d\udccb Perpanjang Kontrak</div>
-          <button className=\"co-modal-close\" onClick={onClose}>\u2715</button>
+    <div className="co-overlay-portal" onClick={onClose}>
+      <div className="co-modal" onClick={e => e.stopPropagation()}>
+        <div className="co-modal-head">
+          <div className="co-modal-title">\ud83d\udccb Perpanjang Kontrak</div>
+          <button className="co-modal-close" onClick={onClose}>\u2715</button>
         </div>
         {content}
       </div>
@@ -274,8 +273,8 @@ function ModalCheckout({ penyewa, kamarList, onClose, onCheckout }) {
   const [done,  setDone]  = useState(false);
   const [form,  setForm]  = useState({
     tglCheckout: todayStr,
-    kondisiKamar: \"baik\",
-    catatan: \"\",
+    kondisiKamar: "baik",
+    catatan: "",
     dendaSewa: 0,   // Sewa harian jika melebihi kontrak
     dendaKerusakan: 0,
   });
@@ -289,109 +288,109 @@ function ModalCheckout({ penyewa, kamarList, onClose, onCheckout }) {
   const totalTagihan = totalDendaSewa + Number(form.dendaKerusakan || 0);
 
   const handleCheckout = () => {
-    onCheckout({ ...penyewa, tglCheckout: form.tglCheckout, statusKamar: \"deep-clean\" });
+    onCheckout({ ...penyewa, tglCheckout: form.tglCheckout, statusKamar: "deep-clean" });
     setDone(true);
   };
 
   const content = done ? (
-    <div className=\"co-modal-body\">
-      <div className=\"co-success\">
-        <div className=\"co-success-icon\">\ud83d\udeaa</div>
-        <div className=\"co-success-title\">Check-out Berhasil!</div>
-        <div className=\"co-success-sub\">
+    <div className="co-modal-body">
+      <div className="co-success">
+        <div className="co-success-icon">\ud83d\udeaa</div>
+        <div className="co-success-title">Check-out Berhasil!</div>
+        <div className="co-success-sub">
           <b>{penyewa.nama}</b> telah check-out dari Kamar {penyewa.kamarId}.<br />
           Status kamar diperbarui \u2192 <b>Deep Clean</b>.<br />
           Notifikasi dikirim ke staff pagi.
         </div>
-        <div style={{ display: \"flex\", gap: 8, justifyContent: \"center\" }}>
-          <button className=\"co-btn ghost\" style={{ maxWidth: 120 }} onClick={onClose}>Tutup</button>
+        <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+          <button className="co-btn ghost" style={{ maxWidth: 120 }} onClick={onClose}>Tutup</button>
         </div>
       </div>
     </div>
   ) : (
     <>
-      <div className=\"co-modal-body\">
+      <div className="co-modal-body">
         {/* Info penyewa */}
-        <div style={{ display: \"flex\", gap: 10, alignItems: \"center\", background: \"#fff7ed\", border: \"1px solid #fed7aa\", borderRadius: 10, padding: \"10px 14px\", marginBottom: 16 }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "center", background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 10, padding: "10px 14px", marginBottom: 16 }}>
           <div style={{ fontSize: 24 }}>\ud83d\udeaa</div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: \"#111827\" }}>{penyewa.nama} \u2014 Kamar {penyewa.kamarId}</div>
-            <div style={{ fontSize: 11, color: \"#9a3412\" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>{penyewa.nama} \u2014 Kamar {penyewa.kamarId}</div>
+            <div style={{ fontSize: 11, color: "#9a3412" }}>
               Kontrak: {penyewa.kontrakMulai} \u2192 {penyewa.kontrakSelesai}
-              {sisa !== null && sisa < 0 && <span style={{ color: \"#dc2626\", fontWeight: 700 }}> \u00b7 {Math.abs(sisa)} hari melewati kontrak!</span>}
+              {sisa !== null && sisa < 0 && <span style={{ color: "#dc2626", fontWeight: 700 }}> \u00b7 {Math.abs(sisa)} hari melewati kontrak!</span>}
             </div>
           </div>
         </div>
 
-        <div className=\"co-input-row\">
-          <div className=\"co-field\">
-            <label className=\"co-field-label\">Tanggal Check-out</label>
-            <input type=\"date\" className=\"co-input\" value={form.tglCheckout} onChange={e => set(\"tglCheckout\", e.target.value)} />
+        <div className="co-input-row">
+          <div className="co-field">
+            <label className="co-field-label">Tanggal Check-out</label>
+            <input type="date" className="co-input" value={form.tglCheckout} onChange={e => set("tglCheckout", e.target.value)} />
           </div>
-          <div className=\"co-field\">
-            <label className=\"co-field-label\">Kondisi Kamar</label>
-            <select className=\"co-input\" value={form.kondisiKamar} onChange={e => set(\"kondisiKamar\", e.target.value)}>
-              <option value=\"baik\">Baik \u2014 tidak ada kerusakan</option>
-              <option value=\"ringan\">Ada kerusakan ringan</option>
-              <option value=\"berat\">Ada kerusakan berat</option>
+          <div className="co-field">
+            <label className="co-field-label">Kondisi Kamar</label>
+            <select className="co-input" value={form.kondisiKamar} onChange={e => set("kondisiKamar", e.target.value)}>
+              <option value="baik">Baik \u2014 tidak ada kerusakan</option>
+              <option value="ringan">Ada kerusakan ringan</option>
+              <option value="berat">Ada kerusakan berat</option>
             </select>
           </div>
         </div>
 
         {/* Denda */}
-        <div className=\"co-divider\">Perhitungan Denda</div>
-        <div className=\"co-summary\" style={{ marginBottom: 12 }}>
-          <div className=\"co-summary-row\">
-            <span className=\"co-summary-key\">Hari melewati kontrak</span>
-            <span className=\"co-summary-val\">{hariTerlambat} hari</span>
+        <div className="co-divider">Perhitungan Denda</div>
+        <div className="co-summary" style={{ marginBottom: 12 }}>
+          <div className="co-summary-row">
+            <span className="co-summary-key">Hari melewati kontrak</span>
+            <span className="co-summary-val">{hariTerlambat} hari</span>
           </div>
-          <div className=\"co-summary-row\">
-            <span className=\"co-summary-key\">Denda sewa harian</span>
-            <span className=\"co-summary-val\">{fmtRp(totalDendaSewa)}</span>
+          <div className="co-summary-row">
+            <span className="co-summary-key">Denda sewa harian</span>
+            <span className="co-summary-val">{fmtRp(totalDendaSewa)}</span>
           </div>
-          <div className=\"co-summary-row\">
-            <span className=\"co-summary-key\">Denda kerusakan</span>
-            <span className=\"co-summary-val\">
+          <div className="co-summary-row">
+            <span className="co-summary-key">Denda kerusakan</span>
+            <span className="co-summary-val">
               <input
-                className=\"co-input\"
-                placeholder=\"Rp 0\"
+                className="co-input"
+                placeholder="Rp 0"
                 value={form.dendaKerusakan}
-                onChange={e => set(\"dendaKerusakan\", e.target.value)}
-                style={{ width: 120, padding: \"3px 8px\", fontSize: 11 }}
+                onChange={e => set("dendaKerusakan", e.target.value)}
+                style={{ width: 120, padding: "3px 8px", fontSize: 11 }}
               />
             </span>
           </div>
-          <div className=\"co-summary-row\" style={{ fontWeight: 700 }}>
-            <span className=\"co-summary-key\" style={{ fontWeight: 700, color: \"#111827\" }}>Total Tagihan</span>
-            <span className={`co-summary-val ${totalTagihan > 0 ? \"red\" : \"green\"}`}>
-              {totalTagihan > 0 ? fmtRp(totalTagihan) : \"Tidak ada denda\"}
+          <div className="co-summary-row" style={{ fontWeight: 700 }}>
+            <span className="co-summary-key" style={{ fontWeight: 700, color: "#111827" }}>Total Tagihan</span>
+            <span className={`co-summary-val ${totalTagihan > 0 ? "red" : "green"}`}>
+              {totalTagihan > 0 ? fmtRp(totalTagihan) : "Tidak ada denda"}
             </span>
           </div>
         </div>
 
-        <div className=\"co-field\">
-          <label className=\"co-field-label\">Catatan Check-out</label>
-          <textarea className=\"co-input\" rows={2} placeholder=\"Catatan kondisi kamar, barang tertinggal, dll...\" value={form.catatan} onChange={e => set(\"catatan\", e.target.value)} style={{ resize: \"none\" }} />
+        <div className="co-field">
+          <label className="co-field-label">Catatan Check-out</label>
+          <textarea className="co-input" rows={2} placeholder="Catatan kondisi kamar, barang tertinggal, dll..." value={form.catatan} onChange={e => set("catatan", e.target.value)} style={{ resize: "none" }} />
         </div>
 
         {/* After checkout info */}
-        <div style={{ background: \"#f0f9ff\", border: \"1px solid #bae6fd\", borderRadius: 8, padding: \"10px 12px\", fontSize: 11, color: \"#0369a1\" }}>
+        <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, padding: "10px 12px", fontSize: 11, color: "#0369a1" }}>
           \u2139\ufe0f Setelah check-out: status kamar \u2192 <b>Deep Clean</b> \u00b7 Notifikasi ke staff pagi \u00b7 Data penyewa dipindah ke Riwayat
         </div>
       </div>
-      <div className=\"co-modal-foot\">
-        <button className=\"co-btn danger\" onClick={handleCheckout}>\ud83d\udeaa Konfirmasi Check-out</button>
-        <button className=\"co-btn ghost\"  onClick={onClose}>Batal</button>
+      <div className="co-modal-foot">
+        <button className="co-btn danger" onClick={handleCheckout}>\ud83d\udeaa Konfirmasi Check-out</button>
+        <button className="co-btn ghost"  onClick={onClose}>Batal</button>
       </div>
     </>
   );
 
   return(
-    <div className=\"co-overlay-portal\" onClick={onClose}>
-      <div className=\"co-modal\" onClick={e => e.stopPropagation()}>
-        <div className=\"co-modal-head\">
-          <div className=\"co-modal-title\">\ud83d\udeaa Proses Check-out</div>
-          <button className=\"co-modal-close\" onClick={onClose}>\u2715</button>
+    <div className="co-overlay-portal" onClick={onClose}>
+      <div className="co-modal" onClick={e => e.stopPropagation()}>
+        <div className="co-modal-head">
+          <div className="co-modal-title">\ud83d\udeaa Proses Check-out</div>
+          <button className="co-modal-close" onClick={onClose}>\u2715</button>
         </div>
         {content}
       </div>
@@ -408,81 +407,81 @@ function ActionPanel({ penyewa, kamarList, onPerpanjang, onCheckout, onClose }) 
   const kamar   = kamarList.find(k => k.id === penyewa.kamarId);
 
   return (
-    <div className=\"co-widget\">
-      <div className=\"co-widget-head\">
-        <div className=\"co-widget-title\">\ud83d\udd11 Aksi Kontrak</div>
-        <button onClick={onClose} style={{ background: \"none\", border: \"none\", cursor: \"pointer\", color: \"#9ca3af\", fontSize: 16 }}>\u2715</button>
+    <div className="co-widget">
+      <div className="co-widget-head">
+        <div className="co-widget-title">\ud83d\udd11 Aksi Kontrak</div>
+        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16 }}>\u2715</button>
       </div>
-      <div className=\"co-panel\">
+      <div className="co-panel">
 
         {/* Header */}
-        <div className=\"co-panel-header\">
-          <div className=\"co-panel-avatar\">{getInisial(penyewa.nama)}</div>
+        <div className="co-panel-header">
+          <div className="co-panel-avatar">{getInisial(penyewa.nama)}</div>
           <div style={{ flex: 1 }}>
-            <div className=\"co-panel-name\">{penyewa.nama}</div>
-            <div className=\"co-panel-sub\">\ud83d\udcde {penyewa.noHP || \"\u2014\"} \u00b7 {penyewa.pekerjaan || \"\u2014\"}</div>
+            <div className="co-panel-name">{penyewa.nama}</div>
+            <div className="co-panel-sub">\ud83d\udcde {penyewa.noHP || "\u2014"} \u00b7 {penyewa.pekerjaan || "\u2014"}</div>
           </div>
         </div>
 
         {/* Kontrak */}
-        <div className=\"co-section\">
-          <div className=\"co-section-label\">Status Kontrak</div>
-          <div className=\"co-kontrak-bar\">
-            <div className=\"co-kontrak-dates\">
-              <span>{penyewa.kontrakMulai || \"\u2014\"}</span>
-              <span style={{ color: \"#f97316\" }}>\u2192</span>
-              <span style={{ color: sisa !== null && sisa <= 30 ? \"#dc2626\" : \"#374151\" }}>{penyewa.kontrakSelesai || \"\u2014\"}</span>
+        <div className="co-section">
+          <div className="co-section-label">Status Kontrak</div>
+          <div className="co-kontrak-bar">
+            <div className="co-kontrak-dates">
+              <span>{penyewa.kontrakMulai || "\u2014"}</span>
+              <span style={{ color: "#f97316" }}>\u2192</span>
+              <span style={{ color: sisa !== null && sisa <= 30 ? "#dc2626" : "#374151" }}>{penyewa.kontrakSelesai || "\u2014"}</span>
             </div>
-            <div className=\"co-progress\"><div className=\"co-progress-fill\" style={{ width: `${progres}%` }} /></div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: sisa <= 0 ? \"#dc2626\" : sisa <= 7 ? \"#dc2626\" : sisa <= 30 ? \"#d97706\" : \"#16a34a\" }}>
-              {sisa === null ? \"\u2014\" : sisa <= 0 ? `\u26a0\ufe0f ${Math.abs(sisa)} hari melewati kontrak!` : sisa <= 7 ? `\ud83d\udd34 ${sisa} hari lagi \u2014 segera tindak` : sisa <= 30 ? `\u26a0\ufe0f ${sisa} hari lagi` : `\u2705 ${sisa} hari tersisa`}
+            <div className="co-progress"><div className="co-progress-fill" style={{ width: `${progres}%` }} /></div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: sisa <= 0 ? "#dc2626" : sisa <= 7 ? "#dc2626" : sisa <= 30 ? "#d97706" : "#16a34a" }}>
+              {sisa === null ? "\u2014" : sisa <= 0 ? `\u26a0\ufe0f ${Math.abs(sisa)} hari melewati kontrak!` : sisa <= 7 ? `\ud83d\udd34 ${sisa} hari lagi \u2014 segera tindak` : sisa <= 30 ? `\u26a0\ufe0f ${sisa} hari lagi` : `\u2705 ${sisa} hari tersisa`}
             </div>
           </div>
         </div>
 
         {/* Info */}
-        <div className=\"co-section\">
-          <div className=\"co-section-label\">Informasi</div>
-          <div className=\"co-info-grid\">
-            <div className=\"co-info-item\">
-              <div className=\"co-info-key\">Kamar</div>
-              <div className=\"co-info-val orange\">K{padD(penyewa.kamarId)} \u2014 {kamar?.tipe || \"\u2014\"}</div>
+        <div className="co-section">
+          <div className="co-section-label">Informasi</div>
+          <div className="co-info-grid">
+            <div className="co-info-item">
+              <div className="co-info-key">Kamar</div>
+              <div className="co-info-val orange">K{padD(penyewa.kamarId)} \u2014 {kamar?.tipe || "\u2014"}</div>
             </div>
-            <div className=\"co-info-item\">
-              <div className=\"co-info-key\">Harga/bulan</div>
-              <div className=\"co-info-val orange\">{fmtRp(kamar?.harga)}</div>
+            <div className="co-info-item">
+              <div className="co-info-key">Harga/bulan</div>
+              <div className="co-info-val orange">{fmtRp(kamar?.harga)}</div>
             </div>
-            <div className=\"co-info-item\">
-              <div className=\"co-info-key\">Durasi Kontrak</div>
-              <div className=\"co-info-val\">{penyewa.durasi} bulan</div>
+            <div className="co-info-item">
+              <div className="co-info-key">Durasi Kontrak</div>
+              <div className="co-info-val">{penyewa.durasi} bulan</div>
             </div>
-            <div className=\"co-info-item\">
-              <div className=\"co-info-key\">Partner</div>
-              <div className=\"co-info-val\">{penyewa.partner?.length > 0 ? penyewa.partner.join(\", \") : \"\u2014\"}</div>
+            <div className="co-info-item">
+              <div className="co-info-key">Partner</div>
+              <div className="co-info-val">{penyewa.partner?.length > 0 ? penyewa.partner.join(", ") : "\u2014"}</div>
             </div>
           </div>
         </div>
 
         {/* Aksi */}
-        <div className=\"co-section\">
-          <div className=\"co-section-label\">Pilih Aksi</div>
-          <div className=\"co-action-grid\">
-            <button className=\"co-action-btn\" onClick={onPerpanjang}>
-              <div className=\"co-action-btn-icon\">\ud83d\udccb</div>
-              <div className=\"co-action-btn-label\">Perpanjang</div>
-              <div className=\"co-action-btn-sub\">Lanjutkan kontrak</div>
+        <div className="co-section">
+          <div className="co-section-label">Pilih Aksi</div>
+          <div className="co-action-grid">
+            <button className="co-action-btn" onClick={onPerpanjang}>
+              <div className="co-action-btn-icon">\ud83d\udccb</div>
+              <div className="co-action-btn-label">Perpanjang</div>
+              <div className="co-action-btn-sub">Lanjutkan kontrak</div>
             </button>
-            <button className=\"co-action-btn danger\" onClick={onCheckout}>
-              <div className=\"co-action-btn-icon\">\ud83d\udeaa</div>
-              <div className=\"co-action-btn-label\">Check-out</div>
-              <div className=\"co-action-btn-sub\">Akhiri kontrak</div>
+            <button className="co-action-btn danger" onClick={onCheckout}>
+              <div className="co-action-btn-icon">\ud83d\udeaa</div>
+              <div className="co-action-btn-label">Check-out</div>
+              <div className="co-action-btn-sub">Akhiri kontrak</div>
             </button>
           </div>
         </div>
 
         {sisa !== null && sisa <= 30 && (
-          <div style={{ background: sisa <= 7 ? \"#fee2e2\" : \"#fff7ed\", border: `1px solid ${sisa <= 7 ? \"#fca5a5\" : \"#fed7aa\"}`, borderRadius: 8, padding: \"10px 12px\", fontSize: 11, color: sisa <= 7 ? \"#dc2626\" : \"#92400e\", fontWeight: 500 }}>
-            {sisa <= 7 ? \"\ud83d\udd34\" : \"\u26a0\ufe0f\"} {sisa <= 0 ? \"Kontrak sudah habis! Segera proses perpanjang atau check-out.\" : `Kontrak berakhir dalam ${sisa} hari. Hubungi penyewa segera.`}
+          <div style={{ background: sisa <= 7 ? "#fee2e2" : "#fff7ed", border: `1px solid ${sisa <= 7 ? "#fca5a5" : "#fed7aa"}`, borderRadius: 8, padding: "10px 12px", fontSize: 11, color: sisa <= 7 ? "#dc2626" : "#92400e", fontWeight: 500 }}>
+            {sisa <= 7 ? "\ud83d\udd34" : "\u26a0\ufe0f"} {sisa <= 0 ? "Kontrak sudah habis! Segera proses perpanjang atau check-out." : `Kontrak berakhir dalam ${sisa} hari. Hubungi penyewa segera.`}
           </div>
         )}
 
@@ -499,18 +498,18 @@ export default function Checkout({ user }) {
   const [penyewaList, setPenyewaList] = useState([]);
   const kamarList = [];
 
-  const [tab,      setTab]      = useState(\"semua\"); // semua | mau-habis | terlambat
+  const [tab,      setTab]      = useState("semua"); // semua | mau-habis | terlambat
   const [selected, setSelected] = useState(null);
-  const [modal,    setModal]    = useState(null); // \"perpanjang\" | \"checkout\"
-  const [search,   setSearch]   = useState(\"\");
+  const [modal,    setModal]    = useState(null); // "perpanjang" | "checkout"
+  const [search,   setSearch]   = useState("");
 
-  const isAdmin = user?.role === \"superadmin\" || user?.role === \"admin\";
+  const isAdmin = user?.role === "superadmin" || user?.role === "admin";
 
   // Filter
   const filtered = penyewaList.filter(p => {
     const sisa = hariSisa(p.kontrakSelesai);
-    if (tab === \"mau-habis\" && !(sisa !== null && sisa >= 0 && sisa <= 30)) return false;
-    if (tab === \"terlambat\" && !(sisa !== null && sisa < 0)) return false;
+    if (tab === "mau-habis" && !(sisa !== null && sisa >= 0 && sisa <= 30)) return false;
+    if (tab === "terlambat" && !(sisa !== null && sisa < 0)) return false;
     if (search) {
       const q = search.toLowerCase();
       return p.nama?.toLowerCase().includes(q) || String(p.kamarId).includes(q);
@@ -535,39 +534,39 @@ export default function Checkout({ user }) {
   };
 
   return (
-    <div className=\"co-wrap\">
+    <div className="co-wrap">
       <StyleInjector />
 
       {/* Cards */}
-      <div className=\"co-cards\">
+      <div className="co-cards">
         {[
-          { label: \"Total Penyewa\",   val: penyewaList.length || \"\u2014\",  color: \"#3b82f6\", sub: \"Kontrak aktif\" },
-          { label: \"Kontrak \u2264 30hr\", val: mauHabis  || (penyewaList.length?\"0\":\"\u2014\"), color: \"#f59e0b\", sub: \"Perlu tindakan\" },
-          { label: \"Terlambat\",      val: terlambat || (penyewaList.length?\"0\":\"\u2014\"), color: \"#ef4444\", sub: \"Melewati kontrak\" },
-          { label: \"Perlu Diproses\", val: (mauHabis + terlambat) || (penyewaList.length?\"0\":\"\u2014\"), color: \"#f97316\", sub: \"Perpanjang / checkout\" },
+          { label: "Total Penyewa",   val: penyewaList.length || "\u2014",  color: "#3b82f6", sub: "Kontrak aktif" },
+          { label: "Kontrak \u2264 30hr", val: mauHabis  || (penyewaList.length?"0":"\u2014"), color: "#f59e0b", sub: "Perlu tindakan" },
+          { label: "Terlambat",      val: terlambat || (penyewaList.length?"0":"\u2014"), color: "#ef4444", sub: "Melewati kontrak" },
+          { label: "Perlu Diproses", val: (mauHabis + terlambat) || (penyewaList.length?"0":"\u2014"), color: "#f97316", sub: "Perpanjang / checkout" },
         ].map((c, i) => (
-          <div key={i} className=\"co-card\">
-            <div className=\"co-card-bar\" style={{ background: c.color }} />
-            <div className=\"co-card-label\">{c.label}</div>
-            <div className=\"co-card-val\">{c.val}</div>
-            <div className=\"co-card-sub\">{c.sub}</div>
+          <div key={i} className="co-card">
+            <div className="co-card-bar" style={{ background: c.color }} />
+            <div className="co-card-label">{c.label}</div>
+            <div className="co-card-val">{c.val}</div>
+            <div className="co-card-sub">{c.sub}</div>
           </div>
         ))}
       </div>
 
       {/* Layout */}
-      <div className=\"co-layout\">
+      <div className="co-layout">
 
         {/* List */}
-        <div className=\"co-widget\">
-          <div className=\"co-widget-head\">
-            <div className=\"co-widget-title\">\ud83d\udd11 Manajemen Kontrak</div>
-            <div style={{ display: \"flex\", alignItems: \"center\", gap: 8 }}>
-              <div style={{ display: \"flex\", alignItems: \"center\", gap: 6, background: \"#f9fafb\", border: \"1px solid #e5e7eb\", borderRadius: 8, padding: \"5px 10px\" }}>
+        <div className="co-widget">
+          <div className="co-widget-head">
+            <div className="co-widget-title">\ud83d\udd11 Manajemen Kontrak</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#f9fafb", border: "1px solid #e5e7eb", borderRadius: 8, padding: "5px 10px" }}>
                 <span style={{ fontSize: 13 }}>\ud83d\udd0d</span>
                 <input
-                  style={{ border: \"none\", outline: \"none\", background: \"transparent\", fontSize: 12, color: \"#1f2937\", width: 140, fontFamily: \"inherit\" }}
-                  placeholder=\"Cari penyewa...\"
+                  style={{ border: "none", outline: "none", background: "transparent", fontSize: 12, color: "#1f2937", width: 140, fontFamily: "inherit" }}
+                  placeholder="Cari penyewa..."
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                 />
@@ -576,49 +575,49 @@ export default function Checkout({ user }) {
           </div>
 
           {/* Tabs */}
-          <div className=\"co-tabs\">
+          <div className="co-tabs">
             {[
-              { id: \"semua\",      label: `Semua (${penyewaList.length})` },
-              { id: \"mau-habis\",  label: `\u26a0\ufe0f Mau Habis (${mauHabis})` },
-              { id: \"terlambat\",  label: `\ud83d\udd34 Terlambat (${terlambat})` },
+              { id: "semua",      label: `Semua (${penyewaList.length})` },
+              { id: "mau-habis",  label: `\u26a0\ufe0f Mau Habis (${mauHabis})` },
+              { id: "terlambat",  label: `\ud83d\udd34 Terlambat (${terlambat})` },
             ].map(t => (
-              <div key={t.id} className={`co-tab ${tab===t.id?\"active\":\"\"}`} onClick={() => setTab(t.id)}>
+              <div key={t.id} className={`co-tab ${tab===t.id?"active":""}`} onClick={() => setTab(t.id)}>
                 {t.label}
               </div>
             ))}
           </div>
 
           {/* List */}
-          <div className=\"co-widget-body\">
+          <div className="co-widget-body">
             {penyewaList.length === 0 ? (
-              <div className=\"co-empty\">
-                <div className=\"co-empty-icon\">\ud83d\udd11</div>
-                <div className=\"co-empty-title\">Belum ada data penyewa</div>
-                <div className=\"co-empty-sub\">Data akan muncul setelah Check-in di Data Penyewa</div>
+              <div className="co-empty">
+                <div className="co-empty-icon">\ud83d\udd11</div>
+                <div className="co-empty-title">Belum ada data penyewa</div>
+                <div className="co-empty-sub">Data akan muncul setelah Check-in di Data Penyewa</div>
               </div>
             ) : filtered.length === 0 ? (
-              <div className=\"co-empty\">
-                <div className=\"co-empty-icon\">\u2705</div>
-                <div className=\"co-empty-title\">Tidak ada penyewa di kategori ini</div>
-                <div className=\"co-empty-sub\">Semua kontrak dalam kondisi aman</div>
+              <div className="co-empty">
+                <div className="co-empty-icon">\u2705</div>
+                <div className="co-empty-title">Tidak ada penyewa di kategori ini</div>
+                <div className="co-empty-sub">Semua kontrak dalam kondisi aman</div>
               </div>
             ) : (
               filtered.map(p => {
                 const sisa = hariSisa(p.kontrakSelesai);
                 return (
-                  <div key={p.id} className={`co-item ${selected?.id===p.id?\"selected\":\"\"}`} onClick={() => setSelected(p)}>
-                    <div className=\"co-avatar\">{getInisial(p.nama)}</div>
-                    <div className=\"co-item-info\">
-                      <div className=\"co-item-name\">{p.nama}</div>
-                      <div className=\"co-item-meta\">
+                  <div key={p.id} className={`co-item ${selected?.id===p.id?"selected":""}`} onClick={() => setSelected(p)}>
+                    <div className="co-avatar">{getInisial(p.nama)}</div>
+                    <div className="co-item-info">
+                      <div className="co-item-name">{p.nama}</div>
+                      <div className="co-item-meta">
                         <span>\ud83d\udcc5 {p.kontrakMulai} \u2192 {p.kontrakSelesai}</span>
                         {p.partner?.length > 0 && <span>\ud83d\udc65 +{p.partner.length}</span>}
                       </div>
                     </div>
-                    <div className=\"co-item-right\">
-                      <div className=\"co-item-kamar\">K{padD(p.kamarId)}</div>
+                    <div className="co-item-right">
+                      <div className="co-item-kamar">K{padD(p.kamarId)}</div>
                       {sisa !== null && (
-                        <div className=\"co-item-sisa\" style={{ color: sisa<0?\"#dc2626\":sisa<=7?\"#dc2626\":sisa<=30?\"#d97706\":\"#9ca3af\" }}>
+                        <div className="co-item-sisa" style={{ color: sisa<0?"#dc2626":sisa<=7?"#dc2626":sisa<=30?"#d97706":"#9ca3af" }}>
                           {sisa<0 ? `+${Math.abs(sisa)}h` : `${sisa}h lagi`}
                         </div>
                       )}
@@ -635,16 +634,16 @@ export default function Checkout({ user }) {
           <ActionPanel
             penyewa={selected}
             kamarList={kamarList}
-            onPerpanjang={() => setModal(\"perpanjang\")}
-            onCheckout={()  => setModal(\"checkout\")}
+            onPerpanjang={() => setModal("perpanjang")}
+            onCheckout={()  => setModal("checkout")}
             onClose={() => setSelected(null)}
           />
         ) : (
-          <div className=\"co-widget\">
-            <div className=\"co-empty\" style={{ padding: \"60px 20px\" }}>
-              <div className=\"co-empty-icon\">\ud83d\udd11</div>
-              <div className=\"co-empty-title\">Pilih penyewa</div>
-              <div className=\"co-empty-sub\">Klik nama untuk proses perpanjang atau check-out</div>
+          <div className="co-widget">
+            <div className="co-empty" style={{ padding: "60px 20px" }}>
+              <div className="co-empty-icon">\ud83d\udd11</div>
+              <div className="co-empty-title">Pilih penyewa</div>
+              <div className="co-empty-sub">Klik nama untuk proses perpanjang atau check-out</div>
             </div>
           </div>
         )}
@@ -652,7 +651,7 @@ export default function Checkout({ user }) {
       </div>
 
       {/* Modals */}
-      {selected && modal === \"perpanjang\" && (
+      {selected && modal === "perpanjang" && (
         <ModalPerpanjang
           penyewa={selected}
           kamarList={kamarList}
@@ -660,7 +659,7 @@ export default function Checkout({ user }) {
           onSave={handlePerpanjang}
         />
       )}
-      {selected && modal === \"checkout\" && (
+      {selected && modal === "checkout" && (
         <ModalCheckout
           penyewa={selected}
           kamarList={kamarList}

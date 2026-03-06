@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 const CSS = `
   .ab-wrap { display: flex; flex-direction: column; gap: 16px; }
 
-  /* ─── TOP CARDS ──────────────────────────── */
+  /* \u2500\u2500\u2500 TOP CARDS \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
   .ab-card {
     background: #fff; border-radius: 12px; border: 1px solid #e5e7eb;
@@ -17,10 +17,10 @@ const CSS = `
   .ab-card-val { font-size: 22px; font-weight: 700; color: #111827; font-family: 'JetBrains Mono', monospace; }
   .ab-card-sub { font-size: 11px; color: #6b7280; margin-top: 3px; }
 
-  /* ─── LAYOUT ─────────────────────────────── */
+  /* \u2500\u2500\u2500 LAYOUT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-layout { display: grid; grid-template-columns: 1fr 340px; gap: 14px; }
 
-  /* ─── WIDGET ─────────────────────────────── */
+  /* \u2500\u2500\u2500 WIDGET \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-widget {
     background: #fff; border-radius: 12px; border: 1px solid #e5e7eb;
     display: flex; flex-direction: column; overflow: hidden;
@@ -34,7 +34,7 @@ const CSS = `
   .ab-widget-action:hover { background: #fff7ed; }
   .ab-widget-body { padding: 14px 16px; flex: 1; }
 
-  /* ─── JADWAL BULAN ───────────────────────── */
+  /* \u2500\u2500\u2500 JADWAL BULAN \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-period {
     display: flex; align-items: center; gap: 8px;
     background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;
@@ -47,7 +47,7 @@ const CSS = `
   }
   .ab-period-btn:hover { background: #f3f4f6; }
 
-  /* ─── TABLE ABSENSI ──────────────────────── */
+  /* \u2500\u2500\u2500 TABLE ABSENSI \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-table-wrap { overflow-x: auto; }
   .ab-table {
     width: 100%; border-collapse: collapse; font-size: 11px;
@@ -92,7 +92,7 @@ const CSS = `
 
   .ab-rekap-cell { font-size: 10px; font-weight: 600; color: #374151; }
 
-  /* ─── CLOCK-IN PANEL ─────────────────────── */
+  /* \u2500\u2500\u2500 CLOCK-IN PANEL \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-clockin-card {
     background: linear-gradient(135deg, #fff7ed, #fff);
     border: 1.5px solid #fed7aa; border-radius: 12px; padding: 18px;
@@ -132,7 +132,7 @@ const CSS = `
   .ab-gps.invalid { color: #dc2626; }
   .ab-gps.loading { color: #9ca3af; }
 
-  /* ─── LOG CLOCKIN ────────────────────────── */
+  /* \u2500\u2500\u2500 LOG CLOCKIN \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-log-item {
     display: flex; align-items: center; gap: 9px;
     padding: 8px 0; border-bottom: 1px solid #f3f4f6;
@@ -144,7 +144,7 @@ const CSS = `
   .ab-log-time { font-size: 10px; color: #9ca3af; font-family: 'JetBrains Mono', monospace; }
   .ab-log-kode { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 6px; }
 
-  /* ─── LEMBUR INPUT ───────────────────────── */
+  /* \u2500\u2500\u2500 LEMBUR INPUT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-lembur-form {
     background: #f9fafb; border-radius: 10px; padding: 12px 14px;
   }
@@ -162,13 +162,13 @@ const CSS = `
     color: #fff; border: none; cursor: pointer; white-space: nowrap; font-family: inherit;
   }
 
-  /* ─── EMPTY ──────────────────────────────── */
+  /* \u2500\u2500\u2500 EMPTY \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   .ab-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 16px; color: #9ca3af; text-align: center; gap: 6px; }
   .ab-empty-icon { font-size: 32px; opacity: 0.4; }
   .ab-empty-text { font-size: 12px; }
   .ab-empty-hint { font-size: 11px; color: #f97316; }
 
-  /* ─── RESPONSIVE ─────────────────────────── */
+  /* \u2500\u2500\u2500 RESPONSIVE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   @media (max-width: 1024px) {
     .ab-layout { grid-template-columns: 1fr; }
     .ab-cards { grid-template-columns: repeat(2, 1fr); }
@@ -205,7 +205,7 @@ const KODE_CFG = {
   SKT: { label: "SKT", title: "Sakit",             color: "#dc2626", bg: "#fee2e2" },
   LS:  { label: "LS",  title: "Lembur Tambahan",   color: "#d97706", bg: "#fef3c7" },
   IN:  { label: "IN",  title: "Masuk (checklist)", color: "#16a34a", bg: "#dcfce7" },
-  "—": { label: "—",   title: "Belum diisi",       color: "#d1d5db", bg: "#f9fafb" },
+  "\u2014": { label: "\u2014",   title: "Belum diisi",       color: "#d1d5db", bg: "#f9fafb" },
 };
 
 const BULAN_NAMES = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
@@ -290,41 +290,41 @@ function ClockinPanel({ user, staffList, clockinLog, onClockin }) {
 
         {/* GPS Status */}
         {!profil.lat ? (
-          <div className="ab-gps loading">📍 Titik GPS belum dikonfigurasi</div>
+          <div className="ab-gps loading">\ud83d\udccd Titik GPS belum dikonfigurasi</div>
         ) : gpsStatus === "idle" ? (
-          <div className="ab-gps loading" style={{ cursor: "pointer" }} onClick={check}>📍 Tap untuk cek lokasi</div>
+          <div className="ab-gps loading" style={{ cursor: "pointer" }} onClick={check}>\ud83d\udccd Tap untuk cek lokasi</div>
         ) : gpsStatus === "loading" ? (
-          <div className="ab-gps loading">📍 Mengecek lokasi...</div>
+          <div className="ab-gps loading">\ud83d\udccd Mengecek lokasi...</div>
         ) : gpsStatus === "valid" ? (
-          <div className="ab-gps valid">✅ Dalam radius kost ({dist}m)</div>
+          <div className="ab-gps valid">\u2705 Dalam radius kost ({dist}m)</div>
         ) : gpsStatus === "invalid" ? (
-          <div className="ab-gps invalid">❌ Di luar radius ({dist}m dari kost)</div>
+          <div className="ab-gps invalid">\u274c Di luar radius ({dist}m dari kost)</div>
         ) : (
-          <div className="ab-gps invalid">❌ Gagal mendapatkan lokasi</div>
+          <div className="ab-gps invalid">\u274c Gagal mendapatkan lokasi</div>
         )}
 
         {/* Status hari ini */}
         <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 12 }}>
           <div className="ab-clockin-status" style={{ background: sudahIn ? "#dcfce7" : "#f3f4f6", color: sudahIn ? "#16a34a" : "#9ca3af" }}>
-            {sudahIn ? "✅" : "○"} Clock In
+            {sudahIn ? "\u2705" : "\u25cb"} Clock In
           </div>
           <div className="ab-clockin-status" style={{ background: sudahOut ? "#fee2e2" : "#f3f4f6", color: sudahOut ? "#dc2626" : "#9ca3af" }}>
-            {sudahOut ? "✅" : "○"} Clock Out
+            {sudahOut ? "\u2705" : "\u25cb"} Clock Out
           </div>
         </div>
 
         {/* Tombol */}
         {!sudahIn ? (
           <button className="ab-clockin-btn in" onClick={() => handleClockin("in")}>
-            ▶ Clock In Sekarang
+            \u25b6 Clock In Sekarang
           </button>
         ) : !sudahOut ? (
           <button className="ab-clockin-btn out" onClick={() => handleClockin("out")}>
-            ■ Clock Out Sekarang
+            \u25a0 Clock Out Sekarang
           </button>
         ) : (
           <button className="ab-clockin-btn in" disabled>
-            ✅ Absensi Selesai Hari Ini
+            \u2705 Absensi Selesai Hari Ini
           </button>
         )}
       </div>
@@ -332,7 +332,7 @@ function ClockinPanel({ user, staffList, clockinLog, onClockin }) {
       {/* Log hari ini */}
       <div className="ab-widget" style={{ marginBottom: 14 }}>
         <div className="ab-widget-head">
-          <div className="ab-widget-title">📋 Log Absensi Hari Ini</div>
+          <div className="ab-widget-title">\ud83d\udccb Log Absensi Hari Ini</div>
         </div>
         <div className="ab-widget-body">
           {logToday.length === 0 ? (
@@ -368,7 +368,7 @@ function TabelJadwal({ staffList, jadwalData, periodeYear, periodeMonth, onKodeC
     ? today.getDate() : -1;
 
   const getKode = (staffId, day) => {
-    return jadwalData[`${staffId}_${periodeYear}_${padDate(periodeMonth+1)}_${padDate(day)}`] || "—";
+    return jadwalData[`${staffId}_${periodeYear}_${padDate(periodeMonth+1)}_${padDate(day)}`] || "\u2014";
   };
 
   const countKode = (staffId, kode) => {
@@ -376,15 +376,15 @@ function TabelJadwal({ staffList, jadwalData, periodeYear, periodeMonth, onKodeC
       .filter(d => getKode(staffId, d) === kode).length;
   };
 
-  const KODE_OPTIONS = Object.keys(KODE_CFG).filter(k => k !== "—");
+  const KODE_OPTIONS = Object.keys(KODE_CFG).filter(k => k !== "\u2014");
 
   return (
     <div className="ab-table-wrap">
       {staffList.length === 0 ? (
         <div className="ab-empty">
-          <div className="ab-empty-icon">👤</div>
+          <div className="ab-empty-icon">\ud83d\udc64</div>
           <div className="ab-empty-text">Belum ada data staff</div>
-          <div className="ab-empty-hint">Tambah staff di HR → Data Karyawan</div>
+          <div className="ab-empty-hint">Tambah staff di HR \u2192 Data Karyawan</div>
         </div>
       ) : (
         <table className="ab-table">
@@ -420,7 +420,7 @@ function TabelJadwal({ staffList, jadwalData, periodeYear, periodeMonth, onKodeC
                 {Array.from({ length: daysInMonth }, (_, i) => {
                   const d = i + 1;
                   const kode = getKode(staff.id, d);
-                  const cfg  = KODE_CFG[kode] || KODE_CFG["—"];
+                  const cfg  = KODE_CFG[kode] || KODE_CFG["\u2014"];
                   const isToday = d === todayD;
                   return (
                     <td key={d} className={isToday ? "ab-today-col" : ""}>
@@ -461,17 +461,17 @@ function TabelJadwal({ staffList, jadwalData, periodeYear, periodeMonth, onKodeC
 // ============================================================
 // MAIN
 // ============================================================
-export default function Absensi({ user, globalData = {} }) {
+export default function Absensi({ user }) {
   const isAdmin = user?.role === "superadmin" || user?.role === "admin";
 
   const [periodeMonth, setPeriodeMonth] = useState(today.getMonth());
   const [periodeYear,  setPeriodeYear]  = useState(today.getFullYear());
-  const [jadwalData,   setJadwalData]   = useState({});   // key: staffId_Y_M_D → kode
+  const [jadwalData,   setJadwalData]   = useState({});   // key: staffId_Y_M_D \u2192 kode
   const [clockinLog,   setClockinLog]   = useState([]);   // [{userId, nama, tipe, tanggal, jam}]
   const [lemburStaff,  setLemburStaff]  = useState("");
   const [lemburNom,    setLemburNom]    = useState("");
 
-  // Kosong — dari Supabase nanti
+  // Kosong \u2014 dari Supabase nanti
   const staffList = [];
 
   // Stats
@@ -504,10 +504,10 @@ export default function Absensi({ user, globalData = {} }) {
       {/* Cards */}
       <div className="ab-cards">
         {[
-          { label: "Total Staff Aktif", val: staffList.length || "—", sub: "Terdaftar di sistem", color: "#3b82f6" },
-          { label: "Hadir Bulan Ini",   val: hadir || "—",            sub: "Clock-in tercatat",  color: "#16a34a" },
-          { label: "Staff Masuk Hari Ini", val: clockinLog.filter(l => l.tanggal === `${periodeYear}-${padDate(periodeMonth+1)}-${padDate(today.getDate())}` && l.tipe === "in").length || "—", sub: "Sudah clock-in", color: "#f97316" },
-          { label: "Lembur Bulan Ini",  val: "—",                    sub: "Total shift lembur",  color: "#8b5cf6" },
+          { label: "Total Staff Aktif", val: staffList.length || "\u2014", sub: "Terdaftar di sistem", color: "#3b82f6" },
+          { label: "Hadir Bulan Ini",   val: hadir || "\u2014",            sub: "Clock-in tercatat",  color: "#16a34a" },
+          { label: "Staff Masuk Hari Ini", val: clockinLog.filter(l => l.tanggal === `${periodeYear}-${padDate(periodeMonth+1)}-${padDate(today.getDate())}` && l.tipe === "in").length || "\u2014", sub: "Sudah clock-in", color: "#f97316" },
+          { label: "Lembur Bulan Ini",  val: "\u2014",                    sub: "Total shift lembur",  color: "#8b5cf6" },
         ].map((c, i) => (
           <div key={i} className="ab-card">
             <div className="ab-card-bar" style={{ background: c.color }} />
@@ -524,7 +524,7 @@ export default function Absensi({ user, globalData = {} }) {
         {/* Tabel Jadwal */}
         <div className="ab-widget">
           <div className="ab-widget-head">
-            <div className="ab-widget-title">🗓️ Jadwal & Absensi Staff</div>
+            <div className="ab-widget-title">\ud83d\uddd3\ufe0f Jadwal & Absensi Staff</div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               {isAdmin && (
                 <button className="ab-widget-action" style={{ background: "#f97316", color: "#fff", borderRadius: 7, padding: "5px 10px", border: "none", cursor: "pointer", fontSize: 11, fontWeight: 600 }}>
@@ -532,9 +532,9 @@ export default function Absensi({ user, globalData = {} }) {
                 </button>
               )}
               <div className="ab-period">
-                <button className="ab-period-btn" onClick={prevMonth}>‹</button>
+                <button className="ab-period-btn" onClick={prevMonth}>\u2039</button>
                 <span>{BULAN_NAMES[periodeMonth]} {periodeYear}</span>
-                <button className="ab-period-btn" onClick={nextMonth}>›</button>
+                <button className="ab-period-btn" onClick={nextMonth}>\u203a</button>
               </div>
             </div>
           </div>
@@ -542,7 +542,7 @@ export default function Absensi({ user, globalData = {} }) {
 
             {/* Legenda Kode */}
             <div style={{ padding: "0 14px 10px", display: "flex", gap: 6, flexWrap: "wrap" }}>
-              {Object.entries(KODE_CFG).filter(([k]) => k !== "—").map(([k, v]) => (
+              {Object.entries(KODE_CFG).filter(([k]) => k !== "\u2014").map(([k, v]) => (
                 <div key={k} style={{ display: "flex", alignItems: "center", gap: 3, fontSize: 10, color: "#6b7280" }}>
                   <span style={{ background: v.bg, color: v.color, borderRadius: 4, padding: "1px 5px", fontWeight: 700, fontSize: 9 }}>{k}</span>
                   <span>{v.title}</span>
@@ -575,12 +575,12 @@ export default function Absensi({ user, globalData = {} }) {
           ) : (
             <div className="ab-widget">
               <div className="ab-widget-head">
-                <div className="ab-widget-title">📋 Log Absensi Hari Ini</div>
+                <div className="ab-widget-title">\ud83d\udccb Log Absensi Hari Ini</div>
               </div>
               <div className="ab-widget-body">
                 {clockinLog.filter(l => l.tanggal === `${today.getFullYear()}-${padDate(today.getMonth()+1)}-${padDate(today.getDate())}`).length === 0 ? (
                   <div className="ab-empty">
-                    <div className="ab-empty-icon">📋</div>
+                    <div className="ab-empty-icon">\ud83d\udccb</div>
                     <div className="ab-empty-text">Belum ada absensi hari ini</div>
                   </div>
                 ) : (
@@ -607,7 +607,7 @@ export default function Absensi({ user, globalData = {} }) {
           {isAdmin && (
             <div className="ab-widget">
               <div className="ab-widget-head">
-                <div className="ab-widget-title">➕ Input Lembur Tambahan</div>
+                <div className="ab-widget-title">\u2795 Input Lembur Tambahan</div>
               </div>
               <div className="ab-widget-body">
                 <div className="ab-lembur-form">
@@ -631,29 +631,13 @@ export default function Absensi({ user, globalData = {} }) {
                     className="ab-lembur-btn"
                     style={{ width: "100%" }}
                     disabled={!lemburStaff || !lemburNom}
-                    onClick={() => {
-                      if (!lemburStaff || !lemburNom) return;
-                      const nom = parseInt(String(lemburNom).replace(/\D/g,"")) || 0;
-                      if (nom <= 0) return;
-                      const tgl = new Date().toISOString().slice(0,10);
-                      const staff = karyawanList.find(k=>String(k.id)===String(lemburStaff));
-                      // Catat ke kas jurnal
-                      setKasJurnal(prev=>[...prev,{
-                        id: "KJ-LBR-"+Date.now(),
-                        tanggal: tgl,
-                        tipe: "pengeluaran",
-                        kategori: "Gaji & Insentif",
-                        nominal: nom,
-                        keterangan: "Lembur "+(staff?.nama||lemburStaff)+" — "+tgl,
-                      }]);
-                      setLemburStaff(""); setLemburNom("");
-                    }}
+                    onClick={() => { alert("Lembur disimpan!"); setLemburStaff(""); setLemburNom(""); }}
                   >
                     Simpan Lembur
                   </button>
                 </div>
                 <div style={{ marginTop: 10, padding: "8px 12px", background: "#f9fafb", borderRadius: 8, fontSize: 11, color: "#9ca3af" }}>
-                  ℹ️ Input nominal langsung tanpa approval. Akan masuk ke slip gaji bulan berjalan.
+                  \u2139\ufe0f Input nominal langsung tanpa approval. Akan masuk ke slip gaji bulan berjalan.
                 </div>
               </div>
             </div>
@@ -662,10 +646,10 @@ export default function Absensi({ user, globalData = {} }) {
           {/* Kode Legenda ringkas */}
           <div className="ab-widget">
             <div className="ab-widget-head">
-              <div className="ab-widget-title">📖 Kode Absensi</div>
+              <div className="ab-widget-title">\ud83d\udcd6 Kode Absensi</div>
             </div>
             <div className="ab-widget-body">
-              {Object.entries(KODE_CFG).filter(([k]) => k !== "—").map(([k, v]) => (
+              {Object.entries(KODE_CFG).filter(([k]) => k !== "\u2014").map(([k, v]) => (
                 <div key={k} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
                   <div style={{ background: v.bg, color: v.color, borderRadius: 5, padding: "2px 7px", fontSize: 10, fontWeight: 700, minWidth: 32, textAlign: "center" }}>{k}</div>
                   <div style={{ fontSize: 12, color: "#4b5563" }}>{v.title}</div>

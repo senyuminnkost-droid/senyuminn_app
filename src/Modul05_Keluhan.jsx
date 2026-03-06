@@ -4,189 +4,186 @@ import { useState, useEffect } from "react";
 // CSS
 // ============================================================
 const CSS = `
-  .kl-wrap { display: flex; flex-direction: column; gap: 16px; }
+  .ws-wrap { display: flex; flex-direction: column; gap: 16px; }
 
-  /* ─── TOP CARDS ──────────────────────────── */
-  .kl-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-  .kl-card {
+  /* \u2500\u2500\u2500 TOP CARDS \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  .ws-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .ws-card {
     background: #fff; border-radius: 12px; border: 1px solid #e5e7eb;
     padding: 14px 16px; position: relative; overflow: hidden;
   }
-  .kl-card-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
-  .kl-card-label { font-size: 10px; font-weight: 500; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; margin-top: 8px; }
-  .kl-card-val { font-size: 22px; font-weight: 700; color: #111827; font-family: 'JetBrains Mono', monospace; }
-  .kl-card-sub { font-size: 11px; color: #6b7280; margin-top: 3px; }
+  .ws-card-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .ws-card-label { font-size: 10px; font-weight: 500; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; margin-top: 8px; }
+  .ws-card-val { font-size: 22px; font-weight: 700; color: #111827; font-family: 'JetBrains Mono', monospace; }
+  .ws-card-sub { font-size: 11px; color: #6b7280; margin-top: 3px; }
 
-  /* ─── LAYOUT ─────────────────────────────── */
-  .kl-layout { display: grid; grid-template-columns: 1fr 320px; gap: 14px; align-items: start; }
+  /* \u2500\u2500\u2500 LAYOUT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  .ws-layout { display: grid; grid-template-columns: 1fr 320px; gap: 14px; align-items: start; }
 
-  /* ─── WIDGET ─────────────────────────────── */
-  .kl-widget {
+  /* \u2500\u2500\u2500 WIDGET \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  .ws-widget {
     background: #fff; border-radius: 12px; border: 1px solid #e5e7eb;
     display: flex; flex-direction: column; overflow: hidden;
   }
-  .kl-widget-head {
+  .ws-widget-head {
     padding: 13px 16px 10px; border-bottom: 1px solid #f3f4f6;
     display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
   }
-  .kl-widget-title { font-size: 12px; font-weight: 600; color: #111827; display: flex; align-items: center; gap: 6px; }
-  .kl-widget-body { padding: 0; flex: 1; }
+  .ws-widget-title { font-size: 12px; font-weight: 600; color: #111827; display: flex; align-items: center; gap: 6px; }
+  .ws-widget-body { padding: 14px 16px; flex: 1; }
 
-  /* ─── FILTER BAR ─────────────────────────── */
-  .kl-filterbar {
-    display: flex; align-items: center; gap: 8px; padding: 12px 16px;
-    border-bottom: 1px solid #f3f4f6; flex-wrap: wrap;
+  /* \u2500\u2500\u2500 PERIODE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  .ws-period {
+    display: flex; align-items: center; gap: 8px;
+    background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;
+    padding: 5px 10px; font-size: 12px; font-weight: 600; color: #111827;
   }
-  .kl-search {
-    display: flex; align-items: center; gap: 7px;
-    background: #f9fafb; border: 1.5px solid #e5e7eb;
-    border-radius: 8px; padding: 6px 11px; flex: 1; max-width: 240px;
-    transition: border-color 0.12s;
+  .ws-period-btn {
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 6px;
+    padding: 3px 8px; cursor: pointer; font-size: 12px; color: #6b7280; transition: all 0.12s;
   }
-  .kl-search:focus-within { border-color: #f97316; background: #fff; }
-  .kl-search-input { border: none; outline: none; background: transparent; font-size: 12px; color: #1f2937; width: 100%; font-family: inherit; }
-  .kl-search-input::placeholder { color: #9ca3af; }
-  .kl-tag {
-    padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
-    cursor: pointer; border: 1.5px solid #e5e7eb; color: #6b7280; background: #fff;
-    transition: all 0.12s; white-space: nowrap;
-  }
-  .kl-tag:hover { border-color: #fed7aa; color: #ea580c; }
-  .kl-tag.active { background: #111827; border-color: #111827; color: #fff; font-weight: 600; }
-  .kl-tag.urgent { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
+  .ws-period-btn:hover { background: #f3f4f6; }
 
-  /* ─── TIKET LIST ─────────────────────────── */
-  .kl-tiket-item {
-    padding: 13px 16px; border-bottom: 1px solid #f3f4f6;
-    cursor: pointer; transition: background 0.1s; position: relative;
+  /* \u2500\u2500\u2500 JADWAL GRID \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  .ws-jadwal-grid { display: flex; flex-direction: column; gap: 8px; }
+  .ws-jadwal-row {
+    display: grid; grid-template-columns: 100px 1fr auto;
+    align-items: center; gap: 12px;
+    padding: 10px 14px; border-radius: 10px; border: 1.5px solid #e5e7eb;
+    background: #fff; transition: all 0.12s;
   }
-  .kl-tiket-item:last-child { border-bottom: none; }
-  .kl-tiket-item:hover { background: #fafafa; }
-  .kl-tiket-item.selected { background: #fff7ed; border-left: 3px solid #f97316; }
+  .ws-jadwal-row:hover { border-color: #fed7aa; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .ws-jadwal-row.today { border-color: #f97316; background: #fff7ed; }
+  .ws-jadwal-row.done  { border-color: #86efac; background: #f0fdf4; }
+  .ws-jadwal-row.empty { border-style: dashed; background: #fafafa; }
 
-  .kl-tiket-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 5px; }
-  .kl-tiket-id { font-size: 10px; font-weight: 600; color: #9ca3af; font-family: 'JetBrains Mono', monospace; }
-  .kl-tiket-kat { font-size: 13px; font-weight: 600; color: #1f2937; margin-bottom: 2px; }
-  .kl-tiket-desc { font-size: 11px; color: #6b7280; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 340px; }
-  .kl-tiket-meta { display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
-  .kl-tiket-kamar { font-size: 11px; font-weight: 600; color: #374151; background: #f3f4f6; padding: 1px 7px; border-radius: 6px; }
-  .kl-tiket-tgl { font-size: 10px; color: #9ca3af; font-family: 'JetBrains Mono', monospace; }
+  .ws-jadwal-date { font-size: 12px; font-weight: 600; color: #374151; font-family: 'JetBrains Mono', monospace; }
+  .ws-jadwal-day  { font-size: 10px; color: #9ca3af; margin-top: 1px; }
+  .ws-jadwal-kamar { display: flex; gap: 6px; flex-wrap: wrap; }
+  .ws-kamar-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa;
+  }
+  .ws-kamar-chip.done { background: #dcfce7; color: #16a34a; border-color: #86efac; }
+  .ws-kamar-chip.skip { background: #f3f4f6; color: #9ca3af; border-color: #e5e7eb; text-decoration: line-through; }
 
-  .kl-badge {
+  .ws-jadwal-actions { display: flex; gap: 6px; align-items: center; }
+  .ws-badge {
     display: inline-flex; align-items: center; gap: 3px;
     padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600;
-    white-space: nowrap;
   }
 
-  /* ─── DETAIL PANEL ───────────────────────── */
-  .kl-detail { padding: 16px; }
-  .kl-detail-head { margin-bottom: 14px; }
-  .kl-detail-id { font-size: 10px; font-weight: 600; color: #9ca3af; font-family: 'JetBrains Mono', monospace; margin-bottom: 4px; }
-  .kl-detail-kat { font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 6px; }
-  .kl-detail-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-  .kl-detail-section { margin-bottom: 14px; }
-  .kl-detail-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #9ca3af; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-  .kl-detail-label::after { content: ''; flex: 1; height: 1px; background: #f3f4f6; }
-  .kl-detail-desc { font-size: 13px; color: #374151; background: #f9fafb; border-radius: 8px; padding: 10px 12px; line-height: 1.5; }
-  .kl-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .kl-detail-item { background: #f9fafb; border-radius: 8px; padding: 9px 11px; }
-  .kl-detail-item-key { font-size: 10px; color: #9ca3af; font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 2px; }
-  .kl-detail-item-val { font-size: 12px; font-weight: 600; color: #1f2937; }
+  /* \u2500\u2500\u2500 CHECKLIST PANEL \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  .ws-checklist { display: flex; flex-direction: column; gap: 10px; }
+  .ws-check-group { background: #f9fafb; border-radius: 10px; overflow: hidden; border: 1px solid #e5e7eb; }
+  .ws-check-group-head {
+    padding: 9px 12px; background: #fff; border-bottom: 1px solid #f3f4f6;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .ws-check-group-title { font-size: 11px; font-weight: 600; color: #374151; display: flex; align-items: center; gap: 5px; }
+  .ws-check-group-pct { font-size: 10px; font-weight: 700; color: #f97316; }
+  .ws-check-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 8px 12px; border-bottom: 1px solid #f3f4f6; cursor: pointer;
+    transition: background 0.1s;
+  }
+  .ws-check-item:last-child { border-bottom: none; }
+  .ws-check-item:hover { background: #fff; }
+  .ws-check-item.checked { opacity: 0.7; }
+  .ws-checkbox {
+    width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0;
+    border: 2px solid #d1d5db; display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s; background: #fff;
+  }
+  .ws-check-item.checked .ws-checkbox { background: #16a34a; border-color: #16a34a; }
+  .ws-check-label { font-size: 12px; color: #374151; }
+  .ws-check-item.checked .ws-check-label { text-decoration: line-through; color: #9ca3af; }
 
-  .kl-status-flow { display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
-  .kl-flow-step {
-    flex: 1; text-align: center; padding: 6px 4px; border-radius: 7px;
-    font-size: 10px; font-weight: 600; transition: all 0.12s;
-  }
-  .kl-flow-arrow { font-size: 12px; color: #d1d5db; flex-shrink: 0; }
+  /* Progress bar */
+  .ws-progress-bar { height: 4px; background: #e5e7eb; border-radius: 2px; margin: 6px 0 10px; overflow: hidden; }
+  .ws-progress-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, #f97316, #16a34a); transition: width 0.3s; }
 
-  .kl-btn-group { display: flex; flex-direction: column; gap: 7px; }
-  .kl-btn {
-    width: 100%; padding: 9px 14px; border-radius: 8px; font-size: 12px; font-weight: 600;
-    border: none; cursor: pointer; font-family: inherit; transition: all 0.15s;
-    display: flex; align-items: center; justify-content: center; gap: 5px;
-  }
-  .kl-btn.primary {
-    background: linear-gradient(135deg, #f97316, #ea580c);
-    color: #fff; box-shadow: 0 3px 10px rgba(249,115,22,0.25);
-  }
-  .kl-btn.success {
-    background: linear-gradient(135deg, #16a34a, #15803d);
-    color: #fff; box-shadow: 0 3px 10px rgba(22,163,74,0.25);
-  }
-  .kl-btn.ghost { background: #f3f4f6; color: #4b5563; }
-  .kl-btn.danger { background: #fee2e2; color: #dc2626; }
-  .kl-btn:hover { filter: brightness(0.96); transform: translateY(-1px); }
-  .kl-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-  /* ─── MODAL FORM ─────────────────────────── */
-  .kl-overlay {
+  /* \u2500\u2500\u2500 MODAL JADWAL \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  .ws-overlay {
     position: fixed; inset: 0; background: rgba(17,24,39,0.45);
     backdrop-filter: blur(3px); z-index: 200; display: flex;
     align-items: center; justify-content: center; padding: 16px;
-    animation: klFade 0.18s ease;
+    animation: wsFade 0.18s ease;
   }
-  @keyframes klFade { from { opacity: 0; } to { opacity: 1; } }
-  .kl-modal {
-    background: #fff; border-radius: 16px; width: 100%; max-width: 500px;
-    max-height: 85vh; overflow: hidden; display: flex; flex-direction: column;
+  @keyframes wsFade { from { opacity: 0; } to { opacity: 1; } }
+  .ws-modal {
+    background: #fff; border-radius: 16px; width: 100%; max-width: 540px;
+    max-height: 90vh; overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-    animation: klSlide 0.22s cubic-bezier(0.4,0,0.2,1);
+    animation: wsSlide 0.2s cubic-bezier(0.4,0,0.2,1);
   }
-  .kl-modal-body { flex: 1; overflow-y: auto; padding: 0 16px 16px; min-height: 0; }
-  @keyframes klSlide { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-  .kl-modal-head {
-    padding: 14px 18px 12px; border-bottom: 1px solid #f3f4f6;
-    display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: #fff; z-index: 1;
+  @keyframes wsSlide { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .ws-modal-head {
+    padding: 16px 20px 12px; border-bottom: 1px solid #f3f4f6;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; background: #fff; z-index: 1;
   }
-  .kl-modal-title { font-size: 15px; font-weight: 700; color: #111827; }
-  .kl-modal-close {
+  .ws-modal-title { font-size: 14px; font-weight: 700; color: #111827; }
+  .ws-modal-close {
     width: 28px; height: 28px; border-radius: 7px; background: #f3f4f6;
     border: none; cursor: pointer; font-size: 14px; color: #6b7280;
     display: flex; align-items: center; justify-content: center;
   }
-  .kl-modal-close:hover { background: #fee2e2; color: #dc2626; }
-  .kl-modal-body { padding: 18px 20px; }
-  .kl-modal-foot { padding: 12px 20px; border-top: 1px solid #f3f4f6; display: flex; gap: 8px; }
+  .ws-modal-close:hover { background: #fee2e2; color: #dc2626; }
+  .ws-modal-body { padding: 16px 20px; }
+  .ws-modal-foot { padding: 12px 20px; border-top: 1px solid #f3f4f6; display: flex; gap: 8px; }
 
-  .kl-field { margin-bottom: 10px; }
-  .kl-field-label { font-size: 11px; font-weight: 600; color: #374151; margin-bottom: 5px; display: block; }
-  .kl-field-label span { color: #ef4444; }
-  .kl-input {
+  .ws-field { margin-bottom: 14px; }
+  .ws-field-label { font-size: 11px; font-weight: 600; color: #374151; margin-bottom: 5px; display: block; }
+  .ws-input {
     width: 100%; padding: 8px 11px; border-radius: 8px;
     border: 1.5px solid #e5e7eb; font-size: 12px; font-family: inherit;
     color: #1f2937; outline: none; background: #fff; transition: border-color 0.12s;
     box-sizing: border-box;
   }
-  .kl-input:focus { border-color: #f97316; }
-  .kl-input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ws-input:focus { border-color: #f97316; }
 
-  .kl-prioritas-group { display: flex; gap: 8px; }
-  .kl-prioritas-opt {
-    flex: 1; padding: 8px; border-radius: 8px; border: 1.5px solid #e5e7eb;
-    cursor: pointer; text-align: center; transition: all 0.12s;
+  .ws-kamar-selector { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+  .ws-kamar-opt {
+    padding: 6px 4px; border-radius: 7px; border: 1.5px solid #e5e7eb;
+    text-align: center; cursor: pointer; font-size: 11px; font-weight: 600;
+    color: #6b7280; transition: all 0.12s;
   }
-  .kl-prioritas-opt.normal.selected { background: #f3f4f6; border-color: #9ca3af; }
-  .kl-prioritas-opt.medium.selected { background: #fff7ed; border-color: #fed7aa; }
-  .kl-prioritas-opt.urgent.selected { background: #fee2e2; border-color: #fca5a5; }
-  .kl-prioritas-icon { font-size: 20px; }
-  .kl-prioritas-label { font-size: 11px; font-weight: 600; margin-top: 3px; }
+  .ws-kamar-opt:hover { border-color: #fed7aa; color: #ea580c; }
+  .ws-kamar-opt.selected { background: #fff7ed; border-color: #f97316; color: #ea580c; }
+  .ws-kamar-opt.disabled { opacity: 0.4; cursor: not-allowed; }
+  .ws-kamar-count { font-size: 10px; color: #9ca3af; margin-top: 2px; }
 
-  /* ─── EMPTY ──────────────────────────────── */
-  .kl-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px 16px; color: #9ca3af; text-align: center; gap: 8px; }
-  .kl-empty-icon { font-size: 36px; opacity: 0.4; }
-  .kl-empty-title { font-size: 14px; font-weight: 600; color: #374151; }
-  .kl-empty-sub { font-size: 12px; }
+  .ws-btn {
+    flex: 1; padding: 9px 14px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    border: none; cursor: pointer; font-family: inherit; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+  }
+  .ws-btn.primary { background: linear-gradient(135deg, #f97316, #ea580c); color: #fff; box-shadow: 0 3px 10px rgba(249,115,22,0.25); }
+  .ws-btn.ghost { background: #f3f4f6; color: #4b5563; }
+  .ws-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  /* ─── RESPONSIVE ─────────────────────────── */
-  @media (max-width: 1024px) { .kl-layout { grid-template-columns: 1fr; } }
-  @media (max-width: 768px)  { .kl-cards { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 480px)  { .kl-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; } .kl-input-row { grid-template-columns: 1fr; } }
+  /* \u2500\u2500\u2500 EMPTY \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  .ws-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 16px; color: #9ca3af; text-align: center; gap: 8px; }
+  .ws-empty-icon { font-size: 36px; opacity: 0.4; }
+  .ws-empty-title { font-size: 14px; font-weight: 600; color: #374151; }
+  .ws-empty-sub { font-size: 12px; }
+
+  /* \u2500\u2500\u2500 RESPONSIVE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  @media (max-width: 1024px) { .ws-layout { grid-template-columns: 1fr; } }
+  @media (max-width: 768px)  { .ws-cards { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px)  {
+    .ws-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .ws-jadwal-row { grid-template-columns: 80px 1fr; }
+    .ws-jadwal-actions { grid-column: 1 / -1; }
+    .ws-kamar-selector { grid-template-columns: repeat(4, 1fr); }
+  }
 `;
 
 function StyleInjector() {
   useEffect(() => {
-    const id = "senyuminn-keluhan-css";
+    const id = "senyuminn-weekly-css";
     if (document.getElementById(id)) return;
     const el = document.createElement("style");
     el.id = id; el.textContent = CSS;
@@ -199,326 +196,198 @@ function StyleInjector() {
 // ============================================================
 // CONFIG
 // ============================================================
-const STATUS_CFG = {
-  open:          { label: "Open",        color: "#dc2626", bg: "#fee2e2" },
-  "in-progress": { label: "In Progress", color: "#d97706", bg: "#fef3c7" },
-  ditunda:       { label: "Ditunda",     color: "#6d28d9", bg: "#ede9fe" },
-  selesai:       { label: "Selesai",     color: "#16a34a", bg: "#dcfce7" },
-};
+const BULAN_NAMES = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+const HARI_NAMES  = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
 
-const PRIORITAS_CFG = {
-  urgent: { label: "Urgent", color: "#dc2626", bg: "#fee2e2" },
-  medium: { label: "Medium", color: "#f97316", bg: "#fff7ed" },
-  normal: { label: "Normal", color: "#6b7280", bg: "#f3f4f6" },
-};
-
-const KATEGORI_LIST = [
-  "AC Bermasalah", "Air", "Listrik", "Bangunan",
-  "Elektronik", "Aksesoris Kamar Mandi", "Lemari",
-  "Kabinet", "Lainnya",
+const CHECKLIST_AREAS = [
+  { group: "\ud83c\udfe0 Per Kamar", items: ["Sapu & pel lantai", "Lap permukaan meja & lemari", "Bersihkan kamar mandi", "Ganti tempat sampah", "Cek kondisi AC", "Lap kaca & jendela"] },
+  { group: "\ud83c\udfe2 Area Umum", items: ["Selasar & tangga Lt 1-3", "Parkiran Lt 1", "Kamar mandi umum", "Langit-langit Lt 1-3", "Kantor", "Wastafel & taman"] },
+  { group: "\ud83d\uddd1\ufe0f Rutin Harian", items: ["Tempat sampah besar", "Nyalakan lampu sore", "Cek gerbang", "Buang sampah ke TPS"] },
 ];
 
-const LOKASI_LIST = ["Unit Kamar", "Fasilitas Umum"];
-
-const STATUS_FLOW = ["open", "in-progress", "ditunda", "selesai"];
-
-const fmt = (n) => "Rp " + (n || 0).toLocaleString("id-ID");
-const genId = () => "T" + Date.now().toString().slice(-5);
-const today = new Date().toISOString().slice(0, 10);
+const today = new Date();
+const padD  = (n) => String(n).padStart(2, "0");
+const fmtDate = (d) => `${d.getFullYear()}-${padD(d.getMonth()+1)}-${padD(d.getDate())}`;
+const todayStr = fmtDate(today);
 
 // ============================================================
-// FORM TIKET
+// MODAL BUAT JADWAL
 // ============================================================
-function FormTiket({ onClose, onSave, kamarList }) {
-  const [form, setForm] = useState({
-    lokasi: "Unit Kamar", kamar: "", lokasiDetail: "", kategori: "", prioritas: "normal",
-    deskripsi: "", tanggal: today,
-  });
+function ModalJadwal({ kamarList, bulanJadwal, onClose, onSave }) {
+  const [tgl,   setTgl]   = useState("");
+  const [kamar, setKamar] = useState([]);
+  const [staff, setStaff] = useState("");
 
-  const set = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
-
-  const valid = form.kategori && form.deskripsi && (form.lokasi === "Unit Kamar" ? !!form.kamar : !!form.lokasiDetail);
-
-  const handleSave = () => {
-    if (!valid) return;
-    onSave({
-      id: genId(),
-      ...form,
-      status: "open",
-      createdAt: today,
-      biaya: null,
-    });
-    onClose();
+  const toggleKamar = (id) => {
+    if (kamar.includes(id)) setKamar(k => k.filter(x => x !== id));
+    else if (kamar.length < 3) setKamar(k => [...k, id]);
   };
 
+  const valid = tgl && kamar.length > 0;
+
   return (
-    <div className="kl-overlay" onClick={onClose}>
-      <div className="kl-modal" onClick={e => e.stopPropagation()}>
-        <div className="kl-modal-head">
-          <div className="kl-modal-title">⚑ Buat Tiket Keluhan</div>
-          <button className="kl-modal-close" onClick={onClose}>✕</button>
+    <div className="ws-overlay" onClick={onClose}>
+      <div className="ws-modal" onClick={e => e.stopPropagation()}>
+        <div className="ws-modal-head">
+          <div className="ws-modal-title">\ud83d\uddd3\ufe0f Buat Jadwal Weekly Service</div>
+          <button className="ws-modal-close" onClick={onClose}>\u2715</button>
         </div>
-        <div className="kl-modal-body">
+        <div className="ws-modal-body">
 
-          {/* Lokasi */}
-          <div className="kl-field">
-            <label className="kl-field-label">Lokasi <span>*</span></label>
-            <div style={{ display: "flex", gap: 8 }}>
-              {LOKASI_LIST.map(l => (
-                <div key={l}
-                  onClick={() => set("lokasi", l)}
-                  style={{
-                    flex: 1, padding: "8px 12px", borderRadius: 8, cursor: "pointer",
-                    border: `1.5px solid ${form.lokasi === l ? "#f97316" : "#e5e7eb"}`,
-                    background: form.lokasi === l ? "#fff7ed" : "#fff",
-                    fontSize: 12, fontWeight: form.lokasi === l ? 600 : 400,
-                    color: form.lokasi === l ? "#ea580c" : "#6b7280",
-                    textAlign: "center", transition: "all 0.12s",
-                  }}>
-                  {l === "Unit Kamar" ? "🏠 Unit Kamar" : "🏢 Fasilitas Umum"}
-                </div>
-              ))}
-            </div>
+          <div className="ws-field">
+            <label className="ws-field-label">Tanggal Service</label>
+            <input type="date" className="ws-input" value={tgl} onChange={e => setTgl(e.target.value)} />
           </div>
 
-          {/* Kamar (jika Unit Kamar) */}
-          {form.lokasi === "Unit Kamar" && (
-            <div className="kl-field">
-              <label className="kl-field-label">Kamar <span>*</span></label>
-              <select className="kl-input" value={form.kamar} onChange={e => set("kamar", e.target.value)}>
-                <option value="">Pilih kamar...</option>
-                {kamarList.map(k => (
-                  <option key={k.id} value={k.id}>Kamar {k.id} — {k.tipe} {k.penghuni ? `(${k.penghuni})` : "(Kosong)"}</option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          {/* Lokasi Detail (jika Fasilitas Umum) */}
-          {form.lokasi === "Fasilitas Umum" && (
-            <div className="kl-field">
-              <label className="kl-field-label">Lokasi Spesifik <span>*</span></label>
-              <input
-                className="kl-input"
-                value={form.lokasiDetail}
-                onChange={e => set("lokasiDetail", e.target.value)}
-                placeholder="Contoh: Parkiran, Kantor, Dapur, Koridor Lt 2, Kamar Mandi Umum..."
-              />
-              <div style={{fontSize:10,color:"#9ca3af",marginTop:3}}>Tulis lokasi secara spesifik</div>
-            </div>
-          )}
-
-          <div className="kl-input-row">
-            {/* Kategori */}
-            <div className="kl-field">
-              <label className="kl-field-label">Kategori <span>*</span></label>
-              <select className="kl-input" value={form.kategori} onChange={e => set("kategori", e.target.value)}>
-                <option value="">Pilih kategori...</option>
-                {KATEGORI_LIST.map(k => <option key={k} value={k}>{k}</option>)}
-              </select>
-            </div>
-            {/* Tanggal */}
-            <div className="kl-field">
-              <label className="kl-field-label">Tanggal Temuan</label>
-              <input type="date" className="kl-input" value={form.tanggal} onChange={e => set("tanggal", e.target.value)} />
-            </div>
-          </div>
-
-          {/* Prioritas */}
-          <div className="kl-field">
-            <label className="kl-field-label">Prioritas <span>*</span></label>
-            <div className="kl-prioritas-group">
-              <div className={`kl-prioritas-opt normal ${form.prioritas === "normal" ? "selected" : ""}`} onClick={() => set("prioritas", "normal")}>
-                <div className="kl-prioritas-icon">🔵</div>
-                <div className="kl-prioritas-label" style={{ color: "#6b7280" }}>Normal</div>
-                <div style={{ fontSize: 10, color: "#9ca3af" }}>Dijadwalkan PJ</div>
+          <div className="ws-field">
+            <label className="ws-field-label">
+              Pilih Kamar <span style={{ color: "#9ca3af", fontWeight: 400 }}>(maks 3)</span>
+            </label>
+            {kamarList.length === 0 ? (
+              <div style={{ fontSize: 12, color: "#9ca3af", padding: "10px 0" }}>
+                Belum ada data kamar \u2014 tambah di Pengaturan \u2192 Profil Kost
               </div>
-              <div className={`kl-prioritas-opt medium ${form.prioritas === "medium" ? "selected" : ""}`} onClick={() => set("prioritas", "medium")}>
-                <div className="kl-prioritas-icon">🟠</div>
-                <div className="kl-prioritas-label" style={{ color: "#f97316" }}>Medium</div>
-                <div style={{ fontSize: 10, color: "#9ca3af" }}>Perlu segera</div>
+            ) : (
+              <div className="ws-kamar-selector">
+                {kamarList.map(k => {
+                  const skip = k.status === "deep-clean" || k.status === "tersedia";
+                  return (
+                    <div
+                      key={k.id}
+                      className={`ws-kamar-opt ${kamar.includes(k.id) ? "selected" : ""} ${skip ? "disabled" : ""}`}
+                      onClick={() => !skip && toggleKamar(k.id)}
+                      title={skip ? `Skip \u2014 status: ${k.status}` : `Kamar ${k.id}`}
+                    >
+                      <div>K{padD(k.id)}</div>
+                      <div className="ws-kamar-count">{k.tipe?.[0] || "R"}</div>
+                    </div>
+                  );
+                })}
               </div>
-              <div className={`kl-prioritas-opt urgent ${form.prioritas === "urgent" ? "selected" : ""}`} onClick={() => set("prioritas", "urgent")}>
-                <div className="kl-prioritas-icon">🔴</div>
-                <div className="kl-prioritas-label" style={{ color: "#dc2626" }}>Urgent</div>
-                <div style={{ fontSize: 10, color: "#9ca3af" }}>Notif WA langsung</div>
-              </div>
+            )}
+            <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 6 }}>
+              \ud83d\udd35 Kamar Deep Clean & Tersedia otomatis di-skip, masuk minggu depan
             </div>
           </div>
 
-          {/* Deskripsi */}
-          <div className="kl-field">
-            <label className="kl-field-label">Deskripsi Detail <span>*</span></label>
-            <textarea
-              className="kl-input"
-              rows={3}
-              placeholder="Jelaskan masalah secara detail..."
-              value={form.deskripsi}
-              onChange={e => set("deskripsi", e.target.value)}
-              style={{ resize: "vertical" }}
-            />
+          <div className="ws-field">
+            <label className="ws-field-label">Ditugaskan ke Staff</label>
+            <select className="ws-input" value={staff} onChange={e => setStaff(e.target.value)}>
+              <option value="">Pilih staff (opsional)...</option>
+            </select>
           </div>
 
-          {form.prioritas === "urgent" && (
-            <div style={{ background: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 8, padding: "10px 12px", fontSize: 12, color: "#dc2626", fontWeight: 500 }}>
-              🔴 Tiket urgent akan dikirim notifikasi WA ke staff dan PJ Operasional segera.
-            </div>
-          )}
-
+          <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 8, padding: "10px 12px", fontSize: 11, color: "#15803d" }}>
+            \u2705 Setelah jadwal disimpan, staff akan mendapat notifikasi WA otomatis.
+          </div>
         </div>
-        <div className="kl-modal-foot">
-          <button className="kl-btn primary" style={{ flex: 2 }} onClick={handleSave} disabled={!valid}>
-            Simpan Tiket
+        <div className="ws-modal-foot">
+          <button className="ws-btn primary" onClick={() => { onSave({ tgl, kamar, staff }); onClose(); }} disabled={!valid}>
+            Simpan Jadwal
           </button>
-          <button className="kl-btn ghost" style={{ flex: 1 }} onClick={onClose}>Batal</button>
+          <button className="ws-btn ghost" onClick={onClose}>Batal</button>
         </div>
       </div>
-    </div>
   );
 }
 
 // ============================================================
-// DETAIL PANEL
+// CHECKLIST PANEL
 // ============================================================
-function DetailPanel({ tiket, onStatusChange, onClose }) {
-  const sCfg = STATUS_CFG[tiket.status] || STATUS_CFG.open;
-  const pCfg = PRIORITAS_CFG[tiket.prioritas] || PRIORITAS_CFG.normal;
-  const [biaya, setBiaya] = useState(tiket.biaya || "");
+function ChecklistPanel({ jadwal, onClose, onSelesai }) {
+  const totalItems = CHECKLIST_AREAS.reduce((s, g) => s + g.items.length, 0);
+  const [checks, setChecks] = useState({});
+  const [catatan, setCatatan] = useState("");
+
+  const doneCount = Object.values(checks).filter(Boolean).length;
+  const pct = totalItems ? Math.round((doneCount / totalItems) * 100) : 0;
+
+  const toggleCheck = (gIdx, iIdx) => {
+    const key = `${gIdx}_${iIdx}`;
+    setChecks(prev => ({ ...prev, [key]: !prev[key] }));
+  };
 
   return (
-    <div className="kl-widget">
-      <div className="kl-widget-head">
-        <div className="kl-widget-title">📋 Detail Tiket</div>
-        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16 }}>✕</button>
+    <div className="ws-widget">
+      <div className="ws-widget-head">
+        <div className="ws-widget-title">\ud83e\uddf9 Checklist Service</div>
+        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16 }}>\u2715</button>
       </div>
-      <div className="kl-detail">
+      <div className="ws-widget-body" style={{ padding: "12px 14px" }}>
 
-        <div className="kl-detail-head">
-          <div className="kl-detail-id">#{tiket.id}</div>
-          <div className="kl-detail-kat">{tiket.kategori}</div>
-          <div className="kl-detail-badges">
-            <span className="kl-badge" style={{ background: sCfg.bg, color: sCfg.color }}>{sCfg.label}</span>
-            <span className="kl-badge" style={{ background: pCfg.bg, color: pCfg.color }}>{pCfg.label}</span>
-            <span className="kl-badge" style={{ background: "#f3f4f6", color: "#374151" }}>
-              {tiket.lokasi === "Unit Kamar" ? `🏠 Kamar ${tiket.kamar}` : "🏢 Fasum"}
-            </span>
+        {/* Header info */}
+        <div style={{ background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 9, padding: "10px 12px", marginBottom: 12 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "#111827", marginBottom: 2 }}>
+            \ud83d\udcc5 {jadwal?.tgl} \u00b7 {jadwal?.kamar?.map(k => `K${padD(k)}`).join(", ")}
+          </div>
+          <div style={{ fontSize: 10, color: "#9ca3af" }}>
+            Staff: {jadwal?.staff || "Belum ditugaskan"}
           </div>
         </div>
 
-        {/* Alur Status */}
-        <div className="kl-detail-section">
-          <div className="kl-detail-label">Alur Status</div>
-          <div className="kl-status-flow">
-            {STATUS_FLOW.map((s, i) => {
-              const cfg  = STATUS_CFG[s];
-              const done = STATUS_FLOW.indexOf(tiket.status) >= i;
-              return (
-                <div key={s} style={{ display: "flex", alignItems: "center", gap: 4, flex: 1 }}>
-                  <div className="kl-flow-step"
-                    style={{
-                      background: done ? cfg.bg : "#f9fafb",
-                      color: done ? cfg.color : "#9ca3af",
-                      border: `1.5px solid ${done ? cfg.color + "44" : "#f3f4f6"}`,
-                    }}
-                    onClick={() => onStatusChange(tiket.id, s)}
-                  >
-                    {cfg.label}
-                  </div>
-                  {i < STATUS_FLOW.length - 1 && <div className="kl-flow-arrow">›</div>}
+        {/* Progress */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+          <span style={{ fontSize: 11, color: "#6b7280" }}>Progress</span>
+          <span style={{ fontSize: 12, fontWeight: 700, color: pct === 100 ? "#16a34a" : "#f97316" }}>{pct}%</span>
+        </div>
+        <div className="ws-progress-bar">
+          <div className="ws-progress-fill" style={{ width: `${pct}%` }} />
+        </div>
+
+        {/* Checklist */}
+        <div className="ws-checklist">
+          {CHECKLIST_AREAS.map((group, gIdx) => {
+            const done = group.items.filter((_, iIdx) => checks[`${gIdx}_${iIdx}`]).length;
+            return (
+              <div key={gIdx} className="ws-check-group">
+                <div className="ws-check-group-head">
+                  <div className="ws-check-group-title">{group.group}</div>
+                  <div className="ws-check-group-pct">{done}/{group.items.length}</div>
                 </div>
-              );
-            })}
-          </div>
+                {group.items.map((item, iIdx) => {
+                  const key = `${gIdx}_${iIdx}`;
+                  const checked = !!checks[key];
+                  return (
+                    <div key={iIdx} className={`ws-check-item ${checked ? "checked" : ""}`} onClick={() => toggleCheck(gIdx, iIdx)}>
+                      <div className="ws-checkbox">{checked && <span style={{ color: "#fff", fontSize: 10 }}>\u2713</span>}</div>
+                      <div className="ws-check-label">{item}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
         </div>
 
-        {/* Deskripsi */}
-        <div className="kl-detail-section">
-          <div className="kl-detail-label">Deskripsi</div>
-          <div className="kl-detail-desc">{tiket.deskripsi}</div>
-        </div>
-
-        {/* Info */}
-        <div className="kl-detail-section">
-          <div className="kl-detail-label">Informasi</div>
-          <div className="kl-detail-grid">
-            <div className="kl-detail-item">
-              <div className="kl-detail-item-key">Tanggal</div>
-              <div className="kl-detail-item-val">{tiket.tanggal}</div>
+        {/* Catatan */}
+        <div style={{ marginTop: 12 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: "#374151", marginBottom: 5 }}>Catatan / Temuan</div>
+          <textarea
+            className="ws-input"
+            rows={2}
+            placeholder="Ada temuan kerusakan? Catat di sini..."
+            value={catatan}
+            onChange={e => setCatatan(e.target.value)}
+            style={{ resize: "none" }}
+          />
+          {catatan && (
+            <div style={{ marginTop: 6, fontSize: 11, color: "#f97316", cursor: "pointer", fontWeight: 500 }}>
+              \u2691 Buat tiket keluhan dari temuan ini \u2192
             </div>
-            <div className="kl-detail-item">
-              <div className="kl-detail-item-key">Lokasi</div>
-              <div className="kl-detail-item-val">{tiket.lokasi === "Unit Kamar" ? `Kamar ${tiket.kamar}` : "Fasum"}</div>
-            </div>
-            <div className="kl-detail-item">
-              <div className="kl-detail-item-key">Dilaporkan oleh</div>
-              <div className="kl-detail-item-val">{tiket.createdBy || "—"}</div>
-            </div>
-            <div className="kl-detail-item">
-              <div className="kl-detail-item-key">Ditangani oleh</div>
-              <div className="kl-detail-item-val">{tiket.handledBy || "—"}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Biaya */}
-        <div className="kl-detail-section">
-          <div className="kl-detail-label">Input Biaya Perbaikan</div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <input
-              className="kl-input"
-              placeholder="Rp 0"
-              value={biaya}
-              onChange={e => setBiaya(e.target.value)}
-              style={{ flex: 1 }}
-            />
-            <button className="kl-btn primary" style={{ padding: "8px 14px", width: "auto" }}
-              onClick={() => {
-                const nom = parseInt(String(biaya).replace(/[^0-9]/g,"")) || 0;
-                if (!nom) return;
-                // Update tiket dengan biaya
-                setTiketList(prev => prev.map(t =>
-                  t.id === tiket.id ? { ...t, biaya: nom, biayaAt: new Date().toISOString().slice(0,10) } : t
-                ));
-                // Catat ke kas sebagai pengeluaran maintenance
-                setKasJurnal(prev => [...prev, {
-                  id: "KJ-TKT-"+Date.now(),
-                  tanggal: new Date().toISOString().slice(0,10),
-                  tipe: "pengeluaran",
-                  kategori: "Maintenance",
-                  nominal: nom,
-                  keterangan: "Biaya tiket "+tiket.id+" — "+tiket.kategori+" Kamar "+(tiket.kamar||"-"),
-                  ref: tiket.id,
-                }]);
-                setBiaya("");
-              }}>
-              Simpan
-            </button>
-          </div>
-          <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 5 }}>
-            Setelah disimpan, biaya akan masuk ke Kas & Jurnal untuk diverifikasi akunting.
-          </div>
+          )}
         </div>
 
         {/* Aksi */}
-        <div className="kl-btn-group">
-          {tiket.status !== "selesai" && (
-            <button className="kl-btn success"
-              onClick={() => onStatusChange(tiket.id, "selesai")}>
-              ✅ Tandai Selesai
-            </button>
-          )}
-          {tiket.status === "open" && (
-            <button className="kl-btn ghost"
-              onClick={() => onStatusChange(tiket.id, "in-progress")}>
-              ▶ Mulai Tangani
-            </button>
-          )}
-          {tiket.status !== "ditunda" && tiket.status !== "selesai" && (
-            <button className="kl-btn danger"
-              onClick={() => onStatusChange(tiket.id, "ditunda")}>
-              ⏸ Tunda
-            </button>
-          )}
+        <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+          <button
+            className="ws-btn primary"
+            onClick={() => onSelesai({ checks, catatan, pct })}
+            disabled={pct < 100}
+            style={{ flex: 2 }}
+          >
+            {pct === 100 ? "\u2705 Tandai Selesai" : `Selesaikan dulu (${pct}%)`}
+          </button>
+          <button className="ws-btn ghost" onClick={onClose} style={{ flex: 1 }}>Tutup</button>
         </div>
 
       </div>
@@ -529,180 +398,214 @@ function DetailPanel({ tiket, onStatusChange, onClose }) {
 // ============================================================
 // MAIN
 // ============================================================
-export default function Keluhan({ user, globalData = {} }) {
-  const {
-    tiketList    = [], setTiketList  = ()=>{},
-    kamarList    = [],
-    kasJurnal    = [], setKasJurnal  = ()=>{},
-    isReadOnly   = false,
-  } = globalData;
-  const [selected,    setSelected]   = useState(null);
-  const [showForm,    setShowForm]   = useState(false);
-  const [filterStatus, setFS]        = useState("all");
-  const [filterPrioritas, setFP]     = useState("all");
-  const [search,      setSearch]     = useState("");
+export default function Weekly({ user }) {
+  const isAdmin = user?.role === "superadmin" || user?.role === "admin";
 
-  const isAdmin = user?.role === "manajemen";
+  const [periodeMonth, setPeriodeMonth] = useState(today.getMonth());
+  const [periodeYear,  setPeriodeYear]  = useState(today.getFullYear());
+  const [jadwalList,   setJadwalList]   = useState([]); // dari Supabase nanti
+  const [showModal,    setShowModal]    = useState(false);
+  const [activeChecklist, setActiveChecklist] = useState(null);
 
-  const filtered = tiketList.filter(t => {
-    if (filterStatus !== "all" && t.status !== filterStatus) return false;
-    if (filterPrioritas === "urgent" && t.prioritas !== "urgent") return false;
-    if (search) {
-      const q = search.toLowerCase();
-      if (!t.kategori?.toLowerCase().includes(q) &&
-          !t.deskripsi?.toLowerCase().includes(q) &&
-          !String(t.kamar || "").includes(q) &&
-          !t.id?.toLowerCase().includes(q)) return false;
-    }
-    return true;
-  });
+  // Data dari Supabase nanti
+  const kamarList = [];
 
-  const counts = {
-    open:          tiketList.filter(t => t.status === "open").length,
-    "in-progress": tiketList.filter(t => t.status === "in-progress").length,
-    ditunda:       tiketList.filter(t => t.status === "ditunda").length,
-    selesai:       tiketList.filter(t => t.status === "selesai").length,
-    urgent:        tiketList.filter(t => t.prioritas === "urgent" && t.status !== "selesai").length,
+  const prevMonth = () => {
+    if (periodeMonth === 0) { setPeriodeYear(y => y-1); setPeriodeMonth(11); }
+    else setPeriodeMonth(m => m-1);
+  };
+  const nextMonth = () => {
+    if (periodeMonth === 11) { setPeriodeYear(y => y+1); setPeriodeMonth(0); }
+    else setPeriodeMonth(m => m+1);
   };
 
-  const handleSave = (tiket) => {
-    setTiketList(prev => [tiket, ...prev]);
+  // Filter jadwal bulan ini
+  const bulanStr  = `${periodeYear}-${padD(periodeMonth+1)}`;
+  const jadwalBulan = jadwalList.filter(j => j.tgl?.startsWith(bulanStr))
+    .sort((a, b) => a.tgl.localeCompare(b.tgl));
+
+  const selesai  = jadwalBulan.filter(j => j.status === "selesai").length;
+  const pending  = jadwalBulan.filter(j => j.status !== "selesai").length;
+  const todayJadwal = jadwalBulan.filter(j => j.tgl === todayStr);
+  const pctBulan = jadwalBulan.length ? Math.round((selesai / jadwalBulan.length) * 100) : 0;
+
+  const handleSaveJadwal = ({ tgl, kamar, staff }) => {
+    setJadwalList(prev => [...prev, {
+      id: Date.now(), tgl, kamar, staff, status: "pending",
+      checks: {}, catatan: "", createdAt: todayStr,
+    }]);
   };
 
-  const handleStatusChange = (id, newStatus) => {
-    setTiketList(prev => prev.map(t => t.id === id ? { ...t, status: newStatus } : t));
-    if (selected?.id === id) setSelected(prev => ({ ...prev, status: newStatus }));
+  const handleSelesai = (id, data) => {
+    setJadwalList(prev => prev.map(j => j.id === id ? { ...j, status: "selesai", ...data } : j));
+    setActiveChecklist(null);
   };
 
   return (
-    <div className="kl-wrap">
+    <div className="ws-wrap">
       <StyleInjector />
 
       {/* Cards */}
-      <div className="kl-cards">
+      <div className="ws-cards">
         {[
-          { label: "Tiket Open",        val: counts.open,          color: "#ef4444", sub: "Belum ditangani" },
-          { label: "In Progress",       val: counts["in-progress"],color: "#f59e0b", sub: "Sedang dikerjakan" },
-          { label: "Ditunda",           val: counts.ditunda,       color: "#8b5cf6", sub: "Menunggu jadwal" },
-          { label: "Urgent",            val: counts.urgent,        color: "#dc2626", sub: "Perlu segera!" },
+          { label: "Jadwal Bulan Ini",  val: jadwalBulan.length || "\u2014", color: "#3b82f6", sub: "Total dijadwalkan" },
+          { label: "Selesai",           val: selesai || (jadwalBulan.length ? "0" : "\u2014"), color: "#16a34a", sub: `${pctBulan}% completion` },
+          { label: "Pending",           val: pending || (jadwalBulan.length ? "0" : "\u2014"), color: "#f97316", sub: "Belum dikerjakan" },
+          { label: "Hari Ini",          val: todayJadwal.length || "\u2014",  color: "#8b5cf6", sub: `${todayJadwal.reduce((s,j) => s + j.kamar.length, 0)} kamar` },
         ].map((c, i) => (
-          <div key={i} className="kl-card">
-            <div className="kl-card-bar" style={{ background: c.color }} />
-            <div className="kl-card-label">{c.label}</div>
-            <div className="kl-card-val" style={{ color: c.val > 0 ? c.color : "#111827" }}>
-              {tiketList.length === 0 ? "—" : c.val}
-            </div>
-            <div className="kl-card-sub">{c.sub}</div>
+          <div key={i} className="ws-card">
+            <div className="ws-card-bar" style={{ background: c.color }} />
+            <div className="ws-card-label">{c.label}</div>
+            <div className="ws-card-val">{c.val}</div>
+            <div className="ws-card-sub">{c.sub}</div>
           </div>
         ))}
       </div>
 
       {/* Layout */}
-      <div className="kl-layout">
+      <div className="ws-layout">
 
-        {/* List */}
-        <div className="kl-widget">
-          <div className="kl-widget-head">
-            <div className="kl-widget-title">🔧 Daftar Tiket</div>
-            <button
-              onClick={() => setShowForm(true)}
-              style={{ background: "linear-gradient(135deg,#f97316,#ea580c)", color: "#fff", border: "none", borderRadius: 8, padding: "6px 12px", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
-              + Buat Tiket
-            </button>
-          </div>
-
-          {/* Filter */}
-          <div className="kl-filterbar">
-            <div className="kl-search">
-              <span>🔍</span>
-              <input className="kl-search-input" placeholder="Cari tiket, kamar, deskripsi..." value={search} onChange={e => setSearch(e.target.value)} />
-            </div>
-            {["all","open","in-progress","ditunda","selesai"].map(s => (
-              <div key={s} className={`kl-tag ${filterStatus === s ? "active" : ""}`} onClick={() => setFS(s)}>
-                {s === "all" ? "Semua" : STATUS_CFG[s]?.label}
+        {/* Jadwal List */}
+        <div className="ws-widget">
+          <div className="ws-widget-head">
+            <div className="ws-widget-title">\ud83d\uddd3\ufe0f Jadwal Weekly Service</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              {isAdmin && (
+                <button
+                  onClick={() => setShowModal(true)}
+                  style={{ background: "linear-gradient(135deg,#f97316,#ea580c)", color: "#fff", border: "none", borderRadius: 8, padding: "6px 12px", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
+                  + Buat Jadwal
+                </button>
+              )}
+              <div className="ws-period">
+                <button className="ws-period-btn" onClick={prevMonth}>\u2039</button>
+                <span>{BULAN_NAMES[periodeMonth]} {periodeYear}</span>
+                <button className="ws-period-btn" onClick={nextMonth}>\u203a</button>
               </div>
-            ))}
-            <div className={`kl-tag urgent ${filterPrioritas === "urgent" ? "selected" : ""}`}
-              style={filterPrioritas === "urgent" ? { background: "#fee2e2", borderColor: "#fca5a5", color: "#dc2626" } : {}}
-              onClick={() => setFP(filterPrioritas === "urgent" ? "all" : "urgent")}>
-              🔴 Urgent
             </div>
           </div>
+          <div className="ws-widget-body">
 
-          {/* List */}
-          <div className="kl-widget-body">
-            {tiketList.length === 0 ? (
-              <div className="kl-empty">
-                <div className="kl-empty-icon">🔧</div>
-                <div className="kl-empty-title">Belum ada tiket keluhan</div>
-                <div className="kl-empty-sub">Klik "+ Buat Tiket" untuk melaporkan keluhan</div>
+            {/* Progress bulan */}
+            {jadwalBulan.length > 0 && (
+              <div style={{ marginBottom: 14 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#6b7280", marginBottom: 4 }}>
+                  <span>Progress bulan ini</span>
+                  <span style={{ fontWeight: 700, color: pctBulan === 100 ? "#16a34a" : "#f97316" }}>{pctBulan}%</span>
+                </div>
+                <div className="ws-progress-bar">
+                  <div className="ws-progress-fill" style={{ width: `${pctBulan}%` }} />
+                </div>
               </div>
-            ) : filtered.length === 0 ? (
-              <div className="kl-empty">
-                <div className="kl-empty-icon">🔍</div>
-                <div className="kl-empty-title">Tidak ada tiket yang sesuai</div>
-                <div className="kl-empty-sub">Coba ubah filter atau kata kunci</div>
+            )}
+
+            {jadwalBulan.length === 0 ? (
+              <div className="ws-empty">
+                <div className="ws-empty-icon">\ud83e\uddf9</div>
+                <div className="ws-empty-title">Belum ada jadwal bulan ini</div>
+                <div className="ws-empty-sub">
+                  {isAdmin ? 'Klik "+ Buat Jadwal" untuk membuat jadwal service' : "Tunggu jadwal dari PJ Operasional"}
+                </div>
               </div>
             ) : (
-              filtered.map(t => {
-                const sCfg = STATUS_CFG[t.status] || STATUS_CFG.open;
-                const pCfg = PRIORITAS_CFG[t.prioritas] || PRIORITAS_CFG.normal;
-                return (
-                  <div key={t.id}
-                    className={`kl-tiket-item ${selected?.id === t.id ? "selected" : ""}`}
-                    onClick={() => setSelected(t)}>
-                    <div className="kl-tiket-top">
+              <div className="ws-jadwal-grid">
+                {jadwalBulan.map(j => {
+                  const d    = new Date(j.tgl);
+                  const isT  = j.tgl === todayStr;
+                  const done = j.status === "selesai";
+                  return (
+                    <div key={j.id} className={`ws-jadwal-row ${isT ? "today" : ""} ${done ? "done" : ""}`}>
                       <div>
-                        <div className="kl-tiket-id">#{t.id}</div>
-                        <div className="kl-tiket-kat">{t.kategori}</div>
-                        <div className="kl-tiket-desc">{t.deskripsi}</div>
+                        <div className="ws-jadwal-date">{j.tgl.slice(5)}</div>
+                        <div className="ws-jadwal-day">{HARI_NAMES[d.getDay()]}</div>
                       </div>
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, flexShrink: 0 }}>
-                        <span className="kl-badge" style={{ background: sCfg.bg, color: sCfg.color }}>{sCfg.label}</span>
-                        <span className="kl-badge" style={{ background: pCfg.bg, color: pCfg.color }}>{pCfg.label}</span>
+                      <div>
+                        <div className="ws-jadwal-kamar">
+                          {j.kamar.map(k => (
+                            <span key={k} className={`ws-kamar-chip ${done ? "done" : ""}`}>
+                              {done ? "\u2713" : "\ud83e\uddf9"} K{padD(k)}
+                            </span>
+                          ))}
+                        </div>
+                        {j.staff && <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 3 }}>\ud83d\udc64 {j.staff}</div>}
+                      </div>
+                      <div className="ws-jadwal-actions">
+                        {done ? (
+                          <span className="ws-badge" style={{ background: "#dcfce7", color: "#16a34a" }}>\u2705 Selesai</span>
+                        ) : (
+                          <button
+                            onClick={() => setActiveChecklist(j)}
+                            style={{ padding: "5px 10px", borderRadius: 7, border: "1.5px solid #e5e7eb", background: "#fff", fontSize: 11, fontWeight: 600, cursor: "pointer", color: "#374151", transition: "all 0.12s" }}
+                          >
+                            {isT ? "\u25b6 Mulai" : "\ud83d\udccb Checklist"}
+                          </button>
+                        )}
                       </div>
                     </div>
-                    <div className="kl-tiket-meta">
-                      {t.lokasi === "Unit Kamar" && (
-                        <span className="kl-tiket-kamar">🏠 Kamar {t.kamar}</span>
-                      )}
-                      {t.lokasi === "Fasilitas Umum" && (
-                        <span className="kl-tiket-kamar">🏢 Fasum</span>
-                      )}
-                      <span className="kl-tiket-tgl">{t.tanggal}</span>
-                    </div>
-                  </div>
-                );
-              })
+                  );
+                })}
+              </div>
             )}
           </div>
         </div>
 
-        {/* Detail */}
-        {selected ? (
-          <DetailPanel
-            tiket={selected}
-            onStatusChange={handleStatusChange}
-            onClose={() => setSelected(null)}
-          />
-        ) : (
-          <div className="kl-widget" style={{ alignItems: "center", justifyContent: "center" }}>
-            <div className="kl-empty" style={{ padding: "50px 20px" }}>
-              <div className="kl-empty-icon">📋</div>
-              <div className="kl-empty-title">Pilih tiket</div>
-              <div className="kl-empty-sub">Klik tiket di sebelah kiri untuk melihat detail</div>
+        {/* Kanan */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+
+          {/* Checklist aktif */}
+          {activeChecklist ? (
+            <ChecklistPanel
+              jadwal={activeChecklist}
+              onClose={() => setActiveChecklist(null)}
+              onSelesai={(data) => handleSelesai(activeChecklist.id, data)}
+            />
+          ) : (
+            <div className="ws-widget">
+              <div className="ws-widget-head">
+                <div className="ws-widget-title">\ud83d\udccb Checklist Service</div>
+              </div>
+              <div className="ws-widget-body">
+                <div className="ws-empty" style={{ padding: "28px 0" }}>
+                  <div className="ws-empty-icon">\ud83e\uddf9</div>
+                  <div className="ws-empty-sub">Klik "Mulai" atau "Checklist" pada jadwal untuk memulai</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Area Service Info */}
+          <div className="ws-widget">
+            <div className="ws-widget-head">
+              <div className="ws-widget-title">\ud83d\udcd6 Area yang Di-service</div>
+            </div>
+            <div className="ws-widget-body">
+              {CHECKLIST_AREAS.map((g, i) => (
+                <div key={i} style={{ marginBottom: 10 }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: "#374151", marginBottom: 5 }}>{g.group}</div>
+                  {g.items.map((item, j) => (
+                    <div key={j} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "#6b7280", marginBottom: 3 }}>
+                      <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#d1d5db", flexShrink: 0 }} />
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              ))}
+              <div style={{ marginTop: 8, padding: "8px 10px", background: "#fff7ed", borderRadius: 8, fontSize: 11, color: "#92400e" }}>
+                \u270f\ufe0f Checklist bisa diubah di <b>Pengaturan \u2192 SOP & Standar</b>
+              </div>
             </div>
           </div>
-        )}
 
+        </div>
       </div>
 
-      {/* Form Modal */}
-      {showForm && (
-        <FormTiket
-          onClose={() => setShowForm(false)}
-          onSave={handleSave}
+      {/* Modal Jadwal */}
+      {showModal && (
+        <ModalJadwal
           kamarList={kamarList}
+          bulanJadwal={bulanStr}
+          onClose={() => setShowModal(false)}
+          onSave={handleSaveJadwal}
         />
       )}
 

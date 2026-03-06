@@ -50,6 +50,8 @@ const CSS = `
   .kal-select { padding:8px 10px; border-radius:8px; border:1.5px solid #e5e7eb; font-size:13px; color:#111827; outline:none; width:100%; box-sizing:border-box; background:#fff; }
   .kal-select:focus { border-color:#f97316; }
   @media(max-width:900px){ .kal-layout{grid-template-columns:1fr} .kal-stats{grid-template-columns:repeat(2,1fr)} }
+
+  /* \u2500\u2500 PENGAJUAN ANGGARAN \u2500\u2500 */
   .kal-angg-bar { background:linear-gradient(135deg,#eff6ff,#dbeafe); border:1px solid #bfdbfe; border-radius:10px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
   .kal-angg-form { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:14px 16px; }
   .kal-angg-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
@@ -72,23 +74,25 @@ const toDateStr = (y, m, d) =>
   `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
 
 const EVENT_CFG = {
-  weekly:      { label:"Weekly Service",    icon:"🧹", color:"#2563eb", bg:"#dbeafe" },
-  keluhan:     { label:"Keluhan Baru",      icon:"🔴", color:"#dc2626", bg:"#fee2e2" },
-  selesai:     { label:"Selesai Diperbaiki",icon:"✅", color:"#16a34a", bg:"#dcfce7" },
-  checkin:     { label:"Check-in",          icon:"🔑", color:"#ea580c", bg:"#ffedd5" },
-  checkout:    { label:"Check-out",         icon:"📦", color:"#7c3aed", bg:"#ede9fe" },
-  deepclean:   { label:"Deep Clean",        icon:"✨", color:"#0284c7", bg:"#e0f2fe" },
-  maintenance: { label:"Maintenance",       icon:"🔧", color:"#b45309", bg:"#fef3c7" },
-  servis:      { label:"Servis Rutin",      icon:"❄️", color:"#0891b2", bg:"#cffafe" },
-  reminder:    { label:"Reminder",          icon:"⚠️", color:"#ca8a04", bg:"#fef9c3" },
+  weekly:      { label:"Weekly Service",   icon:"\ud83e\uddf9", color:"#2563eb", bg:"#dbeafe" },
+  keluhan:     { label:"Keluhan Baru",     icon:"\ud83d\udd34", color:"#dc2626", bg:"#fee2e2" },
+  selesai:     { label:"Selesai Diperbaiki",icon:"\u2705", color:"#16a34a", bg:"#dcfce7" },
+  checkin:     { label:"Check-in",         icon:"\ud83d\udd11", color:"#ea580c", bg:"#ffedd5" },
+  checkout:    { label:"Check-out",        icon:"\ud83d\udce6", color:"#7c3aed", bg:"#ede9fe" },
+  deepclean:   { label:"Deep Clean",       icon:"\u2728", color:"#0284c7", bg:"#e0f2fe" },
+  maintenance: { label:"Maintenance",      icon:"\ud83d\udd27", color:"#b45309", bg:"#fef3c7" },
+  servis:      { label:"Servis Rutin",     icon:"\u2744\ufe0f", color:"#0891b2", bg:"#cffafe" },
+  reminder:    { label:"Reminder",         icon:"\u26a0\ufe0f", color:"#ca8a04", bg:"#fef9c3" },
 };
 
 export default function Kalender({ user, globalData = {} }) {
   const {
-    tiketList    = [],
-    weeklyList   = [],
-    penyewaList  = [],
-    anggaranList = [], setAnggaranList = ()=>{},
+    isReadOnly    = false,
+    tiketList     = [],
+    weeklyList    = [],
+    penyewaList   = [],
+    kamarList     = [],
+    anggaranList  = [], setAnggaranList = ()=>{},
   } = globalData;
 
   const today    = new Date();
@@ -105,56 +109,101 @@ export default function Kalender({ user, globalData = {} }) {
 
   const canEdit = user?.role !== "staff";
 
+  // \u2500\u2500 Generate events otomatis \u2500\u2500
   const autoEvents = [];
+
   tiketList.forEach(t => {
     if (!t.tanggal) return;
-    autoEvents.push({ id:`tiket-${t.id}`, tanggal:t.tanggal, tipe:t.status==="selesai"?"selesai":"keluhan", label:`${t.prioritas==="urgent"?"🔴":"🟡"} Kamar ${t.kamar} — ${t.kategori}`, catatan:t.deskripsi });
+    autoEvents.push({
+      id:      `tiket-${t.id}`,
+      tanggal: t.tanggal,
+      tipe:    t.status === "selesai" ? "selesai" : "keluhan",
+      label:   `${t.prioritas==="urgent"?"\ud83d\udd34":"\ud83d\udfe1"} Kamar ${t.kamar} \u2014 ${t.kategori}`,
+      catatan: t.deskripsi,
+    });
   });
+
   weeklyList.forEach(w => {
     if (!w.tanggal) return;
-    const ids = Array.isArray(w.kamarIds) ? w.kamarIds : [];
-    autoEvents.push({ id:`weekly-${w.id||w.tanggal}`, tanggal:w.tanggal, tipe:"weekly", label:`🧹 Weekly Service — Kamar ${ids.length>0?ids.join(", "):w.kamarId||""}`, catatan:w.catatan||"" });
+    const kamarIds = Array.isArray(w.kamarIds) ? w.kamarIds : [];
+    autoEvents.push({
+      id:      `weekly-${w.id||w.tanggal}`,
+      tanggal: w.tanggal,
+      tipe:    "weekly",
+      label:   `\ud83e\uddf9 Weekly Service \u2014 Kamar ${kamarIds.length>0 ? kamarIds.join(", ") : w.kamarId||""}`,
+      catatan: w.catatan || "",
+    });
   });
+
   penyewaList.forEach(p => {
-    if (p.kontrakSelesai) autoEvents.push({ id:`checkout-${p.id}`, tanggal:p.kontrakSelesai, tipe:"checkout", label:`📦 Kontrak Selesai — ${p.namaPenyewa} (Kamar ${p.kamarId})`, catatan:"Reminder kontrak selesai" });
+    if (p.kontrakSelesai) {
+      autoEvents.push({
+        id:      `checkout-${p.id}`,
+        tanggal: p.kontrakSelesai,
+        tipe:    "checkout",
+        label:   `\ud83d\udce6 Kontrak Selesai \u2014 ${p.namaPenyewa} (Kamar ${p.kamarId})`,
+        catatan: "Reminder kontrak selesai",
+      });
+    }
   });
 
   const allEvents = [...autoEvents, ...manualEvents];
-  const eventMap  = {};
-  allEvents.forEach(ev => { if (!eventMap[ev.tanggal]) eventMap[ev.tanggal]=[]; eventMap[ev.tanggal].push(ev); });
 
-  const bulanStr    = `${year}-${String(month+1).padStart(2,"0")}`;
+  const eventMap = {};
+  allEvents.forEach(ev => {
+    if (!eventMap[ev.tanggal]) eventMap[ev.tanggal] = [];
+    eventMap[ev.tanggal].push(ev);
+  });
+
+  const bulanStr   = `${year}-${String(month + 1).padStart(2,"0")}`;
   const bulanEvents = allEvents.filter(e => e.tanggal && e.tanggal.startsWith(bulanStr));
-  const statsCount  = {
-    weekly:  bulanEvents.filter(e => e.tipe==="weekly").length,
-    keluhan: bulanEvents.filter(e => e.tipe==="keluhan").length,
-    checkin: bulanEvents.filter(e => e.tipe==="checkin"||e.tipe==="checkout").length,
+
+  const statsCount = {
+    weekly:  bulanEvents.filter(e => e.tipe === "weekly").length,
+    keluhan: bulanEvents.filter(e => e.tipe === "keluhan").length,
+    checkin: bulanEvents.filter(e => e.tipe === "checkin" || e.tipe === "checkout").length,
     total:   bulanEvents.length,
   };
 
-  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDay    = new Date(year, month, 1).getDay();
   const cells       = [...Array(firstDay).fill(null), ...Array.from({length:daysInMonth},(_,i)=>i+1)];
 
-  const prevMonth = () => { if (month===0){setYear(y=>y-1);setMonth(11);}else setMonth(m=>m-1); setSelectedDate(null); };
-  const nextMonth = () => { if (month===11){setYear(y=>y+1);setMonth(0);}else setMonth(m=>m+1); setSelectedDate(null); };
+  const prevMonth = () => {
+    if (month === 0) { setYear(y => y-1); setMonth(11); }
+    else setMonth(m => m-1);
+    setSelectedDate(null);
+  };
+  const nextMonth = () => {
+    if (month === 11) { setYear(y => y+1); setMonth(0); }
+    else setMonth(m => m+1);
+    setSelectedDate(null);
+  };
 
-  const selectedEvents = selectedDate ? (eventMap[selectedDate]||[]) : [];
+  const selectedEvents = selectedDate ? (eventMap[selectedDate] || []) : [];
 
   const BULAN = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
   const HARI  = ["MIN","SEN","SEL","RAB","KAM","JUM","SAB"];
 
   const handleAdd = () => {
-    if (!form.tanggal||!form.label.trim()) return;
-    setManualEvents(prev=>[...prev,{id:Date.now(),...form,sumber:"manual"}]);
-    setForm({tanggal:selectedDate||todayStr,tipe:"weekly",label:"",catatan:""});
+    if (!form.tanggal || !form.label.trim()) return;
+    setManualEvents(prev => [...prev, { id: Date.now(), ...form, sumber:"manual" }]);
+    setForm({ tanggal: selectedDate || todayStr, tipe:"weekly", label:"", catatan:"" });
     setShowModal(false);
   };
 
-  const handleAjukan = () => {
+  const handleAjukanAnggaran = () => {
     if (!anggForm.judul) return;
-    setAnggaranList(p=>[...p,{id:Date.now(),...anggForm,nominal:Number(anggForm.nominal)||0,status:"pending",pengaju:user?.name||"Staff",createdAt:todayStr,tanggal:anggForm.tanggal||todayStr}]);
-    setAnggForm({judul:"",tanggal:"",nominal:"",kategori:"Peralatan",keterangan:""});
+    setAnggaranList(p => [...p, {
+      id:        Date.now(),
+      ...anggForm,
+      nominal:   Number(anggForm.nominal) || 0,
+      status:    "pending",
+      pengaju:   user?.name || "Staff",
+      createdAt: todayStr,
+      tanggal:   anggForm.tanggal || todayStr,
+    }]);
+    setAnggForm({ judul:"", tanggal:"", nominal:"", kategori:"Peralatan", keterangan:"" });
     setShowAnggForm(false);
   };
 
@@ -162,57 +211,80 @@ export default function Kalender({ user, globalData = {} }) {
     <div className="kal-wrap">
       <StyleInjector />
 
+      {/* \u2500\u2500 Pengajuan Anggaran Banner \u2500\u2500 */}
       <div className="kal-angg-bar">
         <div>
-          <div style={{fontSize:13,fontWeight:700,color:"#1d4ed8"}}>📋 Pengajuan Anggaran Belanja</div>
-          <div style={{fontSize:11,color:"#3b82f6",marginTop:1}}>{anggaranList.filter(a=>a.status==="pending").length} pengajuan menunggu approval</div>
+          <div style={{fontSize:13,fontWeight:700,color:"#1d4ed8"}}>\ud83d\udccb Pengajuan Anggaran Belanja</div>
+          <div style={{fontSize:11,color:"#3b82f6",marginTop:1}}>
+            {anggaranList.filter(a => a.status==="pending").length} pengajuan menunggu approval
+          </div>
         </div>
-        <button style={{padding:"7px 14px",background:"linear-gradient(135deg,#3b82f6,#2563eb)",color:"#fff",border:"none",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer"}} onClick={()=>setShowAnggForm(s=>!s)}>
-          {showAnggForm?"✕ Tutup":"+ Ajukan Anggaran"}
+        <button
+          style={{padding:"7px 14px",background:"linear-gradient(135deg,#3b82f6,#2563eb)",color:"#fff",border:"none",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer"}}
+          onClick={() => setShowAnggForm(s => !s)}>
+          {showAnggForm ? "\u2715 Tutup" : "+ Ajukan Anggaran"}
         </button>
       </div>
 
+      {/* \u2500\u2500 Form Pengajuan Anggaran \u2500\u2500 */}
       {showAnggForm && (
         <div className="kal-angg-form">
-          <div style={{fontSize:13,fontWeight:700,color:"#111827",marginBottom:10}}>📝 Form Pengajuan Anggaran</div>
+          <div style={{fontSize:13,fontWeight:700,color:"#111827",marginBottom:10}}>\ud83d\udcdd Form Pengajuan Anggaran</div>
           <div className="kal-angg-grid">
             <div>
               <label className="kal-label">Judul Kebutuhan *</label>
-              <input className="kal-input" placeholder="Beli sapu, cat tembok..." value={anggForm.judul} onChange={e=>setAnggForm(p=>({...p,judul:e.target.value}))} />
+              <input className="kal-input" placeholder="Beli sapu, cat tembok..."
+                value={anggForm.judul} onChange={e => setAnggForm(p => ({...p, judul:e.target.value}))} />
             </div>
             <div>
               <label className="kal-label">Kategori</label>
-              <select className="kal-select" value={anggForm.kategori} onChange={e=>setAnggForm(p=>({...p,kategori:e.target.value}))}>
-                {["Peralatan","Perlengkapan","Maintenance","Akomodasi/Op","Lain-lain"].map(k=><option key={k} value={k}>{k}</option>)}
+              <select className="kal-select" value={anggForm.kategori}
+                onChange={e => setAnggForm(p => ({...p, kategori:e.target.value}))}>
+                {["Peralatan","Perlengkapan","Maintenance","Akomodasi/Op","Lain-lain"].map(k =>
+                  <option key={k} value={k}>{k}</option>
+                )}
               </select>
             </div>
             <div>
               <label className="kal-label">Tanggal Butuh</label>
-              <input type="date" className="kal-input" value={anggForm.tanggal} onChange={e=>setAnggForm(p=>({...p,tanggal:e.target.value}))} />
+              <input type="date" className="kal-input" value={anggForm.tanggal}
+                onChange={e => setAnggForm(p => ({...p, tanggal:e.target.value}))} />
             </div>
             <div>
               <label className="kal-label">Nominal Estimasi (Rp)</label>
-              <input type="number" className="kal-input" placeholder="0" value={anggForm.nominal} onChange={e=>setAnggForm(p=>({...p,nominal:e.target.value}))} />
+              <input type="number" className="kal-input" placeholder="0" value={anggForm.nominal}
+                onChange={e => setAnggForm(p => ({...p, nominal:e.target.value}))} />
             </div>
           </div>
           <div style={{marginBottom:8}}>
             <label className="kal-label">Keterangan</label>
-            <input className="kal-input" placeholder="Kenapa dibutuhkan..." value={anggForm.keterangan} onChange={e=>setAnggForm(p=>({...p,keterangan:e.target.value}))} />
+            <input className="kal-input" placeholder="Kenapa dibutuhkan..."
+              value={anggForm.keterangan} onChange={e => setAnggForm(p => ({...p, keterangan:e.target.value}))} />
           </div>
           <div style={{display:"flex",gap:8}}>
-            <button style={{padding:"7px 14px",background:"linear-gradient(135deg,#f97316,#ea580c)",color:"#fff",border:"none",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer",opacity:anggForm.judul?1:0.5}} disabled={!anggForm.judul} onClick={handleAjukan}>✅ Ajukan</button>
-            <button style={{padding:"7px 14px",background:"#f3f4f6",border:"none",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer"}} onClick={()=>setShowAnggForm(false)}>Batal</button>
+            <button
+              style={{padding:"7px 14px",background:"linear-gradient(135deg,#f97316,#ea580c)",color:"#fff",border:"none",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer",opacity:anggForm.judul ? 1 : 0.5}}
+              disabled={!anggForm.judul}
+              onClick={handleAjukanAnggaran}>
+              \u2705 Ajukan
+            </button>
+            <button
+              style={{padding:"7px 14px",background:"#f3f4f6",border:"none",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer"}}
+              onClick={() => setShowAnggForm(false)}>
+              Batal
+            </button>
           </div>
         </div>
       )}
 
+      {/* \u2500\u2500 Stats \u2500\u2500 */}
       <div className="kal-stats">
         {[
-          {val:statsCount.weekly,  label:"Weekly Service", color:"#2563eb"},
-          {val:statsCount.keluhan, label:"Keluhan",        color:"#dc2626"},
-          {val:statsCount.checkin, label:"Check-in/out",   color:"#ea580c"},
-          {val:statsCount.total,   label:"Total Event",    color:"#374151"},
-        ].map((s,i)=>(
+          { val: statsCount.weekly,  label: "Weekly Service",  color: "#2563eb" },
+          { val: statsCount.keluhan, label: "Keluhan",         color: "#dc2626" },
+          { val: statsCount.checkin, label: "Check-in/out",    color: "#ea580c" },
+          { val: statsCount.total,   label: "Total Event",     color: "#374151" },
+        ].map((s, i) => (
           <div key={i} className="kal-stat">
             <div className="kal-stat-val" style={{color:s.color}}>{s.val}</div>
             <div className="kal-stat-label">{s.label} bulan ini</div>
@@ -220,43 +292,66 @@ export default function Kalender({ user, globalData = {} }) {
         ))}
       </div>
 
+      {/* \u2500\u2500 Layout Utama \u2500\u2500 */}
       <div className="kal-layout">
+
+        {/* Kalender */}
         <div className="kal-widget">
           <div className="kal-widget-head">
-            <div className="kal-widget-title">📅 Kalender Operasional</div>
+            <div className="kal-widget-title">\ud83d\udcc5 Kalender Operasional</div>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
               {canEdit && (
-                <button className="kal-btn" onClick={()=>{setForm(f=>({...f,tanggal:selectedDate||todayStr}));setShowModal(true);}}>＋ Tambah Event</button>
+                <button className="kal-btn" onClick={() => {
+                  setForm(f => ({...f, tanggal: selectedDate || todayStr}));
+                  setShowModal(true);
+                }}>
+                  \uff0b Tambah Event
+                </button>
               )}
               <div className="kal-period">
-                <button className="kal-period-btn" onClick={prevMonth}>‹</button>
+                <button className="kal-period-btn" onClick={prevMonth}>\u2039</button>
                 <span className="kal-period-label">{BULAN[month].toUpperCase()} {year}</span>
-                <button className="kal-period-btn" onClick={nextMonth}>›</button>
+                <button className="kal-period-btn" onClick={nextMonth}>\u203a</button>
               </div>
             </div>
           </div>
           <div className="kal-widget-body">
             <div className="kal-days-header">
-              {HARI.map(h=>(
-                <div key={h} className="kal-day-name" style={{color:h==="MIN"?"#ef4444":h==="SAB"?"#3b82f6":"#9ca3af"}}>{h}</div>
+              {HARI.map(h => (
+                <div key={h} className="kal-day-name"
+                  style={{color: h==="MIN"?"#ef4444": h==="SAB"?"#3b82f6":"#9ca3af"}}>
+                  {h}
+                </div>
               ))}
             </div>
             <div className="kal-grid">
-              {cells.map((day,i)=>{
+              {cells.map((day, i) => {
                 if (!day) return <div key={`e-${i}`} className="kal-cell empty" />;
-                const dateStr=toDateStr(year,month,day);
-                const events=eventMap[dateStr]||[];
-                const isToday=dateStr===todayStr;
-                const isSel=dateStr===selectedDate;
-                const dow=new Date(year,month,day).getDay();
+                const dateStr = toDateStr(year, month, day);
+                const events  = eventMap[dateStr] || [];
+                const isToday = dateStr === todayStr;
+                const isSel   = dateStr === selectedDate;
+                const dow     = new Date(year, month, day).getDay();
                 return (
-                  <div key={day} className={`kal-cell${isSel?" selected":""}${isToday?" today":""}`} onClick={()=>setSelectedDate(dateStr)}>
-                    <div className="kal-cell-num" style={{color:dow===0?"#ef4444":dow===6?"#3b82f6":"#374151"}}>{day}</div>
-                    {events.slice(0,2).map((ev,ei)=>{
-                      const cfg=EVENT_CFG[ev.tipe]||EVENT_CFG.reminder;
-                      return <div key={ei} className="kal-pill" style={{background:cfg.bg,color:cfg.color}}>{cfg.icon} {ev.label.split("—")[0].trim()}</div>;
+                  <div key={day}
+                    className={`kal-cell${isSel?" selected":""}${isToday?" today":""}`}
+                    onClick={() => setSelectedDate(dateStr)}>
+                    <div className="kal-cell-num"
+                      style={{color: dow===0?"#ef4444": dow===6?"#3b82f6":"#374151"}}>
+                      {day}
+                    </div>
+                    {events.slice(0,2).map((ev, ei) => {
+                      const cfg = EVENT_CFG[ev.tipe] || EVENT_CFG.reminder;
+                      return (
+                        <div key={ei} className="kal-pill"
+                          style={{background:cfg.bg, color:cfg.color}}>
+                          {cfg.icon} {ev.label.split("\u2014")[0].trim()}
+                        </div>
+                      );
                     })}
-                    {events.length>2 && <div className="kal-more">+{events.length-2}</div>}
+                    {events.length > 2 && (
+                      <div className="kal-more">+{events.length - 2}</div>
+                    )}
                   </div>
                 );
               })}
@@ -264,33 +359,56 @@ export default function Kalender({ user, globalData = {} }) {
           </div>
         </div>
 
+        {/* Panel Kanan */}
         <div className="kal-right">
+
+          {/* Detail tanggal */}
           <div className="kal-widget">
             <div className="kal-widget-head">
               <div className="kal-widget-title" style={{fontSize:12}}>
-                {selectedDate ? new Date(selectedDate+"T00:00:00").toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long"}) : "Pilih tanggal"}
+                {selectedDate
+                  ? new Date(selectedDate + "T00:00:00").toLocaleDateString("id-ID",
+                      { weekday:"long", day:"numeric", month:"long" })
+                  : "Pilih tanggal"}
               </div>
             </div>
             <div className="kal-widget-body">
-              {selectedEvents.length===0 ? (
+              {selectedEvents.length === 0 ? (
                 <div className="kal-empty-state">
-                  <div style={{fontSize:28,marginBottom:6}}>📭</div>
+                  <div style={{fontSize:28,marginBottom:6}}>\ud83d\udced</div>
                   <div style={{fontSize:12,fontWeight:600,color:"#374151"}}>Tidak ada event</div>
-                  {canEdit && <div style={{fontSize:11,color:"#f97316",marginTop:6,cursor:"pointer",fontWeight:600}} onClick={()=>{setForm(f=>({...f,tanggal:selectedDate}));setShowModal(true);}}>+ Tambah event</div>}
+                  {canEdit && (
+                    <div style={{fontSize:11,color:"#f97316",marginTop:6,cursor:"pointer",fontWeight:600}}
+                      onClick={() => { setForm(f=>({...f, tanggal:selectedDate})); setShowModal(true); }}>
+                      + Tambah event
+                    </div>
+                  )}
                 </div>
               ) : (
-                selectedEvents.map(ev=>{
-                  const cfg=EVENT_CFG[ev.tipe]||EVENT_CFG.reminder;
+                selectedEvents.map(ev => {
+                  const cfg = EVENT_CFG[ev.tipe] || EVENT_CFG.reminder;
                   return (
-                    <div key={ev.id} className="kal-event-item" style={{background:cfg.bg,borderColor:cfg.color+"55"}}>
+                    <div key={ev.id} className="kal-event-item"
+                      style={{background:cfg.bg, borderColor:cfg.color+"55"}}>
                       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
                         <div style={{flex:1}}>
-                          <div style={{fontSize:12,fontWeight:600,color:cfg.color}}>{cfg.icon} {ev.label}</div>
-                          <div style={{fontSize:10,color:cfg.color,opacity:.75,marginTop:1}}>{cfg.label}</div>
-                          {ev.catatan && <div style={{fontSize:11,color:"#6b7280",marginTop:4}}>{ev.catatan}</div>}
+                          <div style={{fontSize:12,fontWeight:600,color:cfg.color}}>
+                            {cfg.icon} {ev.label}
+                          </div>
+                          <div style={{fontSize:10,color:cfg.color,opacity:.75,marginTop:1}}>
+                            {cfg.label}
+                          </div>
+                          {ev.catatan && (
+                            <div style={{fontSize:11,color:"#6b7280",marginTop:4}}>{ev.catatan}</div>
+                          )}
                         </div>
-                        {canEdit && ev.sumber==="manual" && (
-                          <button onClick={()=>{if(window.confirm("Hapus event ini?"))setManualEvents(prev=>prev.filter(e=>e.id!==ev.id));}} style={{background:"none",border:"none",cursor:"pointer",color:"#9ca3af",fontSize:14,padding:"0 2px"}}>✕</button>
+                        {canEdit && ev.sumber === "manual" && (
+                          <button onClick={() => {
+                            if (window.confirm("Hapus event ini?"))
+                              setManualEvents(prev => prev.filter(e => e.id !== ev.id));
+                          }} style={{background:"none",border:"none",cursor:"pointer",color:"#9ca3af",fontSize:14,padding:"0 2px"}}>
+                            \u2715
+                          </button>
                         )}
                       </div>
                     </div>
@@ -299,12 +417,14 @@ export default function Kalender({ user, globalData = {} }) {
               )}
             </div>
           </div>
+
+          {/* Legenda */}
           <div className="kal-widget">
             <div className="kal-widget-head">
-              <div className="kal-widget-title">🎨 Legenda</div>
+              <div className="kal-widget-title">\ud83c\udfa8 Legenda</div>
             </div>
             <div className="kal-widget-body">
-              {Object.entries(EVENT_CFG).map(([key,cfg])=>(
+              {Object.entries(EVENT_CFG).map(([key, cfg]) => (
                 <div key={key} className="kal-legenda-item">
                   <div className="kal-dot" style={{background:cfg.color}} />
                   <span>{cfg.icon} {cfg.label}</span>
@@ -312,43 +432,58 @@ export default function Kalender({ user, globalData = {} }) {
               ))}
             </div>
           </div>
+
         </div>
       </div>
 
+      {/* \u2500\u2500 Modal Tambah Event \u2500\u2500 */}
       {showModal && (
-        <div className="kal-overlay" onClick={()=>setShowModal(false)}>
-          <div className="kal-modal" onClick={e=>e.stopPropagation()}>
+        <div className="kal-overlay" onClick={() => setShowModal(false)}>
+          <div className="kal-modal" onClick={e => e.stopPropagation()}>
             <div className="kal-modal-head">
-              <div className="kal-modal-title">＋ Tambah Event Kalender</div>
-              <button className="kal-modal-close" onClick={()=>setShowModal(false)}>✕</button>
+              <div className="kal-modal-title">\uff0b Tambah Event Kalender</div>
+              <button className="kal-modal-close" onClick={() => setShowModal(false)}>\u2715</button>
             </div>
             <div className="kal-modal-body">
               <div className="kal-field">
                 <label className="kal-label">Tanggal *</label>
-                <input className="kal-input" type="date" value={form.tanggal} onChange={e=>setForm(f=>({...f,tanggal:e.target.value}))} />
+                <input className="kal-input" type="date" value={form.tanggal}
+                  onChange={e => setForm(f => ({...f, tanggal:e.target.value}))} />
               </div>
               <div className="kal-field">
                 <label className="kal-label">Tipe Event *</label>
-                <select className="kal-select" value={form.tipe} onChange={e=>setForm(f=>({...f,tipe:e.target.value}))}>
-                  {Object.entries(EVENT_CFG).map(([key,cfg])=><option key={key} value={key}>{cfg.icon} {cfg.label}</option>)}
+                <select className="kal-select" value={form.tipe}
+                  onChange={e => setForm(f => ({...f, tipe:e.target.value}))}>
+                  {Object.entries(EVENT_CFG).map(([key, cfg]) => (
+                    <option key={key} value={key}>{cfg.icon} {cfg.label}</option>
+                  ))}
                 </select>
               </div>
               <div className="kal-field">
                 <label className="kal-label">Keterangan *</label>
-                <input className="kal-input" value={form.label} onChange={e=>setForm(f=>({...f,label:e.target.value}))} placeholder="Contoh: Weekly Service — Kamar 1, 4, 7" />
+                <input className="kal-input" value={form.label}
+                  onChange={e => setForm(f => ({...f, label:e.target.value}))}
+                  placeholder="Contoh: Weekly Service \u2014 Kamar 1, 4, 7" />
               </div>
               <div className="kal-field">
                 <label className="kal-label">Catatan (opsional)</label>
-                <input className="kal-input" value={form.catatan} onChange={e=>setForm(f=>({...f,catatan:e.target.value}))} placeholder="Detail tambahan..." />
+                <input className="kal-input" value={form.catatan}
+                  onChange={e => setForm(f => ({...f, catatan:e.target.value}))}
+                  placeholder="Detail tambahan..." />
               </div>
             </div>
             <div className="kal-modal-foot">
-              <button className="kal-btn" disabled={!form.tanggal||!form.label.trim()} onClick={handleAdd}>✅ Simpan</button>
-              <button className="kal-btn-ghost" onClick={()=>setShowModal(false)}>Batal</button>
+              <button className="kal-btn"
+                disabled={!form.tanggal || !form.label.trim()}
+                onClick={handleAdd}>
+                \u2705 Simpan
+              </button>
+              <button className="kal-btn-ghost" onClick={() => setShowModal(false)}>Batal</button>
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }

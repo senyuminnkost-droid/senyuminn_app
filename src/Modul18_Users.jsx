@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from \"react\";
+import {} from \"react-dom\";
 
 const CSS = `
   .us-wrap { display:flex; flex-direction:column; gap:16px; }
@@ -73,9 +74,9 @@ const CSS = `
 
 function StyleInjector() {
   useEffect(()=>{
-    const id="senyuminn-users-css";
+    const id=\"senyuminn-users-css\";
     if(document.getElementById(id)) return;
-    const el=document.createElement("style");
+    const el=document.createElement(\"style\");
     el.id=id; el.textContent=CSS;
     document.head.appendChild(el);
     return ()=>{ const e=document.getElementById(id); if(e) e.remove(); };
@@ -83,112 +84,112 @@ function StyleInjector() {
   return null;
 }
 
-// ─── helpers ───
-const getInisial = (nama="") => {
-  const p = nama.trim().split(" ");
+// \u2500\u2500\u2500 helpers \u2500\u2500\u2500
+const getInisial = (nama=\"\") => {
+  const p = nama.trim().split(\" \");
   return (p.length>=2 ? p[0][0]+p[1][0] : nama.slice(0,2)).toUpperCase();
 };
 const ROLE_COLORS = {
-  owner:     { bg:"#fef3c7", color:"#d97706", label:"Owner"     },
-  direktur:  { bg:"#ede9fe", color:"#7c3aed", label:"Direktur"  },
-  manajemen: { bg:"#dbeafe", color:"#2563eb", label:"Manajemen" },
-  staff:     { bg:"#dcfce7", color:"#15803d", label:"Staff"     },
+  owner:     { bg:\"#fef3c7\", color:\"#d97706\", label:\"Owner\"     },
+  direktur:  { bg:\"#ede9fe\", color:\"#7c3aed\", label:\"Direktur\"  },
+  manajemen: { bg:\"#dbeafe\", color:\"#2563eb\", label:\"Manajemen\" },
+  staff:     { bg:\"#dcfce7\", color:\"#15803d\", label:\"Staff\"     },
 };
-const AVATAR_COLORS = ["#f97316","#3b82f6","#8b5cf6","#16a34a","#ec4899","#06b6d4","#f59e0b"];
+const AVATAR_COLORS = [\"#f97316\",\"#3b82f6\",\"#8b5cf6\",\"#16a34a\",\"#ec4899\",\"#06b6d4\",\"#f59e0b\"];
 const getAvatarColor = (id) => AVATAR_COLORS[(id||0)%AVATAR_COLORS.length];
 
 const DEFAULT_PERMISSIONS = {
-  owner:     { dashboard:"read", monitor:"read", absensi:"read", keluhan:"read", weekly:"read", kalender:"read", penyewa:"read", checkin:"read", riwayat:"read", tagihan:"read", kas:"read", laporan:"read", karyawan:"read", penggajian:"read", laporanabsensi:"read", profil:"read", users:"read", sop:"read" },
-  direktur:  { dashboard:"read", monitor:"read", absensi:"read", keluhan:"read", weekly:"read", kalender:"read", penyewa:"read", checkin:"read", riwayat:"read", tagihan:"read", kas:"read", laporan:"read", karyawan:"read", penggajian:"read", laporanabsensi:"read", profil:"read", users:"read", sop:"read" },
-  manajemen: { dashboard:"write", monitor:"write", absensi:"write", keluhan:"write", weekly:"write", kalender:"write", penyewa:"write", checkin:"write", riwayat:"write", tagihan:"write", kas:"write", laporan:"write", karyawan:"write", penggajian:"write", laporanabsensi:"write", profil:"write", users:"write", sop:"write" },
-  staff:     { dashboard:"read", monitor:"read", absensi:"write", keluhan:"write", weekly:"write", kalender:"read", penyewa:"read", checkin:"write", riwayat:"none", tagihan:"none", kas:"none", laporan:"none", karyawan:"none", penggajian:"none", laporanabsensi:"none", profil:"none", users:"none", sop:"read" },
+  owner:     { dashboard:\"read\", monitor:\"read\", absensi:\"read\", keluhan:\"read\", weekly:\"read\", kalender:\"read\", penyewa:\"read\", checkin:\"read\", riwayat:\"read\", tagihan:\"read\", kas:\"read\", laporan:\"read\", karyawan:\"read\", penggajian:\"read\", laporanabsensi:\"read\", profil:\"read\", users:\"read\", sop:\"read\" },
+  direktur:  { dashboard:\"read\", monitor:\"read\", absensi:\"read\", keluhan:\"read\", weekly:\"read\", kalender:\"read\", penyewa:\"read\", checkin:\"read\", riwayat:\"read\", tagihan:\"read\", kas:\"read\", laporan:\"read\", karyawan:\"read\", penggajian:\"read\", laporanabsensi:\"read\", profil:\"read\", users:\"read\", sop:\"read\" },
+  manajemen: { dashboard:\"write\", monitor:\"write\", absensi:\"write\", keluhan:\"write\", weekly:\"write\", kalender:\"write\", penyewa:\"write\", checkin:\"write\", riwayat:\"write\", tagihan:\"write\", kas:\"write\", laporan:\"write\", karyawan:\"write\", penggajian:\"write\", laporanabsensi:\"write\", profil:\"write\", users:\"write\", sop:\"write\" },
+  staff:     { dashboard:\"read\", monitor:\"read\", absensi:\"write\", keluhan:\"write\", weekly:\"write\", kalender:\"read\", penyewa:\"read\", checkin:\"write\", riwayat:\"none\", tagihan:\"none\", kas:\"none\", laporan:\"none\", karyawan:\"none\", penggajian:\"none\", laporanabsensi:\"none\", profil:\"none\", users:\"none\", sop:\"read\" },
 };
 
 const MENU_LABELS = {
-  dashboard:"Dashboard", monitor:"Monitor Kamar", absensi:"Absensi", keluhan:"Keluhan & Tiket",
-  weekly:"Weekly Service", kalender:"Kalender", penyewa:"Data Penyewa", checkin:"Check-in/out",
-  riwayat:"Riwayat Penyewa", tagihan:"Tagihan", kas:"Kas & Jurnal", laporan:"Laporan Keuangan",
-  karyawan:"Data Karyawan", penggajian:"Penggajian", laporanabsensi:"Laporan Absensi",
-  profil:"Profil Kost", users:"Manajemen User", sop:"SOP & Standar",
+  dashboard:\"Dashboard\", monitor:\"Monitor Kamar\", absensi:\"Absensi\", keluhan:\"Keluhan & Tiket\",
+  weekly:\"Weekly Service\", kalender:\"Kalender\", penyewa:\"Data Penyewa\", checkin:\"Check-in/out\",
+  riwayat:\"Riwayat Penyewa\", tagihan:\"Tagihan\", kas:\"Kas & Jurnal\", laporan:\"Laporan Keuangan\",
+  karyawan:\"Data Karyawan\", penggajian:\"Penggajian\", laporanabsensi:\"Laporan Absensi\",
+  profil:\"Profil Kost\", users:\"Manajemen User\", sop:\"SOP & Standar\",
 };
 
 const MENU_SECTIONS = [
-  { label:"Operasional", keys:["dashboard","monitor","absensi","keluhan","weekly","kalender"] },
-  { label:"Tenant",      keys:["penyewa","checkin","riwayat"] },
-  { label:"Keuangan",    keys:["tagihan","kas","laporan"] },
-  { label:"HR",          keys:["karyawan","penggajian","laporanabsensi"] },
-  { label:"Pengaturan",  keys:["profil","users","sop"] },
+  { label:\"Operasional\", keys:[\"dashboard\",\"monitor\",\"absensi\",\"keluhan\",\"weekly\",\"kalender\"] },
+  { label:\"Tenant\",      keys:[\"penyewa\",\"checkin\",\"riwayat\"] },
+  { label:\"Keuangan\",    keys:[\"tagihan\",\"kas\",\"laporan\"] },
+  { label:\"HR\",          keys:[\"karyawan\",\"penggajian\",\"laporanabsensi\"] },
+  { label:\"Pengaturan\",  keys:[\"profil\",\"users\",\"sop\"] },
 ];
 
-// ─── Modal Form User ───
+// \u2500\u2500\u2500 Modal Form User \u2500\u2500\u2500
 function ModalUser({ userObj, currentUser, onClose, onSave }) {
   const isEdit = !!userObj?.id;
   const [form, setForm] = useState(userObj ? {...userObj} : {
-    nama:"", jabatan:"", username:"", password:"", role:"staff", aktif:true,
-    permissions: { ...DEFAULT_PERMISSIONS["staff"] }
+    nama:\"\", jabatan:\"\", username:\"\", password:\"\", role:\"staff\", aktif:true,
+    permissions: { ...DEFAULT_PERMISSIONS[\"staff\"] }
   });
   const set = (k,v) => setForm(p=>({...p,[k]:v}));
 
   const handleRoleChange = (role) => {
-    set("role", role);
+    set(\"role\", role);
     setForm(p=>({...p, role, permissions:{ ...DEFAULT_PERMISSIONS[role] }}));
   };
 
   const setPerm = (menu, val) => {
     // owner & direktur: tidak bisa diubah ke write
-    if ((form.role==="owner"||form.role==="direktur") && val==="write") return;
+    if ((form.role===\"owner\"||form.role===\"direktur\") && val===\"write\") return;
     setForm(p=>({...p, permissions:{...p.permissions,[menu]:val}}));
   };
 
   const valid = form.nama && form.username && (isEdit || form.password);
-  const isOwnerEdit = userObj?.role === "owner";
-  const canEditThisUser = currentUser?.role === "manajemen" || currentUser?.role === "owner";
+  const isOwnerEdit = userObj?.role === \"owner\";
+  const canEditThisUser = currentUser?.role === \"manajemen\" || currentUser?.role === \"owner\";
 
-  return (
-    <div className="us-overlay" onClick={onClose}>
-      <div className="us-modal" onClick={e=>e.stopPropagation()}>
-        <div className="us-modal-head">
-          <div className="us-modal-title">{isEdit?"✏️ Edit User":"➕ Tambah User"}</div>
-          <button className="us-modal-close" onClick={onClose}>✕</button>
+  return(
+    <div className=\"us-overlay\" onClick={onClose}>
+      <div className=\"us-modal\" onClick={e=>e.stopPropagation()}>
+        <div className=\"us-modal-head\">
+          <div className=\"us-modal-title\">{isEdit?\"\u270f\ufe0f Edit User\":\"\u2795 Tambah User\"}</div>
+          <button className=\"us-modal-close\" onClick={onClose}>\u2715</button>
         </div>
-        <div className="us-modal-body">
+        <div className=\"us-modal-body\">
 
           {/* Data dasar */}
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-            <div className="us-field">
-              <label className="us-label">Nama Lengkap *</label>
-              <input className="us-input" value={form.nama} onChange={e=>set("nama",e.target.value)} placeholder="Nama lengkap..." />
+          <div style={{display:\"grid\",gridTemplateColumns:\"1fr 1fr\",gap:10}}>
+            <div className=\"us-field\">
+              <label className=\"us-label\">Nama Lengkap *</label>
+              <input className=\"us-input\" value={form.nama} onChange={e=>set(\"nama\",e.target.value)} placeholder=\"Nama lengkap...\" />
             </div>
-            <div className="us-field">
-              <label className="us-label">Jabatan</label>
-              <input className="us-input" value={form.jabatan||""} onChange={e=>set("jabatan",e.target.value)} placeholder="Owner, Admin, Staff..." />
+            <div className=\"us-field\">
+              <label className=\"us-label\">Jabatan</label>
+              <input className=\"us-input\" value={form.jabatan||\"\"} onChange={e=>set(\"jabatan\",e.target.value)} placeholder=\"Owner, Admin, Staff...\" />
             </div>
-            <div className="us-field">
-              <label className="us-label">Username *</label>
-              <input className="us-input" value={form.username} onChange={e=>set("username",e.target.value)} placeholder="username..." style={{fontFamily:"JetBrains Mono,monospace"}} />
+            <div className=\"us-field\">
+              <label className=\"us-label\">Username *</label>
+              <input className=\"us-input\" value={form.username} onChange={e=>set(\"username\",e.target.value)} placeholder=\"username...\" style={{fontFamily:\"JetBrains Mono,monospace\"}} />
             </div>
-            <div className="us-field">
-              <label className="us-label">{isEdit?"Password Baru (kosongkan jika tidak diubah)":"Password *"}</label>
-              <input className="us-input" type="password" value={form.password||""} onChange={e=>set("password",e.target.value)} placeholder="Password..." />
+            <div className=\"us-field\">
+              <label className=\"us-label\">{isEdit?\"Password Baru (kosongkan jika tidak diubah)\":\"Password *\"}</label>
+              <input className=\"us-input\" type=\"password\" value={form.password||\"\"} onChange={e=>set(\"password\",e.target.value)} placeholder=\"Password...\" />
             </div>
           </div>
 
           {/* Role */}
-          <div className="us-field">
-            <label className="us-label">Role</label>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+          <div className=\"us-field\">
+            <label className=\"us-label\">Role</label>
+            <div style={{display:\"grid\",gridTemplateColumns:\"repeat(4,1fr)\",gap:6}}>
               {Object.entries(ROLE_COLORS).map(([role,cfg])=>(
                 <div
                   key={role}
                   onClick={()=>{ if(!isOwnerEdit) handleRoleChange(role); }}
                   style={{
-                    padding:"8px 6px", borderRadius:9, textAlign:"center", cursor:isOwnerEdit?"not-allowed":"pointer",
-                    border:`1.5px solid ${form.role===role?cfg.color:"#e5e7eb"}`,
-                    background:form.role===role?cfg.bg:"#fff",
-                    transition:"all .12s", opacity:isOwnerEdit&&role!=="owner" ? 0.5 : 1
+                    padding:\"8px 6px\", borderRadius:9, textAlign:\"center\", cursor:isOwnerEdit?\"not-allowed\":\"pointer\",
+                    border:`1.5px solid ${form.role===role?cfg.color:\"#e5e7eb\"}`,
+                    background:form.role===role?cfg.bg:\"#fff\",
+                    transition:\"all .12s\", opacity:isOwnerEdit&&role!==\"owner\" ? 0.5:1
                   }}
                 >
-                  <div style={{fontSize:12,fontWeight:700,color:form.role===role?cfg.color:"#6b7280"}}>{cfg.label}</div>
+                  <div style={{fontSize:12,fontWeight:700,color:form.role===role?cfg.color:\"#6b7280\"}}>{cfg.label}</div>
                 </div>
               ))}
             </div>
@@ -196,31 +197,31 @@ function ModalUser({ userObj, currentUser, onClose, onSave }) {
 
           {/* Permission matrix */}
           <div style={{marginTop:4}}>
-            <div style={{fontSize:11,fontWeight:700,color:"#374151",marginBottom:8,display:"flex",alignItems:"center",gap:6}}>
-              🔐 Hak Akses per Menu
-              {(form.role==="owner"||form.role==="direktur") && (
-                <span style={{fontSize:10,color:"#9ca3af",fontWeight:400}}>(Role ini selalu read-only)</span>
+            <div style={{fontSize:11,fontWeight:700,color:\"#374151\",marginBottom:8,display:\"flex\",alignItems:\"center\",gap:6}}>
+              \ud83d\udd10 Hak Akses per Menu
+              {(form.role===\"owner\"||form.role===\"direktur\") && (
+                <span style={{fontSize:10,color:\"#9ca3af\",fontWeight:400}}>(Role ini selalu read-only)</span>
               )}
             </div>
             {MENU_SECTIONS.map(sec=>(
               <div key={sec.label} style={{marginBottom:10}}>
-                <div className="us-section-title">{sec.label}</div>
-                <div className="us-perm-grid">
+                <div className=\"us-section-title\">{sec.label}</div>
+                <div className=\"us-perm-grid\">
                   {sec.keys.map(menu=>{
-                    const val = form.permissions?.[menu]||"none";
-                    const isLocked = form.role==="owner"||form.role==="direktur";
+                    const val = form.permissions?.[menu]||\"none\";
+                    const isLocked = form.role===\"owner\"||form.role===\"direktur\";
                     return (
-                      <div key={menu} className="us-perm-row">
-                        <span className="us-perm-label">{MENU_LABELS[menu]}</span>
+                      <div key={menu} className=\"us-perm-row\">
+                        <span className=\"us-perm-label\">{MENU_LABELS[menu]}</span>
                         <select
                           className={`us-perm-select ${val}`}
                           value={val}
                           disabled={isLocked}
                           onChange={e=>setPerm(menu,e.target.value)}
                         >
-                          <option value="write">✏️ Write</option>
-                          <option value="read">👁️ Read</option>
-                          <option value="none">🚫 None</option>
+                          <option value=\"write\">\u270f\ufe0f Write</option>
+                          <option value=\"read\">\ud83d\udc41\ufe0f Read</option>
+                          <option value=\"none\">\ud83d\udeab None</option>
                         </select>
                       </div>
                     );
@@ -231,77 +232,81 @@ function ModalUser({ userObj, currentUser, onClose, onSave }) {
           </div>
 
           {/* Status aktif */}
-          <div style={{display:"flex",alignItems:"center",gap:8,padding:"9px 11px",background:"#f9fafb",borderRadius:8,border:"1px solid #e5e7eb"}}>
-            <input type="checkbox" id="aktif-toggle" checked={form.aktif!==false} onChange={e=>set("aktif",e.target.checked)} />
-            <label htmlFor="aktif-toggle" style={{fontSize:12,fontWeight:600,color:"#374151",cursor:"pointer"}}>User Aktif</label>
-            <span style={{fontSize:11,color:"#9ca3af"}}>(Non-aktif tidak bisa login, data tetap tersimpan)</span>
+          <div style={{display:\"flex\",alignItems:\"center\",gap:8,padding:\"9px 11px\",background:\"#f9fafb\",borderRadius:8,border:\"1px solid #e5e7eb\"}}>
+            <input type=\"checkbox\" id=\"aktif-toggle\" checked={form.aktif!==false} onChange={e=>set(\"aktif\",e.target.checked)} />
+            <label htmlFor=\"aktif-toggle\" style={{fontSize:12,fontWeight:600,color:\"#374151\",cursor:\"pointer\"}}>User Aktif</label>
+            <span style={{fontSize:11,color:\"#9ca3af\"}}>(Non-aktif tidak bisa login, data tetap tersimpan)</span>
           </div>
         </div>
-        <div className="us-modal-foot">
-          <button className="us-btn primary" disabled={!valid} onClick={()=>{ onSave({...form, id:userObj?.id||Date.now()}); onClose(); }}>
-            ✅ {isEdit?"Simpan Perubahan":"Tambah User"}
+        <div className=\"us-modal-foot\">
+          <button className=\"us-btn primary\" disabled={!valid} onClick={()=>{ onSave({...form, id:userObj?.id||Date.now()}); onClose(); }}>
+            \u2705 {isEdit?\"Simpan Perubahan\":\"Tambah User\"}
           </button>
-          <button className="us-btn ghost" onClick={onClose}>Batal</button>
+          <button className=\"us-btn ghost\" onClick={onClose}>Batal</button>
         </div>
       </div>
   );
 }
 
-// ─── Modal Reset Password ───
+// \u2500\u2500\u2500 Modal Reset Password \u2500\u2500\u2500
 function ModalResetPW({ userObj, onClose, onSave }) {
-  const [pw, setPw] = useState("");
-  const [confirm, setConfirm] = useState("");
+  const [pw, setPw] = useState(\"\");
+  const [confirm, setConfirm] = useState(\"\");
   const match = pw && pw===confirm;
-  return (
-    <div className="us-overlay" onClick={onClose}>
-      <div className="us-modal" onClick={e=>e.stopPropagation()} style={{maxWidth:380}}>
-        <div className="us-modal-head">
-          <div className="us-modal-title">🔑 Reset Password — {userObj?.nama}</div>
-          <button className="us-modal-close" onClick={onClose}>✕</button>
+  return(
+    <div className=\"us-overlay\" onClick={onClose}>
+      <div className=\"us-modal\" onClick={e=>e.stopPropagation()} style={{maxWidth:380}}>
+        <div className=\"us-modal-head\">
+          <div className=\"us-modal-title\">\ud83d\udd11 Reset Password \u2014 {userObj?.nama}</div>
+          <button className=\"us-modal-close\" onClick={onClose}>\u2715</button>
         </div>
-        <div className="us-modal-body">
-          <div className="us-field">
-            <label className="us-label">Password Baru</label>
-            <input className="us-input" type="password" value={pw} onChange={e=>setPw(e.target.value)} placeholder="Min 6 karakter..." />
+        <div className=\"us-modal-body\">
+          <div className=\"us-field\">
+            <label className=\"us-label\">Password Baru</label>
+            <input className=\"us-input\" type=\"password\" value={pw} onChange={e=>setPw(e.target.value)} placeholder=\"Min 6 karakter...\" />
           </div>
-          <div className="us-field">
-            <label className="us-label">Konfirmasi Password</label>
-            <input className="us-input" type="password" value={confirm} onChange={e=>setConfirm(e.target.value)} placeholder="Ulangi password..." style={{borderColor:confirm&&!match?"#ef4444":confirm&&match?"#16a34a":""}} />
+          <div className=\"us-field\">
+            <label className=\"us-label\">Konfirmasi Password</label>
+            <input className=\"us-input\" type=\"password\" value={confirm} onChange={e=>setConfirm(e.target.value)} placeholder=\"Ulangi password...\" style={{borderColor:confirm&&!match?\"#ef4444\":confirm&&match?\"#16a34a\":\"\"}} />
           </div>
-          {confirm && !match && <div style={{fontSize:11,color:"#ef4444"}}>Password tidak sama</div>}
-          {match && <div style={{fontSize:11,color:"#16a34a"}}>✓ Password cocok</div>}
+          {confirm && !match && <div style={{fontSize:11,color:\"#ef4444\"}}>Password tidak sama</div>}
+          {match && <div style={{fontSize:11,color:\"#16a34a\"}}>\u2713 Password cocok</div>}
         </div>
-        <div className="us-modal-foot">
-          <button className="us-btn primary" disabled={!match||pw.length<6} onClick={()=>{ onSave(pw); onClose(); }}>🔑 Reset Password</button>
-          <button className="us-btn ghost" onClick={onClose}>Batal</button>
+        <div className=\"us-modal-foot\">
+          <button className=\"us-btn primary\" disabled={!match||pw.length<6} onClick={()=>{ onSave(pw); onClose(); }}>\ud83d\udd11 Reset Password</button>
+          <button className=\"us-btn ghost\" onClick={onClose}>Batal</button>
         </div>
       </div>
     </div>
   );
 }
 
-// ─── MAIN ───
+// \u2500\u2500\u2500 MAIN \u2500\u2500\u2500
 export default function ManajemenUsers({ user, globalData={} }) {
   const { isReadOnly=false } = globalData;
 
   const [users, setUsers] = useState([
-    { id:1, nama:"Owner", jabatan:"Owner", username:"owner", password:"owner123", role:"owner", aktif:true, permissions:{...DEFAULT_PERMISSIONS["owner"]} },
+    { id:1, nama:\"Yusuf Vindra Asmara\", jabatan:\"Owner\",       username:\"owner\",    password:\"owner123\",  role:\"owner\",     aktif:true, permissions:{...DEFAULT_PERMISSIONS[\"owner\"]}     },
+    { id:2, nama:\"Budi Santosa\",        jabatan:\"Direktur\",    username:\"direktur\", password:\"dir123\",    role:\"direktur\",  aktif:true, permissions:{...DEFAULT_PERMISSIONS[\"direktur\"]}  },
+    { id:3, nama:\"Rina Manajemen\",      jabatan:\"Super Admin\", username:\"admin\",    password:\"admin123\",  role:\"manajemen\", aktif:true, permissions:{...DEFAULT_PERMISSIONS[\"manajemen\"]} },
+    { id:4, nama:\"Muh. Krisna Mukti\",   jabatan:\"Clean & Service\", username:\"staff1\", password:\"staff123\", role:\"staff\",   aktif:true, permissions:{...DEFAULT_PERMISSIONS[\"staff\"]}     },
+    { id:5, nama:\"Gurit Yudho Anggoro\", jabatan:\"Staf Jaga Malam\", username:\"staff2\", password:\"staff123\", role:\"staff\",   aktif:true, permissions:{...DEFAULT_PERMISSIONS[\"staff\"]}     },
   ]);
   const [selected,    setSelected]    = useState(null);
   const [showModal,   setShowModal]   = useState(false);
   const [showReset,   setShowReset]   = useState(false);
   const [editData,    setEditData]    = useState(null);
-  const [activeTab,   setActiveTab]   = useState("users");
+  const [activeTab,   setActiveTab]   = useState(\"users\");
   const [activityLog, setActivityLog] = useState([
-    { id:1, waktu:"2026-03-04 09:12", user:"admin",    aksi:"Login berhasil" },
-    { id:2, waktu:"2026-03-04 08:45", user:"staff1",   aksi:"Update status tiket T-003" },
-    { id:3, waktu:"2026-03-03 16:30", user:"admin",    aksi:"Konfirmasi pembayaran Kamar 7" },
-    { id:4, waktu:"2026-03-03 14:10", user:"staff2",   aksi:"Input absensi — Shift Malam" },
-    { id:5, waktu:"2026-03-02 10:05", user:"admin",    aksi:"Tambah karyawan baru" },
+    { id:1, waktu:\"2026-03-04 09:12\", user:\"admin\",    aksi:\"Login berhasil\" },
+    { id:2, waktu:\"2026-03-04 08:45\", user:\"staff1\",   aksi:\"Update status tiket T-003\" },
+    { id:3, waktu:\"2026-03-03 16:30\", user:\"admin\",    aksi:\"Konfirmasi pembayaran Kamar 7\" },
+    { id:4, waktu:\"2026-03-03 14:10\", user:\"staff2\",   aksi:\"Input absensi \u2014 Shift Malam\" },
+    { id:5, waktu:\"2026-03-02 10:05\", user:\"admin\",    aksi:\"Tambah karyawan baru\" },
   ]);
 
-  const canManage = user?.role === "manajemen";
-  const isOwner   = user?.role === "owner";
+  const canManage = user?.role === \"manajemen\";
+  const isOwner   = user?.role === \"owner\";
 
   const handleSave = (data) => {
     if (users.find(u=>u.id===data.id)) {
@@ -310,12 +315,12 @@ export default function ManajemenUsers({ user, globalData={} }) {
     } else {
       setUsers(prev=>[...prev,data]);
     }
-    setActivityLog(prev=>[{id:Date.now(),waktu:new Date().toLocaleString("id-ID"),user:user?.username,aksi:`${data.id&&users.find(u=>u.id===data.id)?"Edit":"Tambah"} user: ${data.nama}`},...prev]);
+    setActivityLog(prev=>[{id:Date.now(),waktu:new Date().toLocaleString(\"id-ID\"),user:user?.username,aksi:`${data.id&&users.find(u=>u.id===data.id)?\"Edit\":\"Tambah\"} user: ${data.nama}`},...prev]);
   };
 
   const handleResetPW = (newPw) => {
     setUsers(prev=>prev.map(u=>u.id===selected?.id?{...u,password:newPw}:u));
-    setActivityLog(prev=>[{id:Date.now(),waktu:new Date().toLocaleString("id-ID"),user:user?.username,aksi:`Reset password: ${selected?.nama}`},...prev]);
+    setActivityLog(prev=>[{id:Date.now(),waktu:new Date().toLocaleString(\"id-ID\"),user:user?.username,aksi:`Reset password: ${selected?.nama}`},...prev]);
   };
 
   const handleToggleAktif = (userId) => {
@@ -325,67 +330,67 @@ export default function ManajemenUsers({ user, globalData={} }) {
   const stats = {
     total:     users.length,
     aktif:     users.filter(u=>u.aktif).length,
-    manajemen: users.filter(u=>u.role==="manajemen").length,
-    staff:     users.filter(u=>u.role==="staff").length,
+    manajemen: users.filter(u=>u.role===\"manajemen\").length,
+    staff:     users.filter(u=>u.role===\"staff\").length,
   };
 
   return (
-    <div className="us-wrap">
+    <div className=\"us-wrap\">
       <StyleInjector />
 
       {/* Cards */}
-      <div className="us-cards">
+      <div className=\"us-cards\">
         {[
-          {label:"Total User",  val:stats.total,     color:"#f97316"},
-          {label:"Aktif",       val:stats.aktif,     color:"#16a34a"},
-          {label:"Manajemen",   val:stats.manajemen, color:"#3b82f6"},
-          {label:"Staff",       val:stats.staff,     color:"#8b5cf6"},
+          {label:\"Total User\",  val:stats.total,     color:\"#f97316\"},
+          {label:\"Aktif\",       val:stats.aktif,     color:\"#16a34a\"},
+          {label:\"Manajemen\",   val:stats.manajemen, color:\"#3b82f6\"},
+          {label:\"Staff\",       val:stats.staff,     color:\"#8b5cf6\"},
         ].map((c,i)=>(
-          <div key={i} className="us-card">
-            <div className="us-card-bar" style={{background:c.color}} />
-            <div className="us-card-label">{c.label}</div>
-            <div className="us-card-val" style={{color:c.color}}>{c.val}</div>
+          <div key={i} className=\"us-card\">
+            <div className=\"us-card-bar\" style={{background:c.color}} />
+            <div className=\"us-card-label\">{c.label}</div>
+            <div className=\"us-card-val\" style={{color:c.color}}>{c.val}</div>
           </div>
         ))}
       </div>
 
       {/* Tabs */}
-      <div style={{display:"flex",gap:4,background:"#fff",borderRadius:12,border:"1px solid #e5e7eb",padding:5}}>
+      <div style={{display:\"flex\",gap:4,background:\"#fff\",borderRadius:12,border:\"1px solid #e5e7eb\",padding:5}}>
         {[
-          {id:"users", label:"👤 Daftar User"},
-          {id:"log",   label:"📋 Log Aktivitas"},
+          {id:\"users\", label:\"\ud83d\udc64 Daftar User\"},
+          {id:\"log\",   label:\"\ud83d\udccb Log Aktivitas\"},
         ].map(t=>(
-          <div key={t.id} onClick={()=>setActiveTab(t.id)} style={{flex:1,padding:"8px 12px",borderRadius:8,textAlign:"center",fontSize:12,fontWeight:600,cursor:"pointer",color:activeTab===t.id?"#fff":"#9ca3af",background:activeTab===t.id?"linear-gradient(135deg,#f97316,#ea580c)":"transparent",transition:"all .15s"}}>
+          <div key={t.id} onClick={()=>setActiveTab(t.id)} style={{flex:1,padding:\"8px 12px\",borderRadius:8,textAlign:\"center\",fontSize:12,fontWeight:600,cursor:\"pointer\",color:activeTab===t.id?\"#fff\":\"#9ca3af\",background:activeTab===t.id?\"linear-gradient(135deg,#f97316,#ea580c)\":\"transparent\",transition:\"all .15s\"}}>
             {t.label}
           </div>
         ))}
       </div>
 
       {/* Tab: Users */}
-      {activeTab==="users" && (
-        <div className="us-layout">
+      {activeTab===\"users\" && (
+        <div className=\"us-layout\">
           {/* List */}
-          <div className="us-widget">
-            <div className="us-widget-head">
-              <div className="us-widget-title">👤 User ({users.length})</div>
+          <div className=\"us-widget\">
+            <div className=\"us-widget-head\">
+              <div className=\"us-widget-title\">\ud83d\udc64 User ({users.length})</div>
               {canManage && (
-                <button className="us-btn primary" style={{padding:"5px 11px",fontSize:11}} onClick={()=>{ setEditData(null); setShowModal(true); }}>
-                  ➕ Tambah
+                <button className=\"us-btn primary\" style={{padding:\"5px 11px\",fontSize:11}} onClick={()=>{ setEditData(null); setShowModal(true); }}>
+                  \u2795 Tambah
                 </button>
               )}
             </div>
             {users.map(u=>{
               const rc = ROLE_COLORS[u.role]||{};
               return (
-                <div key={u.id} className={`us-user-item ${selected?.id===u.id?"active":""}`} onClick={()=>setSelected(u)}>
-                  <div className="us-avatar" style={{background:getAvatarColor(u.id),display:"flex",alignItems:"center",justifyContent:"center"}}>{getInisial(u.nama)}</div>
+                <div key={u.id} className={`us-user-item ${selected?.id===u.id?\"active\":\"\"}`} onClick={()=>setSelected(u)}>
+                  <div className=\"us-avatar\" style={{background:getAvatarColor(u.id),display:\"flex\",alignItems:\"center\",justifyContent:\"center\"}}>{getInisial(u.nama)}</div>
                   <div style={{flex:1,minWidth:0}}>
-                    <div className="us-user-name">{u.nama}</div>
-                    <div className="us-user-role">{u.jabatan}</div>
+                    <div className=\"us-user-name\">{u.nama}</div>
+                    <div className=\"us-user-role\">{u.jabatan}</div>
                   </div>
-                  <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:3}}>
-                    <span className="us-badge" style={{color:rc.color,background:rc.bg}}>{rc.label}</span>
-                    {!u.aktif && <span className="us-badge" style={{color:"#9ca3af",background:"#f3f4f6"}}>Nonaktif</span>}
+                  <div style={{display:\"flex\",flexDirection:\"column\",alignItems:\"flex-end\",gap:3}}>
+                    <span className=\"us-badge\" style={{color:rc.color,background:rc.bg}}>{rc.label}</span>
+                    {!u.aktif && <span className=\"us-badge\" style={{color:\"#9ca3af\",background:\"#f3f4f6\"}}>Nonaktif</span>}
                   </div>
                 </div>
               );
@@ -394,53 +399,43 @@ export default function ManajemenUsers({ user, globalData={} }) {
 
           {/* Detail */}
           {selected ? (
-            <div className="us-widget">
-              <div className="us-widget-head">
-                <div className="us-widget-title">🔐 Detail & Hak Akses</div>
-                <div style={{display:"flex",gap:6}}>
+            <div className=\"us-widget\">
+              <div className=\"us-widget-head\">
+                <div className=\"us-widget-title\">\ud83d\udd10 Detail & Hak Akses</div>
+                <div style={{display:\"flex\",gap:6}}>
                   {/* Reset password: manajemen bisa semua, owner hanya diri sendiri */}
                   {(canManage || (isOwner && selected.id===user?.id)) && (
-                    <button className="us-btn warning" style={{padding:"5px 10px",fontSize:11}} onClick={()=>setShowReset(true)}>
-                      🔑 Reset PW
+                    <button className=\"us-btn warning\" style={{padding:\"5px 10px\",fontSize:11}} onClick={()=>setShowReset(true)}>
+                      \ud83d\udd11 Reset PW
                     </button>
                   )}
-                  {canManage && selected.role!=="owner" && (
-                    <button className="us-btn ghost" style={{padding:"5px 10px",fontSize:11}} onClick={()=>handleToggleAktif(selected.id)}>
-                      {selected.aktif?"⏸ Nonaktifkan":"▶ Aktifkan"}
+                  {canManage && selected.role!==\"owner\" && (
+                    <button className=\"us-btn ghost\" style={{padding:\"5px 10px\",fontSize:11}} onClick={()=>handleToggleAktif(selected.id)}>
+                      {selected.aktif?\"\u23f8 Nonaktifkan\":\"\u25b6 Aktifkan\"}
                     </button>
                   )}
                   {canManage && (
-                    <button className="us-btn primary" style={{padding:"5px 10px",fontSize:11}} onClick={()=>{ setEditData(selected); setShowModal(true); }}>
-                      ✏️ Edit
-                    </button>
-                  )}
-                  {canManage && selected.role!=="owner" && (
-                    <button className="us-btn" style={{padding:"5px 10px",fontSize:11,background:"#fee2e2",color:"#dc2626",border:"none",borderRadius:7,cursor:"pointer",fontWeight:600,fontFamily:"inherit"}} onClick={()=>{
-                      if(window.confirm(`Hapus user "${selected.nama}"? Data tidak bisa dikembalikan.`)){
-                        setUsers(prev=>prev.filter(u=>u.id!==selected.id));
-                        setSelected(null);
-                      }
-                    }}>
-                      🗑️ Hapus
+                    <button className=\"us-btn primary\" style={{padding:\"5px 10px\",fontSize:11}} onClick={()=>{ setEditData(selected); setShowModal(true); }}>
+                      \u270f\ufe0f Edit
                     </button>
                   )}
                 </div>
               </div>
-              <div className="us-detail">
+              <div className=\"us-detail\">
                 {/* Header */}
-                <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:18,paddingBottom:14,borderBottom:"1px solid #f3f4f6"}}>
-                  <div className="us-detail-avatar" style={{background:getAvatarColor(selected.id),display:"flex",alignItems:"center",justifyContent:"center"}}>{getInisial(selected.nama)}</div>
+                <div style={{display:\"flex\",alignItems:\"center\",gap:14,marginBottom:18,paddingBottom:14,borderBottom:\"1px solid #f3f4f6\"}}>
+                  <div className=\"us-detail-avatar\" style={{background:getAvatarColor(selected.id),display:\"flex\",alignItems:\"center\",justifyContent:\"center\"}}>{getInisial(selected.nama)}</div>
                   <div>
-                    <div className="us-detail-name">{selected.nama}</div>
-                    <div className="us-detail-role">{selected.jabatan}</div>
-                    <div style={{marginTop:5,display:"flex",gap:6}}>
-                      <span className="us-badge" style={{color:ROLE_COLORS[selected.role]?.color,background:ROLE_COLORS[selected.role]?.bg}}>
+                    <div className=\"us-detail-name\">{selected.nama}</div>
+                    <div className=\"us-detail-role\">{selected.jabatan}</div>
+                    <div style={{marginTop:5,display:\"flex\",gap:6}}>
+                      <span className=\"us-badge\" style={{color:ROLE_COLORS[selected.role]?.color,background:ROLE_COLORS[selected.role]?.bg}}>
                         {ROLE_COLORS[selected.role]?.label}
                       </span>
-                      <span className="us-badge" style={{color:selected.aktif?"#15803d":"#9ca3af",background:selected.aktif?"#dcfce7":"#f3f4f6"}}>
-                        {selected.aktif?"● Aktif":"● Nonaktif"}
+                      <span className=\"us-badge\" style={{color:selected.aktif?\"#15803d\":\"#9ca3af\",background:selected.aktif?\"#dcfce7\":\"#f3f4f6\"}}>
+                        {selected.aktif?\"\u25cf Aktif\":\"\u25cf Nonaktif\"}
                       </span>
-                      <span className="us-badge" style={{color:"#6b7280",background:"#f3f4f6",fontFamily:"JetBrains Mono,monospace"}}>
+                      <span className=\"us-badge\" style={{color:\"#6b7280\",background:\"#f3f4f6\",fontFamily:\"JetBrains Mono,monospace\"}}>
                         @{selected.username}
                       </span>
                     </div>
@@ -450,15 +445,15 @@ export default function ManajemenUsers({ user, globalData={} }) {
                 {/* Permission view */}
                 {MENU_SECTIONS.map(sec=>(
                   <div key={sec.label} style={{marginBottom:12}}>
-                    <div className="us-section-title">{sec.label}</div>
-                    <div className="us-perm-grid">
+                    <div className=\"us-section-title\">{sec.label}</div>
+                    <div className=\"us-perm-grid\">
                       {sec.keys.map(menu=>{
-                        const val = selected.permissions?.[menu]||"none";
+                        const val = selected.permissions?.[menu]||\"none\";
                         return (
-                          <div key={menu} className="us-perm-row">
-                            <span className="us-perm-label">{MENU_LABELS[menu]}</span>
-                            <span className={`us-perm-select ${val}`} style={{padding:"3px 8px",borderRadius:6,fontSize:11,fontWeight:600}}>
-                              {val==="write"?"✏️ Write":val==="read"?"👁️ Read":"🚫 None"}
+                          <div key={menu} className=\"us-perm-row\">
+                            <span className=\"us-perm-label\">{MENU_LABELS[menu]}</span>
+                            <span className={`us-perm-select ${val}`} style={{padding:\"3px 8px\",borderRadius:6,fontSize:11,fontWeight:600}}>
+                              {val===\"write\"?\"\u270f\ufe0f Write\":val===\"read\"?\"\ud83d\udc41\ufe0f Read\":\"\ud83d\udeab None\"}
                             </span>
                           </div>
                         );
@@ -469,24 +464,24 @@ export default function ManajemenUsers({ user, globalData={} }) {
               </div>
             </div>
           ) : (
-            <div className="us-widget">
-              <div className="us-empty"><div style={{fontSize:36,opacity:.4}}>👤</div><div style={{fontSize:13,fontWeight:600,color:"#374151"}}>Pilih user untuk lihat detail</div></div>
+            <div className=\"us-widget\">
+              <div className=\"us-empty\"><div style={{fontSize:36,opacity:.4}}>\ud83d\udc64</div><div style={{fontSize:13,fontWeight:600,color:\"#374151\"}}>Pilih user untuk lihat detail</div></div>
             </div>
           )}
         </div>
       )}
 
       {/* Tab: Log */}
-      {activeTab==="log" && (
-        <div className="us-widget">
-          <div className="us-widget-head">
-            <div className="us-widget-title">📋 Log Aktivitas</div>
-            <span style={{fontSize:11,color:"#9ca3af"}}>{activityLog.length} entri</span>
+      {activeTab===\"log\" && (
+        <div className=\"us-widget\">
+          <div className=\"us-widget-head\">
+            <div className=\"us-widget-title\">\ud83d\udccb Log Aktivitas</div>
+            <span style={{fontSize:11,color:\"#9ca3af\"}}>{activityLog.length} entri</span>
           </div>
           {activityLog.map(log=>(
-            <div key={log.id} className="us-log-item">
-              <div className="us-log-time">🕐 {log.waktu} · <b>@{log.user}</b></div>
-              <div className="us-log-action">{log.aksi}</div>
+            <div key={log.id} className=\"us-log-item\">
+              <div className=\"us-log-time\">\ud83d\udd50 {log.waktu} \u00b7 <b>@{log.user}</b></div>
+              <div className=\"us-log-action\">{log.aksi}</div>
             </div>
           ))}
         </div>

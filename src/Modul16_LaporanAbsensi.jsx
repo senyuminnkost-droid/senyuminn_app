@@ -61,7 +61,7 @@ const hitungRekap = (absensiData, karyawanId, bulan, tahun) => {
   });
 
   const totalHariKerja = entries.length;
-  const kpiAbsensi = totalHariKerja > 0 ? Math.round((masuk / Math.max(totalHariKerja-libur,1)) * 100) : 0;
+  const kpiAbsensi = totalHariKerja > 0 ? Math.round(divBy(masuk * 100, Math.max(totalHariKerja-libur,1))) : 0;
 
   return { masuk, libur, ijin, sakit, cuti, lembur, its, kpiAbsensi, totalEntries:entries.length };
 };

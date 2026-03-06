@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
+const divBy = (a, b) => b === 0 ? 0 : a / b;
+
 
 // ============================================================
 // CSS
@@ -15,8 +17,8 @@ const thisMonth = todayStr.slice(0,7);
 const fmtRp   = (n) => n!=null ? "Rp "+Number(n).toLocaleString("id-ID") : "—";
 const fmtRpShort = (n) => {
   if (!n) return "Rp 0";
-  if (Math.abs(n)>=1000000) return "Rp "+(n/1000000).toFixed(1)+"jt";
-  if (Math.abs(n)>=1000)    return "Rp "+(n/1000).toFixed(0)+"rb";
+  if (Math.abs(n)>=1000000) return "Rp "+(divBy(n,1000000)).toFixed(1)+"jt";
+  if (Math.abs(n)>=1000)    return "Rp "+(divBy(n,1000)).toFixed(0)+"rb";
   return "Rp "+n;
 };
 
@@ -116,7 +118,7 @@ function ModalTransaksi({ onClose, onSave, rekeningList }) {
                 {form.tipe==="pemasukan" ? (
                   <>
                     <div style={{display:"grid",gridTemplateColumns:"1fr 80px 80px",gap:6,fontSize:11,padding:"4px 0",borderBottom:"1px solid #e5e7eb"}}>
-                      <span style={{color:"#374151"}}>Kas / Bank</span>
+                      <span style={{color:"#374151"}}>{"Kas / Bank"}</span>
                       <span style={{textAlign:"right",fontWeight:600,color:"#16a34a",fontFamily:"monospace"}}>{fmtRpShort(Number(form.nominal))}</span>
                       <span style={{textAlign:"right",color:"#9ca3af"}}>—</span>
                     </div>
@@ -134,7 +136,7 @@ function ModalTransaksi({ onClose, onSave, rekeningList }) {
                       <span style={{textAlign:"right",color:"#9ca3af"}}>—</span>
                     </div>
                     <div style={{display:"grid",gridTemplateColumns:"1fr 80px 80px",gap:6,fontSize:11,padding:"4px 0"}}>
-                      <span style={{color:"#374151",paddingLeft:12}}>Kas / Bank</span>
+                      <span style={{color:"#374151",paddingLeft:12}}>{"Kas / Bank"}</span>
                       <span style={{textAlign:"right",color:"#9ca3af"}}>—</span>
                       <span style={{textAlign:"right",fontWeight:600,color:"#dc2626",fontFamily:"monospace"}}>{fmtRpShort(Number(form.nominal))}</span>
                     </div>
@@ -163,7 +165,7 @@ function ModalAset({ onClose, onSave }) {
   const [form,setForm] = useState({ nama:"", nilaiPerolehan:"", umurEkonomis:"5", tanggalBeli:todayStr });
   const set = (k,v) => setForm(p=>({...p,[k]:v}));
   const depPerBulan = form.nilaiPerolehan && form.umurEkonomis
-    ? Math.round(Number(form.nilaiPerolehan) / (Number(form.umurEkonomis)*12))
+    ? Math.round(divBy(Number(form.nilaiPerolehan),(Number(form.umurEkonomis)*12)))
     : 0;
   const valid = form.nama && form.nilaiPerolehan && Number(form.nilaiPerolehan)>0;
 
@@ -373,7 +375,7 @@ function TabBudget({ kasJurnal }) {
   const totalPemasukan = kasJurnal.filter(t=>t.tipe==="pemasukan"&&t.tanggal && t.tanggal.startsWith(thisMonth)).reduce((s,t)=>s+t.nominal,0);
 
   const saku = SAKU_DEFAULT.map(s=>{
-    const alokasi = s.flat>0 ? s.flat : Math.round(totalPemasukan*(s.pct/100));
+    const alokasi = s.flat>0 ? s.flat : Math.round(totalPemasukan*divBy(s.pct,100));
     // Hitung pengeluaran per kategori yang relevan
     const terpakai = s.kode==="A"
       ? kasJurnal.filter(t=>t.tipe==="pengeluaran"&&t.tanggal && t.tanggal.startsWith(thisMonth)&&["Perlengkapan","Akomodasi-Op","Lain-lain"].includes(t.kategori)).reduce((x,t)=>x+t.nominal,0)
@@ -381,7 +383,7 @@ function TabBudget({ kasJurnal }) {
       : s.kode==="E"
       ? kasJurnal.filter(t=>t.tipe==="pengeluaran"&&t.tanggal && t.tanggal.startsWith(thisMonth)&&["Gaji & Insentif","Listrik-Internet-Air","Maintenance","Peralatan","Management Fee"].includes(t.kategori)).reduce((x,t)=>x+t.nominal,0)
       : 0;
-    const pct_used = alokasi>0 ? Math.min(100,Math.round((terpakai/alokasi)*100)) : 0;
+    const pct_used = alokasi>0 ? Math.min(100,Math.round(divBy(terpakai,alokasi)*100)) : 0;
     return {...s, alokasi, terpakai, pct_used};
   });
 
@@ -392,7 +394,7 @@ function TabBudget({ kasJurnal }) {
   const breakdownKategori = KATEGORI_PENGELUARAN.map(kat=>{
     const total = pengeluaranBulanIni.filter(t=>t.kategori===kat).reduce((s,t)=>s+t.nominal,0);
     if (!total) return null;
-    const pct = totalAlokasi>0 ? Math.round((total/totalAlokasi)*100) : 0;
+    const pct = totalAlokasi>0 ? Math.round(divBy(total,totalAlokasi)*100) : 0;
     return { kat, total, pct };
   }).filter(Boolean);
 
@@ -435,7 +437,7 @@ function TabBudget({ kasJurnal }) {
                 </div>
                 <div className="ks-saku-vals">
                   <span className="ks-saku-used">{fmtRp(s.terpakai)}</span>
-                  <span className="ks-saku-total">/ {fmtRp(s.alokasi)}</span>
+                  <span className="ks-saku-total">{"/ "}{fmtRp(s.alokasi)}</span>
                 </div>
               </div>
             ))}
@@ -483,7 +485,7 @@ function TabAset({ asetList, setAsetList }) {
   // Hitung nilai buku saat ini
   const nilaiSekarang = (aset) => {
     const msPerBulan = 1000*60*60*24*30;
-    const bulanBerlalu = Math.floor((new Date()-new Date(aset.tanggalBeli))/msPerBulan);
+    const bulanBerlalu = Math.floor(divBy((new Date()-new Date(aset.tanggalBeli)),msPerBulan));
     return Math.max(0, aset.nilaiPerolehan - (aset.depPerBulan * bulanBerlalu));
   };
 
@@ -521,7 +523,7 @@ function TabAset({ asetList, setAsetList }) {
           ) : (
             asetList.map(a=>{
               const nb  = nilaiSekarang(a);
-              const pct = Math.round((nb/a.nilaiPerolehan)*100);
+              const pct = Math.round(divBy(nb,a.nilaiPerolehan)*100);
               return (
                 <div key={a.id} style={{padding:"12px 16px",borderBottom:"1px solid #f3f4f6"}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>

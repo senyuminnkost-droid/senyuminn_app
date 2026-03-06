@@ -3,134 +3,8 @@ import { useState, useEffect } from "react";
 // ============================================================
 // CSS
 // ============================================================
-const CSS = [
-  "
-" +
-  "  .pf-wrap { display:flex; flex-direction:column; gap:16px; }
-" +
-  "
-" +
-  "  .pf-overview-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-" +
-  "  .pf-overview-grid.three { grid-template-columns:1fr 1fr 1fr; }
-" +
-  "
-" +
-  "  .pf-section-card { background:#fff; border-radius:12px; border:1px solid #e5e7eb; overflow:hidden; }
-" +
-  "  .pf-section-head { padding:13px 16px 11px; border-bottom:1px solid #f3f4f6; display:flex; align-items:center; justify-content:space-between; }
-" +
-  "  .pf-section-title { font-size:12px; font-weight:700; color:#111827; display:flex; align-items:center; gap:6px; }
-" +
-  "  .pf-section-body { padding:14px 16px; display:flex; flex-direction:column; gap:8px; }
-" +
-  "
-" +
-  "  .pf-row { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; padding:4px 0; border-bottom:1px solid #f9fafb; }
-" +
-  "  .pf-row:last-child { border-bottom:none; }
-" +
-  "  .pf-row-label { font-size:11px; color:#9ca3af; min-width:120px; flex-shrink:0; padding-top:1px; }
-" +
-  "  .pf-row-val { font-size:12px; font-weight:600; color:#1f2937; text-align:right; flex:1; word-break:break-word; }
-" +
-  "  .pf-row-val.orange { color:#f97316; }
-" +
-  "  .pf-row-val.mono { font-family:monospace; }
-" +
-  "
-" +
-  "  .pf-edit-btn { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; background:#f3f4f6; border:none; border-radius:6px; font-size:11px; font-weight:600; color:#4b5563; cursor:pointer; font-family:inherit; transition:all .12s; flex-shrink:0; }
-" +
-  "  .pf-edit-btn:hover { background:#e5e7eb; color:#1f2937; }
-" +
-  "
-" +
-  "  .pf-rek-card { display:flex; align-items:center; gap:10px; padding:10px 12px; background:#f9fafb; border:1.5px solid #e5e7eb; border-radius:9px; }
-" +
-  "  .pf-rek-icon { width:34px; height:34px; border-radius:8px; background:linear-gradient(135deg,#f97316,#ea580c); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; flex-shrink:0; }
-" +
-  "  .pf-rek-info { flex:1; min-width:0; }
-" +
-  "  .pf-rek-name { font-size:12px; font-weight:600; color:#1f2937; }
-" +
-  "  .pf-rek-no { font-size:11px; color:#9ca3af; font-family:monospace; }
-" +
-  "  .pf-rek-badge { padding:2px 8px; border-radius:20px; font-size:10px; font-weight:700; color:#f97316; background:#fff7ed; border:1px solid #fed7aa; flex-shrink:0; }
-" +
-  "
-" +
-  "  .pf-tag { padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; }
-" +
-  "
-" +
-  "  .pf-btn { display:inline-flex; align-items:center; gap:5px; padding:8px 14px; border-radius:8px; font-size:12px; font-weight:600; border:none; cursor:pointer; font-family:inherit; transition:all .15s; }
-" +
-  "  .pf-btn.primary { background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; }
-" +
-  "  .pf-btn.ghost { background:#f3f4f6; color:#4b5563; }
-" +
-  "  .pf-btn.danger { background:#fee2e2; color:#dc2626; }
-" +
-  "
-" +
-  "  .pf-overlay { position:fixed !important; inset:0 !important; background:rgba(17,24,39,.55) !important; z-index:9999 !important; display:flex !important; align-items:center !important; justify-content:center !important; padding:16px !important; box-sizing:border-box !important; }
-" +
-  "  .pf-modal { background:#fff; border-radius:14px; width:100%; max-width:460px; max-height:85vh; display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,.18); }
-" +
-  "  .pf-modal-head { padding:14px 18px 12px; border-bottom:1px solid #f3f4f6; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
-" +
-  "  .pf-modal-title { font-size:14px; font-weight:700; color:#111827; }
-" +
-  "  .pf-modal-body { padding:16px 18px; flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:12px; }
-" +
-  "  .pf-modal-foot { padding:11px 18px; border-top:1px solid #f3f4f6; display:flex; gap:8px; justify-content:flex-end; flex-shrink:0; }
-" +
-  "
-" +
-  "  .pf-field { display:flex; flex-direction:column; gap:4px; }
-" +
-  "  .pf-label { font-size:11px; font-weight:600; color:#374151; text-transform:uppercase; letter-spacing:.4px; }
-" +
-  "  .pf-input { padding:9px 11px; border-radius:8px; border:1.5px solid #e5e7eb; font-size:12px; font-family:inherit; color:#1f2937; outline:none; background:#fff; width:100%; box-sizing:border-box; transition:border-color .12s; }
-" +
-  "  .pf-input:focus { border-color:#f97316; }
-" +
-  "  .pf-input.mono { font-family:monospace; }
-" +
-  "  .pf-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-" +
-  "  .pf-hint { font-size:10px; color:#9ca3af; margin-top:2px; }
-" +
-  "
-" +
-  "  .pf-info-box { background:#f0fdf4; border:1px solid #86efac; border-radius:8px; padding:9px 12px; font-size:11px; color:#15803d; }
-" +
-  "  .pf-warn-box { background:#fff7ed; border:1px solid #fed7aa; border-radius:8px; padding:9px 12px; font-size:11px; color:#9a3412; }
-" +
-  "
-" +
-  "  .pf-empty { text-align:center; padding:20px 0; color:#9ca3af; font-size:12px; }
-" +
-  "
-" +
-  "  @media(max-width:768px) { .pf-overview-grid { grid-template-columns:1fr; } .pf-overview-grid.three { grid-template-columns:1fr; } }
-" +
-  "
-"
-].join("");
 
-function StyleInjector() {
-  useEffect(() => {
-    const id = "senyuminn-profil-css";
-    if (document.getElementById(id)) return;
-    const el = document.createElement("style");
-    el.id = id; el.textContent = CSS;
-    document.head.appendChild(el);
-    return () => { const e=document.getElementById(id); if(e) e.remove(); };
-  },[]);
-  return null;
-}
+
 
 const fmtRp = (n) => n ? "Rp " + Number(n).toLocaleString("id-ID") : "—";
 const val = (v, fallback="—") => v || fallback;
@@ -276,7 +150,6 @@ export default function Modul17_Profil({ user, globalData = {} }) {
 
   return (
     <div className="pf-wrap">
-      <StyleInjector />
 
       {/* ── OVERVIEW GRID ── */}
       <div className="pf-overview-grid">

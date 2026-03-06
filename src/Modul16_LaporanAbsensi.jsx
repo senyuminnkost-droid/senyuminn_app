@@ -3,110 +3,8 @@ import { useState, useEffect, useMemo } from "react";
 // ============================================================
 // CSS
 // ============================================================
-const CSS = [
-  "
-" +
-  "  .la-wrap { display:flex; flex-direction:column; gap:16px; }
-" +
-  "
-" +
-  "  .la-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
-" +
-  "  .la-card  { background:#fff; border-radius:12px; border:1px solid #e5e7eb; padding:14px 16px; position:relative; overflow:hidden; }
-" +
-  "  .la-card-bar { position:absolute; top:0; left:0; right:0; height:3px; }
-" +
-  "  .la-card-label { font-size:10px; font-weight:500; color:#9ca3af; text-transform:uppercase; letter-spacing:.8px; margin-bottom:4px; margin-top:8px; }
-" +
-  "  .la-card-val { font-size:22px; font-weight:700; color:#111827; }
-" +
-  "  .la-card-sub { font-size:11px; color:#6b7280; margin-top:3px; }
-" +
-  "
-" +
-  "  .la-period { background:#fff; border-radius:12px; border:1px solid #e5e7eb; padding:12px 16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-" +
-  "  .la-select { padding:6px 10px; border-radius:8px; border:1.5px solid #e5e7eb; font-size:12px; color:#374151; background:#fff; outline:none; font-family:inherit; cursor:pointer; }
-" +
-  "  .la-select:focus { border-color:#f97316; }
-" +
-  "
-" +
-  "  .la-widget { background:#fff; border-radius:12px; border:1px solid #e5e7eb; overflow:hidden; }
-" +
-  "  .la-widget-head { padding:13px 16px 10px; border-bottom:1px solid #f3f4f6; display:flex; align-items:center; justify-content:space-between; }
-" +
-  "  .la-widget-title { font-size:13px; font-weight:700; color:#111827; }
-" +
-  "  .la-cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; padding:12px; }
-" +
-  "  .la-cal-head { text-align:center; font-size:10px; font-weight:700; color:#9ca3af; padding:4px 0; }
-" +
-  "  .la-cal-day  { min-height:42px; border-radius:7px; padding:4px; font-size:11px; cursor:default; }
-" +
-  "  .la-cal-day.empty { background:transparent; }
-" +
-  "  .la-cal-day.today { outline:2px solid #f97316; }
-" +
-  "  .la-kode { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:6px; font-size:9px; font-weight:700; }
-" +
-  "  .la-table { width:100%; border-collapse:collapse; }
-" +
-  "  .la-table th { padding:9px 14px; font-size:10px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.8px; background:#f9fafb; text-align:left; white-space:nowrap; }
-" +
-  "  .la-table th.center { text-align:center; }
-" +
-  "  .la-table td { padding:10px 14px; font-size:12px; color:#374151; border-bottom:1px solid #f9fafb; vertical-align:middle; }
-" +
-  "  .la-table td.center { text-align:center; }
-" +
-  "  .la-table tr:last-child td { border-bottom:none; }
-" +
-  "  .la-table tr:hover td { background:#fafafa; }
-" +
-  "  .la-kpi-bar { height:6px; background:#f3f4f6; border-radius:3px; overflow:hidden; margin-top:4px; }
-" +
-  "  .la-kpi-fill { height:100%; border-radius:3px; transition:width .4s; }
-" +
-  "  .la-badge { display:inline-flex; align-items:center; gap:3px; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:600; }
-" +
-  "
-" +
-  "  .la-btn { display:flex; align-items:center; gap:5px; padding:7px 14px; border-radius:8px; font-size:12px; font-weight:600; border:none; cursor:pointer; font-family:inherit; transition:all .15s; }
-" +
-  "  .la-btn.primary { background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; }
-" +
-  "  .la-btn.ghost   { background:#f3f4f6; color:#4b5563; border:1.5px solid #e5e7eb; }
-" +
-  "
-" +
-  "  .la-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 16px; color:#9ca3af; text-align:center; gap:8px; }
-" +
-  "  .la-tabs { display:flex; gap:4px; background:#fff; border-radius:12px; border:1px solid #e5e7eb; padding:5px; }
-" +
-  "  .la-tab  { flex:1; padding:\"8px 12px\"; border-radius:8px; text-align:center; font-size:12px; font-weight:600; cursor:pointer; color:#9ca3af; transition:all .15s; padding:8px 12px; }
-" +
-  "  .la-tab.active { color:#fff; background:linear-gradient(135deg,#f97316,#ea580c); }
-" +
-  "
-" +
-  "  @media(max-width:768px) { .la-cards{grid-template-columns:repeat(2,1fr)} }
-" +
-  "
-"
-].join("");
 
-function StyleInjector() {
-  useEffect(() => {
-    const id = "senyuminn-lapabsensi-css";
-    if (document.getElementById(id)) return;
-    const el = document.createElement("style");
-    el.id = id; el.textContent = CSS;
-    document.head.appendChild(el);
-    return () => { const e=document.getElementById(id); if(e) e.remove(); };
-  },[]);
-  return null;
-}
+
 
 // ============================================================
 // CONSTANTS
@@ -317,7 +215,6 @@ export default function Modul16_LaporanAbsensi({ user, globalData = {} }) {
 
   return (
     <div className="la-wrap">
-      <StyleInjector />
 
       {/* Cards */}
       <div className="la-cards">

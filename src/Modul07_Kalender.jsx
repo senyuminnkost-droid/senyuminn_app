@@ -1,128 +1,7 @@
 import { useState, useEffect } from "react";
 
-const CSS = [
-  "
-" +
-  "  .kal-wrap { display:flex; flex-direction:column; gap:16px; }
-" +
-  "  .kal-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
-" +
-  "  .kal-stat  { background:#fff; border-radius:12px; border:1px solid #e5e7eb; padding:12px 16px; }
-" +
-  "  .kal-stat-val   { font-size:22px; font-weight:800; }
-" +
-  "  .kal-stat-label { font-size:11px; color:#9ca3af; margin-top:2px; font-weight:500; }
-" +
-  "  .kal-layout { display:grid; grid-template-columns:1fr 268px; gap:14px; align-items:start; }
-" +
-  "  .kal-widget { background:#fff; border-radius:12px; border:1px solid #e5e7eb; overflow:hidden; }
-" +
-  "  .kal-widget-head { padding:13px 16px 10px; border-bottom:1px solid #f3f4f6; display:flex; align-items:center; justify-content:space-between; }
-" +
-  "  .kal-widget-title { font-size:13px; font-weight:700; color:#111827; }
-" +
-  "  .kal-widget-body  { padding:14px 16px; }
-" +
-  "  .kal-period { display:flex; align-items:center; gap:8px; }
-" +
-  "  .kal-period-label { font-size:13px; font-weight:700; color:#111827; min-width:140px; text-align:center; }
-" +
-  "  .kal-period-btn { background:#f3f4f6; border:none; border-radius:6px; padding:5px 10px; cursor:pointer; font-size:14px; }
-" +
-  "  .kal-period-btn:hover { background:#e5e7eb; }
-" +
-  "  .kal-days-header { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; margin-bottom:4px; }
-" +
-  "  .kal-day-name { text-align:center; font-size:10px; font-weight:700; padding:4px 0; }
-" +
-  "  .kal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
-" +
-  "  .kal-cell { min-height:72px; padding:5px 4px; border-radius:8px; cursor:pointer; background:#fafafa; border:1.5px solid transparent; transition:all .1s; }
-" +
-  "  .kal-cell:hover { background:#f3f4f6; }
-" +
-  "  .kal-cell.selected { background:#fff7ed; border-color:#f97316; }
-" +
-  "  .kal-cell.today { background:#fff7ed; border-color:#fed7aa; }
-" +
-  "  .kal-cell.empty { background:transparent !important; cursor:default; border-color:transparent !important; }
-" +
-  "  .kal-cell-num { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; margin-bottom:4px; }
-" +
-  "  .kal-cell.today .kal-cell-num { background:#f97316; color:#fff; font-weight:700; }
-" +
-  "  .kal-pill { font-size:9px; font-weight:600; padding:1px 5px; border-radius:4px; margin-bottom:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-" +
-  "  .kal-more { font-size:9px; color:#9ca3af; padding-left:2px; }
-" +
-  "  .kal-right { display:flex; flex-direction:column; gap:12px; }
-" +
-  "  .kal-event-item { padding:10px 12px; border-radius:9px; margin-bottom:8px; border:1px solid transparent; }
-" +
-  "  .kal-event-item:last-child { margin-bottom:0; }
-" +
-  "  .kal-empty-state { text-align:center; padding:24px 0; color:#9ca3af; }
-" +
-  "  .kal-legenda-item { display:flex; align-items:center; gap:8px; margin-bottom:7px; font-size:12px; color:#374151; }
-" +
-  "  .kal-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
-" +
-  "  .kal-btn { display:inline-flex; align-items:center; gap:5px; padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:600; background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; }
-" +
-  "  .kal-btn:disabled { opacity:0.4; cursor:not-allowed; }
-" +
-  "  .kal-btn-ghost { display:inline-flex; align-items:center; gap:5px; padding:6px 12px; border-radius:8px; border:1px solid #e5e7eb; cursor:pointer; font-size:12px; font-weight:600; background:#fff; color:#374151; }
-" +
-  "  .kal-overlay { position:fixed !important; inset:0 !important; background:rgba(17,24,39,.5) !important; display:flex !important; align-items:center !important; justify-content:center !important; z-index:9999 !important; }
-" +
-  "  .kal-modal { background:#fff; border-radius:14px; width:100%; max-width:420px; box-shadow:0 20px 60px rgba(0,0,0,.18); }
-" +
-  "  .kal-modal-head { padding:14px 18px 12px; border-bottom:1px solid #f3f4f6; display:flex; align-items:center; justify-content:space-between; }
-" +
-  "  .kal-modal-title { font-size:13px; font-weight:700; color:#111827; }
-" +
-  "  .kal-modal-close { width:26px; height:26px; border-radius:7px; background:#f3f4f6; border:none; cursor:pointer; font-size:14px; color:#374151; }
-" +
-  "  .kal-modal-body { padding:16px 18px; display:flex; flex-direction:column; gap:11px; }
-" +
-  "  .kal-modal-foot { padding:11px 18px; border-top:1px solid #f3f4f6; display:flex; gap:8px; justify-content:flex-end; }
-" +
-  "  .kal-field { display:flex; flex-direction:column; gap:5px; }
-" +
-  "  .kal-label { font-size:11px; font-weight:600; color:#374151; }
-" +
-  "  .kal-input { padding:8px 11px; border-radius:8px; border:1.5px solid #e5e7eb; font-size:13px; color:#111827; outline:none; width:100%; box-sizing:border-box; background:#fff; }
-" +
-  "  .kal-input:focus { border-color:#f97316; background:#fff; }
-" +
-  "  .kal-select { padding:8px 10px; border-radius:8px; border:1.5px solid #e5e7eb; font-size:13px; color:#111827; outline:none; width:100%; box-sizing:border-box; background:#fff; }
-" +
-  "  .kal-select:focus { border-color:#f97316; }
-" +
-  "  @media(max-width:900px){ .kal-layout{grid-template-columns:1fr} .kal-stats{grid-template-columns:repeat(2,1fr)} }
-" +
-  "  .kal-angg-bar { background:linear-gradient(135deg,#eff6ff,#dbeafe); border:1px solid #bfdbfe; border-radius:10px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
-" +
-  "  .kal-angg-form { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:14px 16px; }
-" +
-  "  .kal-angg-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
-" +
-  "
-"
-].join("");
 
-function StyleInjector() {
-  useEffect(() => {
-    const id = "senyuminn-kal-css";
-    if (document.getElementById(id)) return;
-    const el = document.createElement("style");
-    el.id = id;
-    el.textContent = CSS;
-    document.head.appendChild(el);
-    return () => { const s = document.getElementById(id); if (s) s.remove(); };
-  }, []);
-  return null;
-}
+
 
 const toDateStr = (y, m, d) =>
   `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
@@ -263,7 +142,6 @@ export default function Modul07_Kalender({ user, globalData = {} }) {
 
   return (
     <div className="kal-wrap">
-      <StyleInjector />
 
       {/* ── Pengajuan Anggaran Banner ── */}
       <div className="kal-angg-bar">

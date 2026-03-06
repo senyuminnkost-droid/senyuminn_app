@@ -172,7 +172,6 @@ function Sidebar({ user, active, onChange, onLogout }) {
             ))}
           </div>
         ))}
-      </div>
       <div style={{ padding:"12px 16px", borderTop:"1px solid #f1f5f9", display:"flex", alignItems:"center", gap:10 }}>
         <div style={{ width:32, height:32, borderRadius:"50%", background:"linear-gradient(135deg,#f97316,#ea580c)", display:"flex", alignItems:"center", justifyContent:"center", color:"#fff", fontSize:13, fontWeight:700, flexShrink:0 }}>
           {user.name[0]}

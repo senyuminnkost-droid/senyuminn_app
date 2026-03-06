@@ -5,40 +5,28 @@ import { useState, useEffect, useMemo } from "react";
 // ============================================================
 const CSS = `
   .ks-wrap { display: flex; flex-direction: column; gap: 16px; }
-
-  /* Cards */
-  .ks-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.ks-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
   .ks-card  { background:#fff; border-radius:12px; border:1px solid #e5e7eb; padding:14px 16px; position:relative; overflow:hidden; }
   .ks-card-bar { position:absolute; top:0; left:0; right:0; height:3px; }
   .ks-card-label { font-size:10px; font-weight:500; color:#9ca3af; text-transform:uppercase; letter-spacing:.8px; margin-bottom:4px; margin-top:8px; }
   .ks-card-val   { font-size:18px; font-weight:700; color:#111827; font-family:'JetBrains Mono',monospace; }
   .ks-card-sub   { font-size:11px; color:#6b7280; margin-top:3px; }
-
-  /* Tabs */
-  .ks-tabs { display:flex; gap:2px; background:#fff; border-radius:12px; border:1px solid #e5e7eb; padding:5px; }
+.ks-tabs { display:flex; gap:2px; background:#fff; border-radius:12px; border:1px solid #e5e7eb; padding:5px; }
   .ks-tab  { flex:1; padding:8px 12px; font-size:12px; font-weight:600; color:#9ca3af; cursor:pointer; border-radius:8px; text-align:center; transition:all .15s; }
   .ks-tab:hover { color:#374151; background:#f9fafb; }
   .ks-tab.active { color:#fff; background:linear-gradient(135deg,#f97316,#ea580c); box-shadow:0 2px 8px rgba(249,115,22,.25); }
-
-  /* Widget */
-  .ks-widget { background:#fff; border-radius:12px; border:1px solid #e5e7eb; overflow:hidden; }
+.ks-widget { background:#fff; border-radius:12px; border:1px solid #e5e7eb; overflow:hidden; }
   .ks-widget-head { padding:13px 16px 10px; border-bottom:1px solid #f3f4f6; display:flex; align-items:center; justify-content:space-between; }
   .ks-widget-title { font-size:12px; font-weight:600; color:#111827; display:flex; align-items:center; gap:6px; }
   .ks-widget-body { padding:16px; }
-
-  /* Layout jurnal */
-  .ks-layout { display:grid; grid-template-columns:1fr 340px; gap:14px; align-items:start; }
-
-  /* Filter */
-  .ks-filterbar { display:flex; align-items:center; gap:8px; padding:10px 14px; border-bottom:1px solid #f3f4f6; flex-wrap:wrap; }
+.ks-layout { display:grid; grid-template-columns:1fr 340px; gap:14px; align-items:start; }
+.ks-filterbar { display:flex; align-items:center; gap:8px; padding:10px 14px; border-bottom:1px solid #f3f4f6; flex-wrap:wrap; }
   .ks-search { display:flex; align-items:center; gap:7px; background:#f9fafb; border:1.5px solid #e5e7eb; border-radius:8px; padding:6px 11px; flex:1; max-width:220px; }
   .ks-search:focus-within { border-color:#f97316; background:#fff; }
   .ks-search input { border:none; outline:none; background:transparent; font-size:12px; color:#1f2937; width:100%; font-family:inherit; }
   .ks-select { padding:6px 10px; border-radius:8px; border:1.5px solid #e5e7eb; font-size:12px; color:#374151; background:#fff; outline:none; font-family:inherit; cursor:pointer; }
   .ks-select:focus { border-color:#f97316; }
-
-  /* Jurnal list */
-  .ks-row { display:flex; align-items:center; gap:12px; padding:10px 16px; border-bottom:1px solid #f3f4f6; transition:background .1s; }
+.ks-row { display:flex; align-items:center; gap:12px; padding:10px 16px; border-bottom:1px solid #f3f4f6; transition:background .1s; }
   .ks-row:last-child { border-bottom:none; }
   .ks-row:hover { background:#fafafa; }
   .ks-row-icon { width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
@@ -49,9 +37,7 @@ const CSS = `
   .ks-row-nominal { font-size:13px; font-weight:700; font-family:'JetBrains Mono',monospace; }
   .ks-row-tgl { font-size:10px; color:#9ca3af; margin-top:2px; }
   .ks-badge { display:inline-flex; align-items:center; gap:3px; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:600; }
-
-  /* Budget saku */
-  .ks-saku-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.ks-saku-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .ks-saku-card { background:#f9fafb; border-radius:10px; padding:12px 14px; border:1px solid #e5e7eb; }
   .ks-saku-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
   .ks-saku-name { font-size:12px; font-weight:600; color:#1f2937; }
@@ -61,25 +47,19 @@ const CSS = `
   .ks-saku-vals { display:flex; justify-content:space-between; font-size:10px; }
   .ks-saku-used { color:#374151; font-weight:600; font-family:'JetBrains Mono',monospace; }
   .ks-saku-total{ color:#9ca3af; font-family:'JetBrains Mono',monospace; }
-
-  /* Aset */
-  .ks-aset-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f3f4f6; }
+.ks-aset-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f3f4f6; }
   .ks-aset-row:last-child { border-bottom:none; }
   .ks-aset-name { font-size:12px; font-weight:600; color:#1f2937; }
   .ks-aset-sub  { font-size:10px; color:#9ca3af; margin-top:2px; }
   .ks-aset-right{ text-align:right; }
   .ks-aset-val  { font-size:12px; font-weight:700; color:#ea580c; font-family:'JetBrains Mono',monospace; }
   .ks-aset-dep  { font-size:10px; color:#9ca3af; margin-top:2px; }
-
-  /* Rekening */
-  .ks-rek-card { background:linear-gradient(135deg,#1e293b,#374151); border-radius:12px; padding:16px; color:#fff; margin-bottom:10px; }
+.ks-rek-card { background:linear-gradient(135deg,#1e293b,#374151); border-radius:12px; padding:16px; color:#fff; margin-bottom:10px; }
   .ks-rek-bank { font-size:11px; color:#94a3b8; font-weight:600; text-transform:uppercase; letter-spacing:.8px; margin-bottom:4px; }
   .ks-rek-name { font-size:14px; font-weight:700; margin-bottom:8px; }
   .ks-rek-no   { font-size:13px; font-family:'JetBrains Mono',monospace; letter-spacing:2px; color:#e2e8f0; }
   .ks-rek-saldo{ font-size:18px; font-weight:800; color:#f97316; margin-top:10px; font-family:'JetBrains Mono',monospace; }
-
-  /* Modal */
-  .ks-overlay { position:fixed !important; top:0 !important; left:0 !important; width:100vw !important; height:100vh !important; background:rgba(17,24,39,.65) !important; backdrop-filter:blur(4px) !important; z-index:9999 !important; display:flex !important; align-items:center !important; justify-content:center !important; padding:16px !important; box-sizing:border-box !important; animation:ksFade .18s ease; }
+.ks-overlay { position:fixed !important; top:0 !important; left:0 !important; width:100vw !important; height:100vh !important; background:rgba(17,24,39,.65) !important; backdrop-filter:blur(4px) !important; z-index:9999 !important; display:flex !important; align-items:center !important; justify-content:center !important; padding:16px !important; box-sizing:border-box !important; animation:ksFade .18s ease; }
   @keyframes ksFade { from{opacity:0} to{opacity:1} }
   .ks-modal { background:#fff; border-radius:16px; width:100%; max-width:500px; max-height:88vh; overflow-y:auto; box-shadow:0 24px 64px rgba(0,0,0,.18); animation:ksSlide .2s cubic-bezier(.4,0,.2,1); }
   @keyframes ksSlide { from{transform:translateY(16px);opacity:0} to{transform:translateY(0);opacity:1} }
@@ -110,9 +90,7 @@ const CSS = `
   .ks-btn.ghost   { background:#f3f4f6; color:#4b5563; }
   .ks-btn.success { background:linear-gradient(135deg,#16a34a,#15803d); color:#fff; }
   .ks-btn:disabled { opacity:.4; cursor:not-allowed; }
-
-  /* PDF btn */
-  .ks-pdf-btn { display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:8px; border:1.5px solid #e5e7eb; background:#fff; font-size:11px; font-weight:600; color:#374151; cursor:pointer; font-family:inherit; transition:all .12s; }
+.ks-pdf-btn { display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:8px; border:1.5px solid #e5e7eb; background:#fff; font-size:11px; font-weight:600; color:#374151; cursor:pointer; font-family:inherit; transition:all .12s; }
   .ks-pdf-btn:hover { border-color:#f97316; color:#ea580c; }
 
   .ks-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 16px; color:#9ca3af; text-align:center; gap:8px; }
@@ -609,7 +587,8 @@ function TabAset({ asetList, setAsetList }) {
 
   // Hitung nilai buku saat ini
   const nilaiSekarang = (aset) => {
-    const bulanBerlalu = Math.floor((new Date()-new Date(aset.tanggalBeli))/(1000*60*60*24*30));
+    const msPerBulan = 1000*60*60*24*30;
+    const bulanBerlalu = Math.floor((new Date()-new Date(aset.tanggalBeli))/msPerBulan);
     return Math.max(0, aset.nilaiPerolehan - (aset.depPerBulan * bulanBerlalu));
   };
 

@@ -259,7 +259,7 @@ export default function Modul16_LaporanAbsensi({ user, globalData = {} }) {
           </button>
         </div>
       </div>
-    ) : null;
+    );
   };
 
   // Trend 6 bulan untuk chart mini
